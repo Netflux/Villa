@@ -20,9 +20,9 @@ namespace villa
 	 * Adds the item to the inventory.
 	 * @param value - The item to add.
 	 */
-	void inventory::add_item(item* value)
+	void inventory::add_item(std::shared_ptr<item> value)
 	{
-		items.push_front(value);
+		items.push_back(value);
 	}
 
 	/**
@@ -30,11 +30,11 @@ namespace villa
 	 * @param value - The item to add.
 	 * @param quantity - The number of items to add.
 	 */
-	void inventory::add_item(item* value, int quantity)
+	void inventory::add_item(std::shared_ptr<item> value, int quantity)
 	{
 		for(int i = 0; i < quantity; ++i)
 		{
-			items.push_front(value);
+			items.push_back(value);
 		}
 	}
 
@@ -42,11 +42,11 @@ namespace villa
 	 * Removes the item from the inventory.
 	 * @param value - The item to remove.
 	 */
-	void inventory::remove_item(item* value)
+	void inventory::remove_item(std::shared_ptr<item> value)
 	{
-		item* target;
+		std::shared_ptr<item> target;
 
-		for(std::list<item*>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
+		for(std::vector<std::shared_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
 		{
 			target = *iterator;
 
@@ -63,7 +63,7 @@ namespace villa
 	 * @param value - The item to remove.
 	 * @param quantity - The number of items to remove.
 	 */
-	void inventory::remove_item(item* value, int quantity)
+	void inventory::remove_item(std::shared_ptr<item> value, int quantity)
 	{
 		for(int i = 0; i < quantity; ++i)
 		{
@@ -76,13 +76,13 @@ namespace villa
 	 * @param type - The item type.
 	 * @return The item.
 	 */
-	item* inventory::get_item(itemtype type)
+	std::shared_ptr<item> inventory::get_item(itemtype type)
 	{
-		item* target = nullptr;
+		std::shared_ptr<item> target = nullptr;
 
-		for(std::list<item*>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
+		for(std::vector<std::shared_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
 		{
-			item* temp = *iterator;
+			std::shared_ptr<item> temp = *iterator;
 
 			if(temp->get_type() == type)
 			{
@@ -95,24 +95,15 @@ namespace villa
 	}
 
 	/**
-	 * Gets the list of items.
-	 * @return The item list.
+	 * Gets the vector of items.
+	 * @return The item vector.
 	 */
-	std::list<item*> inventory::get_items()
+	std::vector<std::shared_ptr<item>> inventory::get_items()
 	{
 		return items;
 	}
 
-	/**
-	 * Sets the list of items.
-	 * @param items - The item list.
-	 */
-	void inventory::set_items(std::list<item*> items)
-	{
-		this->items = items;
-	}
-
-	tool* inventory::get_tool_highest_efficiency(itemtype type)
+	std::shared_ptr<tool> inventory::get_tool_highest_efficiency(itemtype type)
 	{
 		// If the item is not a tool, return a null pointer
 		switch(type)
@@ -128,20 +119,20 @@ namespace villa
 				break;
 		}
 
-		item* target = nullptr;
+		std::shared_ptr<tool> target = nullptr;
 		int efficiency_highest = 0;
 
-		for(std::list<item*>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
+		for(std::vector<std::shared_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
 		{
-			item* temp = *iterator;
+			std::shared_ptr<item> temp = *iterator;
 
-			if(temp->get_type() == type && static_cast<tool*>(temp)->get_efficiency() > efficiency_highest)
+			if(temp->get_type() == type && std::static_pointer_cast<tool>(temp)->get_efficiency() > efficiency_highest)
 			{
-				efficiency_highest = static_cast<tool*>(temp)->get_efficiency();
-				target = temp;
+				efficiency_highest = std::static_pointer_cast<tool>(temp)->get_efficiency();
+				target = std::static_pointer_cast<tool>(temp);
 			}
 		}
 
-		return static_cast<tool*>(target);
+		return target;
 	}
 }

@@ -3,30 +3,30 @@
 
 #include <item.h>
 #include <tool.h>
-#include <list>
+#include <vector>
+#include <memory>
 
 namespace villa
 {
 	/**
 	 * Inventory class.
-	 * Represents a list of items stored by the parent entity.
+	 * Represents a vector of items stored by the parent entity.
 	 */
 	class inventory
 	{
 		public:
 			inventory();
 			int get_item_count();
-			void add_item(item* value);
-			void add_item(item* value, int quantity);
-			void remove_item(item* value);
-			void remove_item(item* value, int quantity);
-			item* get_item(itemtype type);
-			std::list<item*> get_items();
-			void set_items(std::list<item*> items);
-			tool* get_tool_highest_efficiency(itemtype type);
+			void add_item(std::shared_ptr<item> value);
+			void add_item(std::shared_ptr<item> value, int quantity);
+			void remove_item(std::shared_ptr<item> value);
+			void remove_item(std::shared_ptr<item> value, int quantity);
+			std::shared_ptr<item> get_item(itemtype type);
+			std::vector<std::shared_ptr<item>> get_items();
+			std::shared_ptr<tool> get_tool_highest_efficiency(itemtype type);
 
 		private:
-			std::list<item*> items;
+			std::vector<std::shared_ptr<item>> items;
 	};
 }
 
