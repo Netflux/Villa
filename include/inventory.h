@@ -10,7 +10,7 @@ namespace villa
 {
 	/**
 	 * Inventory class.
-	 * Represents a vector of items stored by the parent entity.
+	 * Represents a collection of items stored by the parent entity.
 	 */
 	class inventory
 	{

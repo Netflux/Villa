@@ -23,6 +23,10 @@ namespace villa
 	{
 		public:
 			resource(int x, int y, resourcetype type);
+			int get_x();
+			void set_x(int value);
+			int get_y();
+			void set_y(int value);
 			bool get_harvestable();
 			void set_harvestable(bool value);
 

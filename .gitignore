@@ -1,3 +1,4 @@
+# Ignore all compiled binary files
+# We also ignore all object files, but those are handled by a .gitignore in the directory
 /bin/Villa
 /bin/Villa.exe
-/obj
