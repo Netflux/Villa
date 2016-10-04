@@ -23,7 +23,7 @@ ifeq ($(OS),Windows_NT)
 	# -Wl,-subsystem,windows gets rid of the console window
 	# -Wall enables all major warnings
 	# -pedantic enables all warnings demanded by strict ISO C.
-	COMPILER_FLAGS = -Wall -pedantic
+	COMPILER_FLAGS = -Wall -pedantic -std=c++11
 
 	#LINKER_FLAGS specifies the libraries we're linking against
 	LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2
