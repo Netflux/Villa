@@ -22,6 +22,17 @@ namespace villa
 			void set_x(int value);
 			int get_y();
 			void set_y(int value);
+			int get_speed();
+			void set_speed(int value);
+			int get_health();
+			void set_health(int value);
+			int get_hunger();
+			void set_hunger(int value);
+			int get_thirst();
+			void set_thirst(int value);
+			int get_fatigue();
+			void set_fatigue(int value);
+			std::shared_ptr<inventory> get_inventory();
 
 		private:
 			int x;

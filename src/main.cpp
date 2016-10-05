@@ -9,11 +9,13 @@ int main(int argc, char *argv[])
 	// Sample tests for inventory and items
 	inventory* test = new inventory();
 
+	// Test creating items
 	std::shared_ptr<item> water(new item(itemtype::water));
 	std::shared_ptr<item> food(new item(itemtype::food));
 	std::shared_ptr<tool> pickaxe(new tool(itemtype::pickaxe, 50));
 	std::shared_ptr<tool> axe(new tool(itemtype::axe, 25));
 
+	// Test adding items into the inventory
 	test->add_item(water, 20);
 	test->add_item(food, 5);
 	test->add_item(pickaxe, 75);
@@ -21,8 +23,13 @@ int main(int argc, char *argv[])
 	test->add_item(std::shared_ptr<tool>(new tool(itemtype::bucket, 100)), 1);
 	test->add_item(axe, 100);
 
+	// Test removing items from the inventory
+	test->remove_item(pickaxe, 71);
+	test->remove_item(test->get_item(itemtype::axe), 98);
+
 	std::vector<std::shared_ptr<item>> items = test->get_items();
 
+	// Loop through items and print results
 	for(std::vector<std::shared_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
 	{
 		std::shared_ptr<item> temp = *iterator;
@@ -47,6 +54,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	// Test finding highest efficiency tool
 	std::cout << "Highest Efficiency Bucket : " << test->get_tool_highest_efficiency(itemtype::bucket)->get_efficiency() << std::endl;
 
 	std::cout << "Exiting program..." << std::endl;

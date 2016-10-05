@@ -68,4 +68,13 @@ namespace villa
 	{
 		type = value;
 	}
+
+	/**
+	 * Gets the inventory of the building.
+	 * @return The building inventory.
+	 */
+	std::shared_ptr<inventory> building::get_inventory()
+	{
+		return storage;
+	}
 }

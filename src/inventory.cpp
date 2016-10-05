@@ -44,13 +44,11 @@ namespace villa
 	 */
 	void inventory::remove_item(std::shared_ptr<item> value)
 	{
-		std::shared_ptr<item> target;
-
 		for(std::vector<std::shared_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
 		{
-			target = *iterator;
+			std::shared_ptr<item> target = *iterator;
 
-			if(target->get_type() == value->get_type())
+			if(target == value)
 			{
 				items.erase(iterator);
 				break;
@@ -78,20 +76,17 @@ namespace villa
 	 */
 	std::shared_ptr<item> inventory::get_item(itemtype type)
 	{
-		std::shared_ptr<item> target = nullptr;
-
 		for(std::vector<std::shared_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
 		{
-			std::shared_ptr<item> temp = *iterator;
+			std::shared_ptr<item> target = *iterator;
 
-			if(temp->get_type() == type)
+			if(target->get_type() == type)
 			{
-				target = temp;
-				break;
+				return target;
 			}
 		}
 
-		return target;
+		return nullptr;
 	}
 
 	/**
@@ -103,6 +98,11 @@ namespace villa
 		return items;
 	}
 
+	/**
+	 * Gets the tool of the given type with the highest efficiency value.
+	 * @param type - The tool type.
+	 * @return The tool.
+	 */
 	std::shared_ptr<tool> inventory::get_tool_highest_efficiency(itemtype type)
 	{
 		// If the item is not a tool, return a null pointer
@@ -126,6 +126,8 @@ namespace villa
 		{
 			std::shared_ptr<item> temp = *iterator;
 
+			// The pointer needs to be down-casted to the tool class since the list stores the pointers as its base class type.
+			// We already ensured that the item is a tool based on its itemtype in the switch.
 			if(temp->get_type() == type && std::static_pointer_cast<tool>(temp)->get_efficiency() > efficiency_highest)
 			{
 				efficiency_highest = std::static_pointer_cast<tool>(temp)->get_efficiency();

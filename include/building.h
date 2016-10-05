@@ -35,6 +35,7 @@ namespace villa
 			void set_y(int value);
 			buildingtype get_type();
 			void set_type(buildingtype value);
+			std::shared_ptr<inventory> get_inventory();
 
 		private:
 			int x;
