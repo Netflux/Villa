@@ -11,7 +11,7 @@ namespace villa
 		null,   //!< null
 		water,  //!< water
 		food,   //!< food
-		lumber,   //!< tree
+		lumber, //!< tree
 		stone,  //!< stone
 		ore,    //!< ore
 		pickaxe,//!< pickaxe

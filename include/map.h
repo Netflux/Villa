@@ -7,6 +7,10 @@
 
 namespace villa
 {
+	/**
+	 * Map class.
+	 * Represents the simulation area which contains all entities within it.
+	 */
 	class map
 	{
 		public:

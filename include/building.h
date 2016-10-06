@@ -10,14 +10,14 @@ namespace villa
 	 */
 	enum class buildingtype
 	{
-		null,
-		town_hall,
-		windmill,
-		house,
-		house_small,
-		farmhouse,
-		blacksmith,
-		stall
+		null,       //!< null
+		town_hall,  //!< town_hall
+		windmill,   //!< windmill
+		house,      //!< house
+		house_small,//!< house_small
+		farmhouse,  //!< farmhouse
+		blacksmith, //!< blacksmith
+		stall       //!< stall
 	};
 
 	/**

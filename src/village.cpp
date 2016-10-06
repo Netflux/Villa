@@ -22,6 +22,8 @@ namespace villa
 	 */
 	void village::remove_villager(std::shared_ptr<villager> value)
 	{
+		// Loop through each villager in the vector
+		// If we've found the target villager, remove it from the vector and stop the loop
 		for(std::vector<std::shared_ptr<villager>>::iterator iterator = villagers.begin(); iterator != villagers.end(); ++iterator)
 		{
 			std::shared_ptr<villager> target = *iterator;
@@ -49,6 +51,8 @@ namespace villa
 	 */
 	void village::remove_building(std::shared_ptr<building> value)
 	{
+		// Loop through each building in the vector
+		// If we've found the target building, remove it from the vector and stop the loop
 		for(std::vector<std::shared_ptr<building>>::iterator iterator = buildings.begin(); iterator != buildings.end(); ++iterator)
 		{
 			std::shared_ptr<building> target = *iterator;

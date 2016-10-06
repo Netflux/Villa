@@ -5,6 +5,10 @@
 
 namespace villa
 {
+	/**
+	 * Tool class.
+	 * Represents items that provide bonuses when carrying out certain actions.
+	 */
 	class tool : public item
 	{
 		public:

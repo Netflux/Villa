@@ -32,6 +32,7 @@ namespace villa
 	 */
 	void inventory::add_item(std::shared_ptr<item> value, int quantity)
 	{
+		// Loop as many times as the quantity and add the item each cycle
 		for(int i = 0; i < quantity; ++i)
 		{
 			items.push_back(value);
@@ -44,6 +45,8 @@ namespace villa
 	 */
 	void inventory::remove_item(std::shared_ptr<item> value)
 	{
+		// Loop through each item in the vector
+		// If we've found the target item, remove it from the vector and stop the loop
 		for(std::vector<std::shared_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
 		{
 			std::shared_ptr<item> target = *iterator;
@@ -63,6 +66,7 @@ namespace villa
 	 */
 	void inventory::remove_item(std::shared_ptr<item> value, int quantity)
 	{
+		// Loop as many times as the quantity and remove the item each cycle
 		for(int i = 0; i < quantity; ++i)
 		{
 			this->remove_item(value);
@@ -76,6 +80,8 @@ namespace villa
 	 */
 	std::shared_ptr<item> inventory::get_item(itemtype type)
 	{
+		// Loop through each item in the vector
+		// If we've found the target item, return its pointer (null pointer if none exists)
 		for(std::vector<std::shared_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
 		{
 			std::shared_ptr<item> target = *iterator;
@@ -122,11 +128,13 @@ namespace villa
 		std::shared_ptr<tool> target = nullptr;
 		int efficiency_highest = 0;
 
+		// Loop through each item in the vector
+		// Once we've found the highest efficiency tool, return its pointer (null pointer if none exists)
 		for(std::vector<std::shared_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
 		{
 			std::shared_ptr<item> temp = *iterator;
 
-			// The pointer needs to be down-casted to the tool class since the list stores the pointers as its base class type.
+			// The pointer needs to be down-casted to the tool class since the vector stores the pointers as its base class type.
 			// We already ensured that the item is a tool based on its itemtype in the switch.
 			if(temp->get_type() == type && std::static_pointer_cast<tool>(temp)->get_efficiency() > efficiency_highest)
 			{
