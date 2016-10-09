@@ -15,7 +15,7 @@ ifeq ($(OS),Windows_NT)
 	INCLUDE_PATHS = -I./include -I./include/SDL2
 	
 	#LIBRARY_PATHS specifies the additional library paths we'll need
-	LIBRARY_PATHS = -L./lib -L./lib/SDL2
+	LIBRARY_PATHS = -L./lib
 	
 	#COMPILER_FLAGS specifies the additional compilation options we're using
 	# -w suppresses all warnings
@@ -25,7 +25,7 @@ ifeq ($(OS),Windows_NT)
 	COMPILER_FLAGS = -Wall -pedantic -std=c++11
 
 	#LINKER_FLAGS specifies the libraries we're linking against
-	LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2
+	LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
 	
 	#RM specifies the tool for cleaning files
 	RM = del /F $(subst /,\,$(OBJS) $(OBJ_NAME) $(OBJ_NAME).exe)
