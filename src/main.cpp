@@ -1,4 +1,4 @@
-#include <SDL.h>
+#include <app.h>
 #include <inventory.h>
 #include <iostream>
 
@@ -7,7 +7,7 @@ using namespace villa;
 int main(int argc, char *argv[])
 {
 	// Sample tests for inventory and items
-	inventory* test = new inventory();
+	inventory* inv_test = new inventory();
 
 	// Test creating items
 	std::shared_ptr<item> water(new item(itemtype::water));
@@ -16,18 +16,18 @@ int main(int argc, char *argv[])
 	std::shared_ptr<tool> axe(new tool(itemtype::axe, 25));
 
 	// Test adding items into the inventory
-	test->add_item(water, 20);
-	test->add_item(food, 5);
-	test->add_item(pickaxe, 75);
-	test->add_item(std::shared_ptr<tool>(new tool(itemtype::bucket, 79)), 3);
-	test->add_item(std::shared_ptr<tool>(new tool(itemtype::bucket, 100)), 1);
-	test->add_item(axe, 100);
+	inv_test->add_item(water, 20);
+	inv_test->add_item(food, 5);
+	inv_test->add_item(pickaxe, 75);
+	inv_test->add_item(std::shared_ptr<tool>(new tool(itemtype::bucket, 79)), 3);
+	inv_test->add_item(std::shared_ptr<tool>(new tool(itemtype::bucket, 100)), 1);
+	inv_test->add_item(axe, 100);
 
 	// Test removing items from the inventory
-	test->remove_item(pickaxe, 71);
-	test->remove_item(test->get_item(itemtype::axe), 98);
+	inv_test->remove_item(pickaxe, 71);
+	inv_test->remove_item(inv_test->get_item(itemtype::axe), 98);
 
-	std::vector<std::shared_ptr<item>> items = test->get_items();
+	std::vector<std::shared_ptr<item>> items = inv_test->get_items();
 
 	// Loop through items and print results
 	for(std::vector<std::shared_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
@@ -55,7 +55,11 @@ int main(int argc, char *argv[])
 	}
 
 	// Test finding highest efficiency tool
-	std::cout << "Highest Efficiency Bucket : " << test->get_tool_highest_efficiency(itemtype::bucket)->get_efficiency() << std::endl;
+	std::cout << "Highest Efficiency Bucket : " << inv_test->get_tool_highest_efficiency(itemtype::bucket)->get_efficiency() << std::endl;
+
+	// Test initializing and starting application
+	app* application = new app();
+	application->start();
 
 	std::cout << "Exiting program..." << std::endl;
 	return 0;
