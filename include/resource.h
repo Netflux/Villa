@@ -1,6 +1,8 @@
 #ifndef INCLUDE_RESOURCE_H_
 #define INCLUDE_RESOURCE_H_
 
+#include <entity.h>
+
 namespace villa
 {
 	/**
@@ -19,20 +21,14 @@ namespace villa
 	 * Resource class.
 	 * Represents resource entities that appear on the map.
 	 */
-	class resource
+	class resource : entity
 	{
 		public:
-			resource(int x, int y, resourcetype type);
-			int get_x();
-			void set_x(int value);
-			int get_y();
-			void set_y(int value);
+			resource(int x, int y, resourcetype type, bool harvestable);
 			bool get_harvestable();
 			void set_harvestable(bool value);
 
 		private:
-			int x;
-			int y;
 			resourcetype type;
 			bool harvestable;
 	};

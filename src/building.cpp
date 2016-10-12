@@ -13,43 +13,7 @@ namespace villa
 	 * @param y - The y-coord of the building.
 	 * @param type - The building type.
 	 */
-	building::building(int x, int y, buildingtype type) : x(x), y(y), type(type), storage(std::shared_ptr<inventory>(new inventory())) { }
-
-	/**
-	 * Gets the x-coord of the building.
-	 * @return The x-coord of the building.
-	 */
-	int building::get_x()
-	{
-		return x;
-	}
-
-	/**
-	 * Sets the x-coord of the building.
-	 * @param value - The x-coord of the building.
-	 */
-	void building::set_x(int value)
-	{
-		x = value;
-	}
-
-	/**
-	 * Gets the y-coord of the building.
-	 * @return The y-coord of the building.
-	 */
-	int building::get_y()
-	{
-		return y;
-	}
-
-	/**
-	 * Sets the y-coord of the building.
-	 * @param value - The y-coord of the building.
-	 */
-	void building::set_y(int value)
-	{
-		y = value;
-	}
+	building::building(int x, int y, buildingtype type) : entity(x, y), type(type), storage(std::shared_ptr<inventory>(new inventory())) { }
 
 	/**
 	 * Gets the type of the building.

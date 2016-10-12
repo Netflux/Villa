@@ -1,6 +1,7 @@
 #ifndef INCLUDE_VILLAGER_H_
 #define INCLUDE_VILLAGER_H_
 
+#include <entity.h>
 #include <inventory.h>
 #include <memory>
 
@@ -10,7 +11,7 @@ namespace villa
 	 * Villager class.
 	 * Represents a character entity that can interact with the world.
 	 */
-	class villager
+	class villager : entity
 	{
 		public:
 			villager();
@@ -18,10 +19,6 @@ namespace villa
 			void move();
 			virtual void rest();
 			virtual void harvest();
-			int get_x();
-			void set_x(int value);
-			int get_y();
-			void set_y(int value);
 			int get_speed();
 			void set_speed(int value);
 			int get_health();
@@ -35,8 +32,6 @@ namespace villa
 			std::shared_ptr<inventory> get_inventory();
 
 		private:
-			int x;
-			int y;
 			int speed;
 			int health;
 			int hunger;
