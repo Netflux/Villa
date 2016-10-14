@@ -5,22 +5,23 @@ namespace villa
 	/**
 	 * Constructor for the App class.
 	 */
-	app::app() : state(appstate::menu_main), window(nullptr), renderer(nullptr) { }
+	app::app() : window(nullptr), renderer(nullptr)
+	{
+		// Set initial state to exit
+		state.push(appstate::exit);
+	}
 
 	/**
 	 * Destructor for the App class.
 	 */
 	app::~app()
 	{
-		// Clear the window from memory
 		SDL_DestroyRenderer(renderer);
 		SDL_DestroyWindow(window);
 
-		// Close PNG and TTF loaders
 		//IMG_Quit();
 		//TTF_Quit();
 
-		// Quit SDL subsystems
 		SDL_Quit();
 	}
 
@@ -30,68 +31,59 @@ namespace villa
 	 */
 	bool app::init()
 	{
-		// Print current status
 		std::cout << "Initializing application instance..." << std::endl;
 
+		// Check if SDL initializes successfully
 		if(SDL_Init(SDL_INIT_VIDEO) < 0)
 		{
-			// Print error if SDL fails to initialize
 			std::cerr << "SDL failed to initialize! SDL_Error: " << SDL_GetError() << std::endl;
 			return false;
 		}
 
-		// Print success in console
 		std::cout << "SDL successfully initialized." << std::endl;
 
-		// Initialize application window
+		// Initialize the application window
 		window = SDL_CreateWindow("Villa", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 800, SDL_WINDOW_SHOWN);
 
+		// Check if the application window initializes successfully
 		if(window == nullptr)
 		{
-			// Print error if application window fails to initialize
 			std::cerr << "Application window failed to initialize! SDL_Error: " << SDL_GetError() << std::endl;
 			return false;
 		}
 
-		// Print success in console
 		std::cout << "Application window successfully initialized." << std::endl;
 
-		// Initialize 2D renderer
+		// Initialize the 2D renderer
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
+		// Check if the 2D renderer initializes successfully
 		if(renderer == nullptr)
 		{
-			// Print error if 2D renderer fails to initialize
 			std::cerr << "2D Renderer failed to initialize! SDL_Error: " << SDL_GetError() << std::endl;
 			return false;
 		}
 
-		// Print success in console
 		std::cout << "2D Renderer successfully initialized." << std::endl;
 
-		// Initialize PNG loader
+		// Check if the PNG loader initializes successfully
 		if(!(IMG_Init(IMG_INIT_PNG)&IMG_INIT_PNG))
 		{
-			// Print error if PNG loader fails to initialize
 			std::cerr << "PNG Loader failed to initialize! SDL_Error: " << SDL_GetError() << std::endl;
 			return false;
 		}
 
-		// Print success in console
 		std::cout << "PNG Loader successfully initialized." << std::endl;
 
-		// Initialize TTF loader
+		// Check if the TTF loader initializes successfully
 		if(TTF_Init() == -1)
 		{
-			// Print error if PNG loader fails to initialize
 			std::cerr << "TTF Loader failed to initialize! SDL_Error: " << TTF_GetError() << std::endl;
 			return false;
 		}
 
-		// Print success in console
 		std::cout << "TTF Loader successfully initialized." << std::endl;
 
-		// Print overall success in console
 		std::cout << "Application instance successfully initialized." << std::endl;
 
 		return true;
@@ -106,15 +98,15 @@ namespace villa
 		// If the application initializes correctly, start the application
 		if(this->init())
 		{
-			// Print current status
 			std::cout << "Starting application..." << std::endl;
 
-			while(state != appstate::exit)
-			{
-				// Handle user input
-				this->handle_input();
+			// Push new application state to the stack
+			state.push(appstate::menu_main);
 
-				// Update the display
+			// Loop until the user exits the application
+			while(state.top() != appstate::exit)
+			{
+				this->handle_input();
 				this->update_display();
 			}
 		}
@@ -122,15 +114,42 @@ namespace villa
 
 	/**
 	 * Processes user input and carries out the appropriate action(s).
+	 * The result of the user input is based on the application state.
 	 */
 	void app::handle_input()
 	{
+		// Cycle through events on queue
+		while(SDL_PollEvent(&event) != 0)
+		{
+			// Handle keyboard input
+			if(event.type == SDL_KEYDOWN)
+			{
+				// Check the current application state
+				switch(state.top())
+				{
+					case appstate::menu_main :
+						if(event.key.keysym.sym == SDLK_ESCAPE)
+						{
+							// Revert to the previous application state
+							state.pop();
+						}
+						break;
 
+					default :
+						break;
+				}
+			}
+			// If the user quits the application, set application state to exit
+			else if(event.type == SDL_QUIT)
+			{
+				state.push(appstate::exit);
+			}
+		}
 	}
 
 	/**
 	 * Updates the display to reflect the current state.
-	 * Re-renders all textures on screen.
+	 * Re-renders all textures on screen based on the application state.
 	 */
 	void app::update_display()
 	{

@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 	std::cout << "Highest Efficiency Bucket : " << inv_test->get_tool_highest_efficiency(itemtype::bucket)->get_efficiency() << std::endl;
 
 	// Test initializing and starting application
-	app* application = new app();
+	std::shared_ptr<app> application(new app());
 	application->start();
 
 	std::cout << "Exiting program..." << std::endl;

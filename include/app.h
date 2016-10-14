@@ -2,6 +2,7 @@
 #define INCLUDE_APP_H_
 
 #include <iostream>
+#include <stack>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -32,7 +33,7 @@ namespace villa
 			bool init();
 			void handle_input();
 			void update_display();
-			appstate state;
+			std::stack<appstate> state;
 			SDL_Window* window;
 			SDL_Renderer* renderer;
 			SDL_Event event;

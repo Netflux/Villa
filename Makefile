@@ -2,7 +2,7 @@
 CXX = g++
 
 #SRC specifies which files to compile as part of the project
-SRC = $(wildcard ./src/*.cpp)
+SRC = $(wildcard ./src/*.cpp) $(wildcard ./src/model/*.cpp)
 
 #OBJS specifies which files to compile as part of the project
 OBJS = $(subst ./src, ./obj, $(SRC:.cpp=.o))
