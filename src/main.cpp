@@ -61,6 +61,5 @@ int main(int argc, char *argv[])
 	std::shared_ptr<app> application(new app());
 	application->start();
 
-	std::cout << "Exiting program..." << std::endl;
 	return 0;
 }

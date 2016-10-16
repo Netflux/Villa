@@ -45,6 +45,8 @@ namespace villa
 				this->handle_input();
 				this->update_display();
 			}
+
+			std::cout << "Exiting application..." << std::endl;
 		}
 	}
 
@@ -91,9 +93,6 @@ namespace villa
 
 		// Initialize the resource manager
 		resources.reset(new resource_manager(*renderer));
-
-		// Initialize the display manager
-		display.reset(new display_manager(*renderer, resources));
 
 		// Check if the PNG loader initializes successfully
 		if(!(IMG_Init(IMG_INIT_PNG)&IMG_INIT_PNG))
