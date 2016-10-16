@@ -5,6 +5,7 @@
 #include <memory>
 #include <stack>
 #include <resource_manager.h>
+#include <display_manager.h>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -33,10 +34,12 @@ namespace villa
 
 		private:
 			bool init();
+			void load_resources();
 			void handle_input();
 			void update_display();
 			std::stack<appstate> state;
 			std::shared_ptr<resource_manager> resources;
+			std::shared_ptr<display_manager> display;
 			SDL_Window* window;
 			SDL_Renderer* renderer;
 			SDL_Event event;

@@ -26,6 +26,29 @@ namespace villa
 	}
 
 	/**
+	 * Starts the application.
+	 * Contains the application loop and all simulation logic.
+	 */
+	void app::start()
+	{
+		// If the application initializes correctly, start the application
+		if(this->init())
+		{
+			std::cout << "Starting application..." << std::endl;
+
+			// Push new application state to the stack
+			state.push(appstate::menu_main);
+
+			// Loop until the user exits the application
+			while(state.top() != appstate::exit)
+			{
+				this->handle_input();
+				this->update_display();
+			}
+		}
+	}
+
+	/**
 	 * Initializes the application (SDL and its subsystems).
 	 * @return The success/failure for initialization.
 	 */
@@ -69,6 +92,9 @@ namespace villa
 		// Initialize the resource manager
 		resources.reset(new resource_manager(*renderer));
 
+		// Initialize the display manager
+		display.reset(new display_manager(*renderer, resources));
+
 		// Check if the PNG loader initializes successfully
 		if(!(IMG_Init(IMG_INIT_PNG)&IMG_INIT_PNG))
 		{
@@ -93,26 +119,12 @@ namespace villa
 	}
 
 	/**
-	 * Starts the application.
-	 * Contains the application loop and all simulation logic.
+	 * Loads all resources used by the application.
 	 */
-	void app::start()
+	void app::load_resources()
 	{
-		// If the application initializes correctly, start the application
-		if(this->init())
-		{
-			std::cout << "Starting application..." << std::endl;
-
-			// Push new application state to the stack
-			state.push(appstate::menu_main);
-
-			// Loop until the user exits the application
-			while(state.top() != appstate::exit)
-			{
-				this->handle_input();
-				this->update_display();
-			}
-		}
+		// Load fonts
+		resources->load_font("KenPixel Square", "assets/fonts/kenpixel_square.ttf", 12);
 	}
 
 	/**
@@ -156,6 +168,6 @@ namespace villa
 	 */
 	void app::update_display()
 	{
-
+		SDL_RenderClear(renderer);
 	}
 }

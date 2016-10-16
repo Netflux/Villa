@@ -62,7 +62,7 @@ namespace villa
 	 * Loads the specified font.
 	 * @param name - The name of the new font.
 	 * @param path - The filepath of the font.
-	 * @param size - The size of the font.
+	 * @param size - The font size.
 	 */
 	void resource_manager::load_font(std::string name, std::string path, int size)
 	{
@@ -102,7 +102,8 @@ namespace villa
 	 * Gets the texture that displays the associated text.
 	 * If the texture does not exist, it is created.
 	 * @param text - The text to display.
-	 * @param font - The font type to use.
+	 * @param font - The font name.
+	 * @param size - The font size.
 	 * @return The texture (nullptr if texture creation fails).
 	 */
 	SDL_Texture* resource_manager::get_texture_text(std::string text, std::string font, int size)
@@ -147,6 +148,7 @@ namespace villa
 	/**
 	 * Gets the font with the associated name.
 	 * @param value - The name of the font.
+	 * @param size - The font size.
 	 * @return The font (nullptr if not found).
 	 */
 	TTF_Font* resource_manager::get_font(std::string value, int size)
