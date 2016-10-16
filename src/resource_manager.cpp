@@ -51,6 +51,7 @@ namespace villa
 			else
 			{
 				textures.insert(std::make_pair(name, texture));
+				std::cout << "Successfully loaded PNG: " << path << std::endl;
 			}
 
 			// Free the temporary surface from memory
@@ -75,6 +76,7 @@ namespace villa
 		else
 		{
 			fonts.insert(std::make_pair(name + std::to_string(size), font));
+			std::cout << "Successfully loaded font: " << path << std::endl;
 		}
 	}
 

@@ -36,7 +36,8 @@ namespace villa
 		{
 			std::cout << "Starting application..." << std::endl;
 
-			// Push new application state to the stack
+			// Load resources and push initial application state
+			this->load_resources();
 			state.push(appstate::menu_main);
 
 			// Loop until the user exits the application
@@ -122,6 +123,9 @@ namespace villa
 	 */
 	void app::load_resources()
 	{
+		// Load images
+		resources->load_texture("background", "assets/images/background.png");
+
 		// Load fonts
 		resources->load_font("KenPixel Square", "assets/fonts/kenpixel_square.ttf", 12);
 	}
@@ -168,5 +172,9 @@ namespace villa
 	void app::update_display()
 	{
 		SDL_RenderClear(renderer);
+
+		resources->render_texture(0, 0, "background");
+
+		SDL_RenderPresent(renderer);
 	}
 }
