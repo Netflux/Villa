@@ -3,11 +3,6 @@
 namespace villa
 {
 	/**
-	 * Constructor for the Inventory class.
-	 */
-	inventory::inventory() : items({}) { }
-
-	/**
 	 * Gets the number of items in the inventory.
 	 * @return The number of items in the inventory.
 	 */
@@ -49,9 +44,7 @@ namespace villa
 		// If we've found the target item, remove it from the vector and stop the loop
 		for(std::vector<std::shared_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
 		{
-			std::shared_ptr<item> target = *iterator;
-
-			if(target == value)
+			if(*iterator == value)
 			{
 				items.erase(iterator);
 				break;
@@ -76,7 +69,7 @@ namespace villa
 	/**
 	 * Gets the first item of the given item type.
 	 * @param type - The item type.
-	 * @return The item.
+	 * @return The item (nullptr if not found).
 	 */
 	std::shared_ptr<item> inventory::get_item(itemtype type)
 	{
@@ -84,11 +77,9 @@ namespace villa
 		// If we've found the target item, return its pointer (null pointer if none exists)
 		for(std::vector<std::shared_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
 		{
-			std::shared_ptr<item> target = *iterator;
-
-			if(target->get_type() == type)
+			if(iterator->get()->get_type() == type)
 			{
-				return target;
+				return *iterator;
 			}
 		}
 
@@ -107,7 +98,7 @@ namespace villa
 	/**
 	 * Gets the tool of the given type with the highest efficiency value.
 	 * @param type - The tool type.
-	 * @return The tool.
+	 * @return The tool (nullptr if not found).
 	 */
 	std::shared_ptr<tool> inventory::get_tool_highest_efficiency(itemtype type)
 	{

@@ -5,7 +5,7 @@ namespace villa
 	/**
 	 * Constructor for the Map class.
 	 */
-	map::map() : resources({}), tiles({}), town(std::shared_ptr<village>(new village())) { }
+	map::map() : town(std::shared_ptr<village>(new village())) { }
 
 	/**
 	 * Gets the vector of resources.

@@ -66,6 +66,9 @@ namespace villa
 
 		std::cout << "2D Renderer successfully initialized." << std::endl;
 
+		// Initialize the resource manager
+		resources.reset(new resource_manager(*renderer));
+
 		// Check if the PNG loader initializes successfully
 		if(!(IMG_Init(IMG_INIT_PNG)&IMG_INIT_PNG))
 		{

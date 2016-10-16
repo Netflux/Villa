@@ -2,7 +2,7 @@
 CXX = g++
 
 #SRC specifies which files to compile as part of the project
-SRC = $(wildcard ./src/*.cpp) $(wildcard ./src/model/*.cpp)
+SRC = $(wildcard ./src/*.cpp) $(wildcard ./src/model/*.cpp) $(wildcard ./src/view/*.cpp)
 
 #OBJS specifies which files to compile as part of the project
 OBJS = $(subst ./src, ./obj, $(SRC:.cpp=.o))
@@ -12,7 +12,7 @@ OBJ_NAME = ./bin/Villa
 
 ifeq ($(OS),Windows_NT)
 	#INCLUDE_PATHS specifies the additional include paths we'll need
-	INCLUDE_PATHS = -I./include -I./include/SDL2
+	INCLUDE_PATHS = -I./include -I./include/model -I./include/SDL2
 	
 	#LIBRARY_PATHS specifies the additional library paths we'll need
 	LIBRARY_PATHS = -L./lib
@@ -31,7 +31,7 @@ ifeq ($(OS),Windows_NT)
 	RM = del /F $(subst /,\,$(OBJS) $(OBJ_NAME) $(OBJ_NAME).exe)
 else
 	#INCLUDE_PATHS specifies the additional include paths we'll need
-	INCLUDE_PATHS = -I./include
+	INCLUDE_PATHS = -I./include -I./include/model
 	
 	#LIBRARY_PATHS specifies the additional library paths we'll need
 	LIBRARY_PATHS = $(shell sdl2-config --libs) -lSDL2_image -lSDL2_ttf $(shell sdl2-config --cflags)

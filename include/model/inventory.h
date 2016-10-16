@@ -15,7 +15,6 @@ namespace villa
 	class inventory
 	{
 		public:
-			inventory();
 			int get_item_count();
 			void add_item(std::shared_ptr<item> value);
 			void add_item(std::shared_ptr<item> value, int quantity);

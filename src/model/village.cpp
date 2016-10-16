@@ -3,11 +3,6 @@
 namespace villa
 {
 	/**
-	 * Constructor for the Village class.
-	 */
-	village::village() : villagers({}), buildings({}) { }
-
-	/**
 	 * Adds the villager to the village.
 	 * @param value - The villager to add.
 	 */
@@ -26,9 +21,7 @@ namespace villa
 		// If we've found the target villager, remove it from the vector and stop the loop
 		for(std::vector<std::shared_ptr<villager>>::iterator iterator = villagers.begin(); iterator != villagers.end(); ++iterator)
 		{
-			std::shared_ptr<villager> target = *iterator;
-
-			if(target == value)
+			if(*iterator == value)
 			{
 				villagers.erase(iterator);
 				break;
@@ -55,9 +48,7 @@ namespace villa
 		// If we've found the target building, remove it from the vector and stop the loop
 		for(std::vector<std::shared_ptr<building>>::iterator iterator = buildings.begin(); iterator != buildings.end(); ++iterator)
 		{
-			std::shared_ptr<building> target = *iterator;
-
-			if(target == value)
+			if(*iterator == value)
 			{
 				buildings.erase(iterator);
 				break;
