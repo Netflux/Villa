@@ -1,4 +1,4 @@
-#include <resource_manager.h>
+#include "resource_manager.hpp"
 
 namespace villa
 {
@@ -111,14 +111,14 @@ namespace villa
 	 * @param font - The font name.
 	 * @param size - The font size.
 	 */
-	void resource_manager::render_text(int x, int y, std::string text, std::string font, int size)
+	void resource_manager::render_text(int x, int y, std::string text, std::string font, int size, SDL_Color color)
 	{
 		int new_x = x;
 
 		// Loop through each character in the string
 		for(char& c : text)
 		{
-			SDL_Texture* texture = this->get_texture_text(std::string(&c), font, size);
+			SDL_Texture* texture = this->get_texture_text(std::string(1, c), font, size, color);
 
 			if(texture != nullptr)
 			{
@@ -139,13 +139,13 @@ namespace villa
 
 	/**
 	 * Gets the texture with the associated name.
-	 * @param value - The name of the texture.
+	 * @param name - The name of the texture.
 	 * @return The texture (nullptr if not found).
 	 */
-	SDL_Texture* resource_manager::get_texture(std::string value)
+	SDL_Texture* resource_manager::get_texture(std::string name)
 	{
 		// Search through the loaded textures for the target texture
-		std::unordered_map<std::string, SDL_Texture*>::iterator target = textures.find(value);
+		std::unordered_map<std::string, SDL_Texture*>::iterator target = textures.find(name);
 
 		// If the target texture is found, return its pointer
 		if(target != textures.end())
@@ -153,7 +153,7 @@ namespace villa
 			return target->second;
 		}
 
-		std::cerr << "Attempted to use texture that has not been loaded: " << value << std::endl;
+		std::cerr << "Attempted to use texture that has not been loaded: " << name << std::endl;
 		return nullptr;
 	}
 
@@ -165,55 +165,66 @@ namespace villa
 	 * @param size - The font size.
 	 * @return The texture (nullptr if texture creation fails).
 	 */
-	SDL_Texture* resource_manager::get_texture_text(std::string text, std::string font, int size)
+	SDL_Texture* resource_manager::get_texture_text(std::string text, std::string font, int size, SDL_Color color)
 	{
-		TTF_Font* fontface = this->get_font(font, size);
-		SDL_Color color = {0, 0, 0};
+		// Search through the loaded textures for the target texture
+		std::unordered_map<std::string, SDL_Texture*>::iterator target = textures_text.find(text + font + std::to_string(color.r) + std::to_string(color.g) + std::to_string(color.b));
 
-		// If there's text and the font is loaded...
-		if(!text.empty() && fontface != nullptr)
+		// If the target texture is found, return its pointer
+		if(target != textures_text.end())
 		{
-			// Create a surface that displays the text
-			SDL_Surface* surface = TTF_RenderText_Blended(fontface, text.c_str(), color);
+			return target->second;
+		}
+		// If the target texture is not found, create it and return its pointer
+		else
+		{
+			TTF_Font* fontface = this->get_font(font, size);
 
-			if(surface == nullptr)
+			// If there's text and the font is loaded...
+			if(!text.empty() && fontface != nullptr)
 			{
-				std::cerr << "Failed to create surface from text: \nText: " << text << "\nFont: " << font << "\nSDL_TTF Error: " << TTF_GetError() << std::endl;
-			}
-			else
-			{
-				// Create a texture from the surface (supports hardware-based rendering)
-				SDL_Texture* texture = SDL_CreateTextureFromSurface(&renderer, surface);
+				// Create a surface that displays the text
+				SDL_Surface* surface = TTF_RenderText_Blended(fontface, text.c_str(), color);
 
-				if(texture == nullptr)
+				if(surface == nullptr)
 				{
-					std::cerr << "Failed to create texture from text: \nText: " << text << "\nFont: " << font << "\nSDL_TTF Error: " << TTF_GetError() << std::endl;
+					std::cerr << "Failed to create surface from text: \nText: " << text << "\nFont: " << font << "\nSDL_TTF Error: " << TTF_GetError() << std::endl;
 				}
 				else
 				{
-					textures_text.insert(std::make_pair(text + font, texture));
-					return texture;
+					// Create a texture from the surface (supports hardware-based rendering)
+					SDL_Texture* texture = SDL_CreateTextureFromSurface(&renderer, surface);
+
+					if(texture == nullptr)
+					{
+						std::cerr << "Failed to create texture from text: \nText: " << text << "\nFont: " << font << "\nSDL_TTF Error: " << TTF_GetError() << std::endl;
+					}
+					else
+					{
+						textures_text.insert(std::make_pair(text + font + std::to_string(color.r) + std::to_string(color.g) + std::to_string(color.b), texture));
+						return texture;
+					}
+
+					// Free the temporary surface from memory
+					SDL_FreeSurface(surface);
 				}
-
-				// Free the temporary surface from memory
-				SDL_FreeSurface(surface);
 			}
-		}
 
-		std::cerr << "Attempted to create texture from invalid text/font: \nText: " << text << "\nFont: " << font << "\nSize: " << std::to_string(size) << std::endl;
-		return nullptr;
+			std::cerr << "Attempted to create texture from invalid text/font: \nText: " << text << "\nFont: " << font << "\nSize: " << std::to_string(size) << std::endl;
+			return nullptr;
+		}
 	}
 
 	/**
 	 * Gets the font with the associated name.
-	 * @param value - The name of the font.
+	 * @param name - The name of the font.
 	 * @param size - The font size.
 	 * @return The font (nullptr if not found).
 	 */
-	TTF_Font* resource_manager::get_font(std::string value, int size)
+	TTF_Font* resource_manager::get_font(std::string name, int size)
 	{
 		// Search through the loaded fonts for the target font
-		std::unordered_map<std::string, TTF_Font*>::iterator target = fonts.find(value + std::to_string(size));
+		std::unordered_map<std::string, TTF_Font*>::iterator target = fonts.find(name + std::to_string(size));
 
 		// If the target font is found, return its pointer
 		if(target != fonts.end())
@@ -221,7 +232,7 @@ namespace villa
 			return target->second;
 		}
 
-		std::cerr << "Attempted to use font that has not been loaded: \nFont: " << value << "\nSize: " << std::to_string(size) << std::endl;
+		std::cerr << "Attempted to use font that has not been loaded: \nFont: " << name << "\nSize: " << std::to_string(size) << std::endl;
 		return nullptr;
 	}
 }

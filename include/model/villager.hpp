@@ -1,8 +1,8 @@
 #ifndef INCLUDE_VILLAGER_H_
 #define INCLUDE_VILLAGER_H_
 
-#include <entity.h>
-#include <inventory.h>
+#include "entity.hpp"
+#include "inventory.hpp"
 #include <memory>
 
 namespace villa

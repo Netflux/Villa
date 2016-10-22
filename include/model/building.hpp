@@ -1,8 +1,8 @@
 #ifndef INCLUDE_BUILDING_H_
 #define INCLUDE_BUILDING_H_
 
-#include <entity.h>
-#include <inventory.h>
+#include "entity.hpp"
+#include "inventory.hpp"
 
 namespace villa
 {

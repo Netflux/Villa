@@ -1,8 +1,8 @@
 #ifndef INCLUDE_INVENTORY_H_
 #define INCLUDE_INVENTORY_H_
 
-#include <item.h>
-#include <tool.h>
+#include "item.hpp"
+#include "tool.hpp"
 #include <vector>
 #include <memory>
 

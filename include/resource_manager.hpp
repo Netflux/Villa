@@ -22,10 +22,10 @@ namespace villa
 			void load_texture(std::string name, std::string path);
 			void load_font(std::string name, std::string path, int size);
 			void render_texture(int x, int y, std::string name);
-			void render_text(int x, int y, std::string text, std::string font, int size);
-			SDL_Texture* get_texture(std::string value);
-			SDL_Texture* get_texture_text(std::string text, std::string font, int size);
-			TTF_Font* get_font(std::string value, int size);
+			void render_text(int x, int y, std::string text, std::string font, int size, SDL_Color color);
+			SDL_Texture* get_texture(std::string name);
+			SDL_Texture* get_texture_text(std::string text, std::string font, int size, SDL_Color color);
+			TTF_Font* get_font(std::string name, int size);
 
 		private:
 			SDL_Renderer& renderer;

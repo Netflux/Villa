@@ -1,8 +1,8 @@
 #ifndef INCLUDE_VILLAGE_H_
 #define INCLUDE_VILLAGE_H_
 
-#include <building.h>
-#include <villager.h>
+#include "building.hpp"
+#include "villager.hpp"
 
 namespace villa
 {

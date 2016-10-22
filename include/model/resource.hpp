@@ -1,7 +1,7 @@
 #ifndef INCLUDE_RESOURCE_H_
 #define INCLUDE_RESOURCE_H_
 
-#include <entity.h>
+#include "entity.hpp"
 
 namespace villa
 {

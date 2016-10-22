@@ -1,9 +1,9 @@
 #ifndef INCLUDE_MAP_H_
 #define INCLUDE_MAP_H_
 
-#include <resource.h>
-#include <tile.h>
-#include <village.h>
+#include "resource.hpp"
+#include "tile.hpp"
+#include "village.hpp"
 
 namespace villa
 {
