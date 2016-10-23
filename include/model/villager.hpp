@@ -1,9 +1,8 @@
 #ifndef INCLUDE_VILLAGER_H_
 #define INCLUDE_VILLAGER_H_
 
-#include "entity.hpp"
-#include "inventory.hpp"
 #include <memory>
+#include "entity.hpp"
 
 namespace villa
 {
@@ -29,7 +28,6 @@ namespace villa
 			void set_thirst(int value);
 			int get_fatigue();
 			void set_fatigue(int value);
-			std::shared_ptr<inventory> get_inventory();
 
 		private:
 			int speed;
@@ -37,7 +35,6 @@ namespace villa
 			int hunger;
 			int thirst;
 			int fatigue;
-			std::shared_ptr<inventory> storage;
 	};
 }
 

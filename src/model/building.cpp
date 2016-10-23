@@ -5,15 +5,16 @@ namespace villa
 	/**
 	 * Constructor for the Building class.
 	 */
-	building::building() : building(0, 0, buildingtype::null) { }
+	building::building() : building(0, 0, buildingtype::null, new inventory()) { }
 
 	/**
 	 * Constructor for the Building class.
 	 * @param x - The x-coord of the building.
 	 * @param y - The y-coord of the building.
 	 * @param type - The building type.
+	 * @param storage - The building inventory.
 	 */
-	building::building(int x, int y, buildingtype type) : entity(x, y), type(type), storage(std::shared_ptr<inventory>(new inventory())) { }
+	building::building(int x, int y, buildingtype type, inventory* storage) : entity(x, y, storage), type(type) { }
 
 	/**
 	 * Gets the type of the building.
@@ -31,14 +32,5 @@ namespace villa
 	void building::set_type(buildingtype value)
 	{
 		type = value;
-	}
-
-	/**
-	 * Gets the inventory of the building.
-	 * @return The building inventory.
-	 */
-	std::shared_ptr<inventory> building::get_inventory()
-	{
-		return storage;
 	}
 }

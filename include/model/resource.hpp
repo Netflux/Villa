@@ -24,7 +24,7 @@ namespace villa
 	class resource : entity
 	{
 		public:
-			resource(int x, int y, resourcetype type, bool harvestable);
+			resource(int x, int y, resourcetype type, inventory* storage, bool harvestable);
 			bool get_harvestable();
 			void set_harvestable(bool value);
 

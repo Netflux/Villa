@@ -16,14 +16,14 @@ namespace villa
 		public:
 			map();
 			std::vector<std::shared_ptr<resource>> get_resources();
-			std::shared_ptr<tile> get_tile_at(int x, int y);
-			void set_tile_at(int x, int y, std::shared_ptr<tile> value);
-			std::shared_ptr<village> get_village();
+			tile* get_tile_at(int x, int y);
+			void set_tile_at(int x, int y, tile* value);
+			village* get_village();
 
 		private:
 			std::vector<std::shared_ptr<resource>> resources;
-			std::shared_ptr<tile> tiles[10][10];
-			std::shared_ptr<village> town;
+			std::unique_ptr<tile> tiles[10][10];
+			std::unique_ptr<village> town;
 	};
 }
 

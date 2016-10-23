@@ -5,14 +5,14 @@ namespace villa
 	/**
 	 * Constructor for the Entity class.
 	 */
-	entity::entity() : entity(0, 0) { }
+	entity::entity() : entity(0, 0, new inventory()) { }
 
 	/**
 	 * Constructor for the Entity class.
 	 * @param x - The x-coord of the entity.
 	 * @param y - The y-coord of the entity.
 	 */
-	entity::entity(int x, int y) : x(x), y(y) { }
+	entity::entity(int x, int y, inventory* storage) : x(x), y(y), storage(storage) { }
 
 	/**
 	 * Gets the x-coord of the entity.
@@ -48,5 +48,14 @@ namespace villa
 	void entity::set_y(int value)
 	{
 		y = value;
+	}
+
+	/**
+	 * Gets the inventory of the entity.
+	 * @return The entity inventory.
+	 */
+	inventory* entity::get_inventory()
+	{
+		return storage.get();
 	}
 }

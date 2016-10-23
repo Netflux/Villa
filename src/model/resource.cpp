@@ -7,9 +7,10 @@ namespace villa
 	 * @param type - The resource type.
 	 * @param x - The x-coords of the resource.
 	 * @param y - The y-coords of the resource.
+	 * @param storage - The resource inventory.
 	 * @param harvestable - Boolean representing whether the resource is harvestable.
 	 */
-	resource::resource(int x, int y, resourcetype type, bool harvestable) : entity(x, y), type(type), harvestable(harvestable) { }
+	resource::resource(int x, int y, resourcetype type, inventory* storage, bool harvestable) : entity(x, y, storage), type(type), harvestable(harvestable) { }
 
 	/**
 	 * Gets whether the resource is harvestable.

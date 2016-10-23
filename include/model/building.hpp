@@ -29,14 +29,12 @@ namespace villa
 	{
 		public:
 			building();
-			building(int x, int y, buildingtype type);
+			building(int x, int y, buildingtype type, inventory* storage);
 			buildingtype get_type();
 			void set_type(buildingtype value);
-			std::shared_ptr<inventory> get_inventory();
 
 		private:
 			buildingtype type;
-			std::shared_ptr<inventory> storage;
 	};
 }
 

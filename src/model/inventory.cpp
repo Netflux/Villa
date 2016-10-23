@@ -15,9 +15,9 @@ namespace villa
 	 * Adds the item to the inventory.
 	 * @param value - The item to add.
 	 */
-	void inventory::add_item(std::shared_ptr<item> value)
+	void inventory::add_item(item* value)
 	{
-		items.push_back(value);
+		items.push_back(std::shared_ptr<item>(value));
 	}
 
 	/**
@@ -25,12 +25,14 @@ namespace villa
 	 * @param value - The item to add.
 	 * @param quantity - The number of items to add.
 	 */
-	void inventory::add_item(std::shared_ptr<item> value, int quantity)
+	void inventory::add_item(item* value, int quantity)
 	{
+		std::shared_ptr<item> target(value);
+
 		// Loop as many times as the quantity and add the item each cycle
 		for(int i = 0; i < quantity; ++i)
 		{
-			items.push_back(value);
+			items.push_back(target);
 		}
 	}
 
@@ -38,13 +40,13 @@ namespace villa
 	 * Removes the item from the inventory.
 	 * @param value - The item to remove.
 	 */
-	void inventory::remove_item(std::shared_ptr<item> value)
+	void inventory::remove_item(item* value)
 	{
 		// Loop through each item in the vector
 		// If we've found the target item, remove it from the vector and stop the loop
 		for(std::vector<std::shared_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
 		{
-			if(*iterator == value)
+			if(iterator->get() == value)
 			{
 				items.erase(iterator);
 				break;
@@ -57,7 +59,7 @@ namespace villa
 	 * @param value - The item to remove.
 	 * @param quantity - The number of items to remove.
 	 */
-	void inventory::remove_item(std::shared_ptr<item> value, int quantity)
+	void inventory::remove_item(item* value, int quantity)
 	{
 		// Loop as many times as the quantity and remove the item each cycle
 		for(int i = 0; i < quantity; ++i)
@@ -71,7 +73,7 @@ namespace villa
 	 * @param type - The item type.
 	 * @return The item (nullptr if not found).
 	 */
-	std::shared_ptr<item> inventory::get_item(itemtype type)
+	item* inventory::get_item(itemtype type)
 	{
 		// Loop through each item in the vector
 		// If we've found the target item, return its pointer (null pointer if none exists)
@@ -79,7 +81,7 @@ namespace villa
 		{
 			if(iterator->get()->get_type() == type)
 			{
-				return *iterator;
+				return iterator->get();
 			}
 		}
 
@@ -100,7 +102,7 @@ namespace villa
 	 * @param type - The tool type.
 	 * @return The tool (nullptr if not found).
 	 */
-	std::shared_ptr<tool> inventory::get_tool_highest_efficiency(itemtype type)
+	tool* inventory::get_tool_highest_efficiency(itemtype type)
 	{
 		// If the item is not a tool, return a null pointer
 		switch(type)
@@ -112,6 +114,7 @@ namespace villa
 			case itemtype::stone :
 			case itemtype::ore :
 				return nullptr;
+
 			default :
 				break;
 		}
@@ -134,6 +137,6 @@ namespace villa
 			}
 		}
 
-		return target;
+		return target.get();
 	}
 }

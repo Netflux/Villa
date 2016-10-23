@@ -5,7 +5,7 @@ namespace villa
 	/**
 	 * Constructor for the Map class.
 	 */
-	map::map() : town(std::shared_ptr<village>(new village())) { }
+	map::map() : town(new village()) { }
 
 	/**
 	 * Gets the vector of resources.
@@ -22,9 +22,9 @@ namespace villa
 	 * @param y - The y-coord of the tile.
 	 * @return The tile at the given coordinates.
 	 */
-	std::shared_ptr<tile> map::get_tile_at(int x, int y)
+	tile* map::get_tile_at(int x, int y)
 	{
-		return tiles[x][y];
+		return tiles[x][y].get();
 	}
 
 	/**
@@ -33,17 +33,17 @@ namespace villa
 	 * @param y - The y-coord of the tile.
 	 * @param value - The tile.
 	 */
-	void map::set_tile_at(int x, int y, std::shared_ptr<tile> value)
+	void map::set_tile_at(int x, int y, tile* value)
 	{
-		tiles[x][y] = value;
+		tiles[x][y] = std::unique_ptr<tile>(value);
 	}
 
 	/**
 	 * Gets the village.
 	 * @return The village.
 	 */
-	std::shared_ptr<village> map::get_village()
+	village* map::get_village()
 	{
-		return town;
+		return town.get();
 	}
 }

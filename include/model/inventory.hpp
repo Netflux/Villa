@@ -16,13 +16,13 @@ namespace villa
 	{
 		public:
 			int get_item_count();
-			void add_item(std::shared_ptr<item> value);
-			void add_item(std::shared_ptr<item> value, int quantity);
-			void remove_item(std::shared_ptr<item> value);
-			void remove_item(std::shared_ptr<item> value, int quantity);
-			std::shared_ptr<item> get_item(itemtype type);
+			void add_item(item* value);
+			void add_item(item* value, int quantity);
+			void remove_item(item* value);
+			void remove_item(item* value, int quantity);
+			item* get_item(itemtype type);
 			std::vector<std::shared_ptr<item>> get_items();
-			std::shared_ptr<tool> get_tool_highest_efficiency(itemtype type);
+			tool* get_tool_highest_efficiency(itemtype type);
 
 		private:
 			std::vector<std::shared_ptr<item>> items;

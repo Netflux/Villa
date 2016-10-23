@@ -5,7 +5,7 @@ namespace villa
 	/**
 	 * Constructor for the Villager class.
 	 */
-	villager::villager() : entity(), speed(100), health(100), hunger(0), thirst(0), fatigue(0), storage(std::shared_ptr<inventory>(new inventory())) { }
+	villager::villager() : entity(), speed(100), health(100), hunger(0), thirst(0), fatigue(0) { }
 
 	/**
 	 * Destructor for the Villager class.
@@ -115,14 +115,5 @@ namespace villa
 	void villager::set_fatigue(int value)
 	{
 		fatigue = value;
-	}
-
-	/**
-	 * Gets the inventory of the villager.
-	 * @return The villager inventory.
-	 */
-	std::shared_ptr<inventory> villager::get_inventory()
-	{
-		return storage;
 	}
 }

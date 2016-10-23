@@ -10,17 +10,17 @@ int main(int argc, char *argv[])
 	inventory* inv_test = new inventory();
 
 	// Test creating items
-	std::shared_ptr<item> water(new item(itemtype::water));
-	std::shared_ptr<item> food(new item(itemtype::food));
-	std::shared_ptr<tool> pickaxe(new tool(itemtype::pickaxe, 50));
-	std::shared_ptr<tool> axe(new tool(itemtype::axe, 25));
+	item* water = new item(itemtype::water);
+	item* food = new item(itemtype::food);
+	tool* pickaxe = new tool(itemtype::pickaxe, 50);
+	tool* axe = new tool(itemtype::axe, 25);
 
 	// Test adding items into the inventory
 	inv_test->add_item(water, 20);
 	inv_test->add_item(food, 5);
 	inv_test->add_item(pickaxe, 75);
-	inv_test->add_item(std::shared_ptr<tool>(new tool(itemtype::bucket, 79)), 3);
-	inv_test->add_item(std::shared_ptr<tool>(new tool(itemtype::bucket, 100)), 1);
+	inv_test->add_item(new tool(itemtype::bucket, 79), 3);
+	inv_test->add_item(new tool(itemtype::bucket, 100), 1);
 	inv_test->add_item(axe, 100);
 
 	// Test removing items from the inventory

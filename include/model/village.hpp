@@ -13,10 +13,10 @@ namespace villa
 	class village
 	{
 		public:
-			void add_villager(std::shared_ptr<villager> value);
-			void remove_villager(std::shared_ptr<villager> value);
-			void add_building(std::shared_ptr<building> value);
-			void remove_building(std::shared_ptr<building> value);
+			void add_villager(villager* value);
+			void remove_villager(villager* value);
+			void add_building(building* value);
+			void remove_building(building* value);
 			std::vector<std::shared_ptr<villager>> get_villagers();
 			std::vector<std::shared_ptr<building>> get_buildings();
 

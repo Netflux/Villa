@@ -1,6 +1,9 @@
 #ifndef INCLUDE_ENTITY_H_
 #define INCLUDE_ENTITY_H_
 
+#include <memory>
+#include "inventory.hpp"
+
 namespace villa
 {
 	/**
@@ -14,12 +17,14 @@ namespace villa
 			void set_x(int value);
 			int get_y();
 			void set_y(int value);
+			inventory* get_inventory();
 
 		protected:
 			entity();
-			entity(int x, int y);
+			entity(int x, int y, inventory* storage);
 			int x;
 			int y;
+			std::unique_ptr<inventory> storage;
 	};
 }
 
