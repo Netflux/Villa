@@ -2,7 +2,9 @@
 #define INCLUDE_VILLAGER_H_
 
 #include <memory>
+#include <stack>
 #include "entity.hpp"
+#include "task.hpp"
 
 namespace villa
 {
@@ -18,6 +20,9 @@ namespace villa
 			void move();
 			virtual void rest();
 			virtual void harvest();
+			void add_task(task* value);
+			void remove_task();
+			task* get_task();
 			int get_speed();
 			void set_speed(int value);
 			int get_health();
@@ -35,6 +40,7 @@ namespace villa
 			int hunger;
 			int thirst;
 			int fatigue;
+			std::stack<std::shared_ptr<task>> tasks;
 	};
 }
 

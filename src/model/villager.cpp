@@ -28,6 +28,32 @@ namespace villa
 	}
 
 	/**
+	 * Adds a task to the villager
+	 * @param value - The task to add.
+	 */
+	void villager::add_task(task* value)
+	{
+		tasks.push(std::shared_ptr<task>(value));
+	}
+
+	/**
+	 * Removes the current task of the villager.
+	 */
+	void villager::remove_task()
+	{
+		tasks.pop();
+	}
+
+	/**
+	 * Gets the current task of the villager.
+	 * @return The current task.
+	 */
+	task* villager::get_task()
+	{
+		return tasks.top().get();
+	}
+
+	/**
 	 * Gets the speed of the villager.
 	 * @return The villager speed.
 	 */
