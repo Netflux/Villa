@@ -127,8 +127,78 @@ namespace villa
 	 */
 	void app::load_resources()
 	{
-		// Load images
+		// Load background image
 		resources->load_texture("background", "assets/images/background.png");
+
+		// Load tile images
+		resources->load_texture("grass_c", "assets/images/tiles/grass_c.png");
+
+		resources->load_texture("water_nw", "assets/images/tiles/water_nw.png");
+		resources->load_texture("water_n", "assets/images/tiles/water_n.png");
+		resources->load_texture("water_ne", "assets/images/tiles/water_ne.png");
+		resources->load_texture("water_w", "assets/images/tiles/water_w.png");
+		resources->load_texture("water_c", "assets/images/tiles/water_c.png");
+		resources->load_texture("water_e", "assets/images/tiles/water_e.png");
+		resources->load_texture("water_sw", "assets/images/tiles/water_sw.png");
+		resources->load_texture("water_s", "assets/images/tiles/water_s.png");
+		resources->load_texture("water_se", "assets/images/tiles/water_se.png");
+
+		resources->load_texture("water_corner_nw", "assets/images/tiles/water_corner_nw.png");
+		resources->load_texture("water_corner_ne", "assets/images/tiles/water_corner_ne.png");
+		resources->load_texture("water_corner_sw", "assets/images/tiles/water_corner_sw.png");
+		resources->load_texture("water_corner_se", "assets/images/tiles/water_corner_se.png");
+
+		resources->load_texture("dirt_nw", "assets/images/tiles/dirt_nw.png");
+		resources->load_texture("dirt_n", "assets/images/tiles/dirt_n.png");
+		resources->load_texture("dirt_ne", "assets/images/tiles/dirt_ne.png");
+		resources->load_texture("dirt_w", "assets/images/tiles/dirt_w.png");
+		resources->load_texture("dirt_c", "assets/images/tiles/dirt_c.png");
+		resources->load_texture("dirt_e", "assets/images/tiles/dirt_e.png");
+		resources->load_texture("dirt_sw", "assets/images/tiles/dirt_sw.png");
+		resources->load_texture("dirt_s", "assets/images/tiles/dirt_s.png");
+		resources->load_texture("dirt_se", "assets/images/tiles/dirt_se.png");
+
+		resources->load_texture("dirt_corner_nw", "assets/images/tiles/dirt_corner_nw.png");
+		resources->load_texture("dirt_corner_ne", "assets/images/tiles/dirt_corner_ne.png");
+		resources->load_texture("dirt_corner_sw", "assets/images/tiles/dirt_corner_sw.png");
+		resources->load_texture("dirt_corner_se", "assets/images/tiles/dirt_corner_se.png");
+
+		resources->load_texture("sand_nw", "assets/images/tiles/sand_nw.png");
+		resources->load_texture("sand_n", "assets/images/tiles/sand_n.png");
+		resources->load_texture("sand_ne", "assets/images/tiles/sand_ne.png");
+		resources->load_texture("sand_w", "assets/images/tiles/sand_w.png");
+		resources->load_texture("sand_c", "assets/images/tiles/sand_c.png");
+		resources->load_texture("sand_e", "assets/images/tiles/sand_e.png");
+		resources->load_texture("sand_sw", "assets/images/tiles/sand_sw.png");
+		resources->load_texture("sand_s", "assets/images/tiles/sand_s.png");
+		resources->load_texture("sand_se", "assets/images/tiles/sand_se.png");
+
+		resources->load_texture("sand_corner_nw", "assets/images/tiles/sand_corner_nw.png");
+		resources->load_texture("sand_corner_ne", "assets/images/tiles/sand_corner_ne.png");
+		resources->load_texture("sand_corner_sw", "assets/images/tiles/sand_corner_sw.png");
+		resources->load_texture("sand_corner_se", "assets/images/tiles/sand_corner_se.png");
+
+		resources->load_texture("stone_nw", "assets/images/tiles/stone_nw.png");
+		resources->load_texture("stone_n", "assets/images/tiles/stone_n.png");
+		resources->load_texture("stone_ne", "assets/images/tiles/stone_ne.png");
+		resources->load_texture("stone_w", "assets/images/tiles/stone_w.png");
+		resources->load_texture("stone_c", "assets/images/tiles/stone_c.png");
+		resources->load_texture("stone_e", "assets/images/tiles/stone_e.png");
+		resources->load_texture("stone_sw", "assets/images/tiles/stone_sw.png");
+		resources->load_texture("stone_s", "assets/images/tiles/stone_s.png");
+		resources->load_texture("stone_se", "assets/images/tiles/stone_se.png");
+
+		resources->load_texture("stone_corner_nw", "assets/images/tiles/stone_corner_nw.png");
+		resources->load_texture("stone_corner_ne", "assets/images/tiles/stone_corner_ne.png");
+		resources->load_texture("stone_corner_sw", "assets/images/tiles/stone_corner_sw.png");
+		resources->load_texture("stone_corner_se", "assets/images/tiles/stone_corner_se.png");
+
+		// Load building images
+		resources->load_texture("roof_small_front", "assets/images/buildings/roof_small_front.png");
+		resources->load_texture("roof_small_middle", "assets/images/buildings/roof_small_middle.png");
+		resources->load_texture("roof_small_back", "assets/images/buildings/roof_small_back.png");
+		resources->load_texture("wall_small_base", "assets/images/buildings/wall_small_base.png");
+		resources->load_texture("wall_small_middle", "assets/images/buildings/wall_small_middle.png");
 
 		// Load UI images
 		resources->load_texture("buttonLong_brown", "assets/images/ui/buttonLong_brown.png");
@@ -170,6 +240,14 @@ namespace villa
 						}
 						break;
 
+					case appstate::simulation :
+						if(event.key.keysym.sym == SDLK_ESCAPE)
+						{
+							// Revert to the previous application state
+							state.pop();
+						}
+						break;
+
 					default :
 						break;
 				}
@@ -201,7 +279,11 @@ namespace villa
 
 							if(target == "Start Button")
 							{
+								state.push(appstate::simulation);
 
+								simulation_map.reset(new map());
+
+								simulation_map->add_villager(new villager());
 							}
 							else if(target == "Options Button")
 							{
@@ -243,6 +325,10 @@ namespace villa
 		{
 			case appstate::menu_main :
 				display_menu_main();
+				break;
+
+			case appstate::simulation :
+				display_simulation();
 				break;
 
 			default :
@@ -296,6 +382,153 @@ namespace villa
 		{
 			resources->render_texture(305, 700, "buttonLong_brown");
 			resources->render_text(369, 703, "Quit", "KenPixel Square", 24, {224, 224, 224});
+		}
+	}
+
+	/**
+	 * Displays the running simulation of the application.
+	 */
+	void app::display_simulation()
+	{
+		// Render the map
+		for(int i = 0; i < 50; ++i)
+		{
+			for(int j = 0; j < 50; ++j)
+			{
+				tile* target = simulation_map->get_tile_at(i, j);
+
+				if(target->get_type() == tiletype::water)
+				{
+					display_simulation_tile(i, j, tiletype::water, "water");
+				}
+				else if(target->get_type() == tiletype::dirt)
+				{
+					resources->render_texture(i * 16, j * 16, "grass_c");
+					display_simulation_tile(i, j, tiletype::dirt, "dirt");
+				}
+				else if(target->get_type() == tiletype::grass)
+				{
+					resources->render_texture(i * 16, j * 16, "grass_c");
+				}
+				else if(target->get_type() == tiletype::sand)
+				{
+					resources->render_texture(i * 16, j * 16, "grass_c");
+					display_simulation_tile(i, j, tiletype::sand, "sand");
+				}
+			}
+		}
+
+		// Render the buildings
+
+
+		// Render the villagers
+	}
+
+	/**
+	 * Displays the specified tile in the simulation.
+	 * Textures must be named using the following formats :
+	 * 1. (filename)_(direction).png
+	 * 2. (filename)_corner_(direction).png
+	 *
+	 * Directions are declared as the first letters of north, south, east or west.
+	 * Two combinations of letters can be used to specify diagonal directions.
+	 * Example : texture_nw.png, texture_corner_nw.png
+	 *
+	 * @param x - The x-coord of the target tile.
+	 * @param y - The y-coord of the target tile.
+	 * @param type - The tile type to search for.
+	 * @param name - The name of the texture (without direction).
+	 */
+	void app::display_simulation_tile(int x, int y, tiletype type, std::string name)
+	{
+		// We store the directions which have the specified tile type.
+		// Allows for custom textures to be used for tile edges.
+		int direction = 0;
+
+		// Check the tile north of current tile
+		if((y - 1) >= 0 && simulation_map->get_tile_at(x, y - 1)->get_type() != type)
+		{
+			direction += 1;
+		}
+
+		// Check the tile west of current tile
+		if((x - 1) >= 0 && simulation_map->get_tile_at(x - 1, y)->get_type() != type)
+		{
+			direction += 2;
+		}
+
+		// Check the tile east of current tile
+		if((x + 1) < 50 && simulation_map->get_tile_at(x + 1, y)->get_type() != type)
+		{
+			direction += 4;
+		}
+
+		// Check the tile south of current tile
+		if((y + 1) < 50 && simulation_map->get_tile_at(x, y + 1)->get_type() != type)
+		{
+			direction += 8;
+		}
+
+		switch(direction)
+		{
+			case 1 : // 1 tile (north)
+				resources->render_texture(x * 16, y * 16, name + "_n");
+				break;
+
+			case 2 : // 1 tile (west)
+				resources->render_texture(x * 16, y * 16, name + "_w");
+				break;
+
+			case 3 : // 2 tiles (north, west)
+				resources->render_texture(x * 16, y * 16, name + "_nw");
+				break;
+
+			case 4 : // 1 tile (east)
+				resources->render_texture(x * 16, y * 16, name + "_e");
+				break;
+
+			case 5 : // 2 tiles (north, east)
+				resources->render_texture(x * 16, y * 16, name + "_ne");
+				break;
+
+			case 8 : // 1 tile (south)
+				resources->render_texture(x * 16, y * 16, name + "_s");
+				break;
+
+			case 10 : // 2 tiles (south, west)
+				resources->render_texture(x * 16, y * 16, name + "_sw");
+				break;
+
+			case 12 : // 2 tiles (south, east)
+				resources->render_texture(x * 16, y * 16, name + "_se");
+				break;
+
+			default :
+				// Check the tile in the northwest corner
+				if((x - 1) >= 0 && (y - 1) >= 0 && simulation_map->get_tile_at(x - 1, y - 1)->get_type() != type)
+				{
+					resources->render_texture(x * 16, y * 16, name + "_corner_se");
+				}
+				// Check the tile in the northeast corner
+				else if((x - 1) >= 0 && (y + 1) < 50 && simulation_map->get_tile_at(x - 1, y + 1)->get_type() != type)
+				{
+					resources->render_texture(x * 16, y * 16, name + "_corner_ne");
+				}
+				// Check the tile in the southwest corner
+				else if((x + 1) < 50 && (y - 1) >= 0 && simulation_map->get_tile_at(x + 1, y - 1)->get_type() != type)
+				{
+					resources->render_texture(x * 16, y * 16, name + "_corner_nw");
+				}
+				// Check the tile in the southeast corner
+				else if((x + 1) < 50 && (y + 1) < 50 && simulation_map->get_tile_at(x + 1, y + 1)->get_type() != type)
+				{
+					resources->render_texture(x * 16, y * 16, name + "_corner_sw");
+				}
+				else
+				{
+					resources->render_texture(x * 16, y * 16, name + "_c");
+				}
+				break;
 		}
 	}
 }
