@@ -21,7 +21,7 @@ namespace villa
 	 * Resource class.
 	 * Represents resource entities that appear on the map.
 	 */
-	class resource : entity
+	class resource : public entity
 	{
 		public:
 			resource(int x, int y, resourcetype type, inventory* storage, bool harvestable);

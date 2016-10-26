@@ -195,10 +195,8 @@ namespace villa
 
 		// Load building images
 		resources->load_texture("roof_small_front", "assets/images/buildings/roof_small_front.png");
-		resources->load_texture("roof_small_middle", "assets/images/buildings/roof_small_middle.png");
 		resources->load_texture("roof_small_back", "assets/images/buildings/roof_small_back.png");
 		resources->load_texture("wall_small_base", "assets/images/buildings/wall_small_base.png");
-		resources->load_texture("wall_small_middle", "assets/images/buildings/wall_small_middle.png");
 
 		// Load UI images
 		resources->load_texture("buttonLong_brown", "assets/images/ui/buttonLong_brown.png");
@@ -284,6 +282,7 @@ namespace villa
 								simulation_map.reset(new map());
 
 								simulation_map->add_villager(new villager());
+								simulation_map->add_building(new building(25, 25, 1, 2, buildingtype::house_small, new inventory()));
 							}
 							else if(target == "Options Button")
 							{
@@ -419,7 +418,21 @@ namespace villa
 		}
 
 		// Render the buildings
+		std::vector<std::shared_ptr<building>> buildings = simulation_map->get_buildings();
 
+		// Loop through each building in the vector
+		for(std::vector<std::shared_ptr<building>>::iterator iterator = buildings.begin(); iterator != buildings.end(); ++iterator)
+		{
+			int x = iterator->get()->get_x(), y = iterator->get()->get_y();
+
+			switch(iterator->get()->get_type())
+			{
+				default :
+					resources->render_texture(x * 16, y * 16, "wall_small_base");
+					resources->render_texture(x * 16, (y * 16) - 8, "roof_small_front");
+					resources->render_texture(x * 16, (y * 16) - 24, "roof_small_back");
+			}
+		}
 
 		// Render the villagers
 	}
@@ -434,8 +447,8 @@ namespace villa
 	 * Two combinations of letters can be used to specify diagonal directions.
 	 * Example : texture_nw.png, texture_corner_nw.png
 	 *
-	 * @param x - The x-coord of the target tile.
-	 * @param y - The y-coord of the target tile.
+	 * @param x - The x-coord (grid) of the target tile.
+	 * @param y - The y-coord (grid) of the target tile.
 	 * @param type - The tile type to search for.
 	 * @param name - The name of the texture (without direction).
 	 */

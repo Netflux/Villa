@@ -25,16 +25,20 @@ namespace villa
 	 * Building class.
 	 * Represents a building entity that can be constructed by villagers.
 	 */
-	class building : entity
+	class building : public entity
 	{
 		public:
 			building();
-			building(int x, int y, buildingtype type, inventory* storage);
+			building(int x, int y, int width, int height, buildingtype type, inventory* storage);
 			buildingtype get_type();
 			void set_type(buildingtype value);
+			int get_width();
+			int get_height();
 
 		private:
 			buildingtype type;
+			int width;
+			int height;
 	};
 }
 

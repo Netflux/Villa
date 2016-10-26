@@ -13,6 +13,7 @@ namespace villa
 	class entity
 	{
 		public:
+			bool is_at(int x, int y);
 			int get_x();
 			void set_x(int value);
 			int get_y();

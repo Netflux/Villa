@@ -15,6 +15,23 @@ namespace villa
 	entity::entity(int x, int y, inventory* storage) : x(x), y(y), storage(storage) { }
 
 	/**
+	 * Checks whether the entity is within range of the specified location.
+	 * @param x - The x-coord of the target.
+	 * @param y - The y-coord of the target.
+	 * @return Boolean representing whether the entity is within range of the specified location.
+	 */
+	bool entity::is_at(int x, int y)
+	{
+		// If entity is within 8 pixels (1/2 tile) of the target, return true
+		if((this->x - x < 8 || this->x - x > -8) && (this->y - y < 8 || this->y - y > -8))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Gets the x-coord of the entity.
 	 * @return The x-coord of the entity.
 	 */

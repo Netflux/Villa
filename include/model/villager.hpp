@@ -12,7 +12,7 @@ namespace villa
 	 * Villager class.
 	 * Represents a character entity that can interact with the world.
 	 */
-	class villager : entity
+	class villager : public entity
 	{
 		public:
 			villager();
