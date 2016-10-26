@@ -16,7 +16,7 @@ If you're working on Linux:
 
 If you're working on Microsoft Windows:
 
-1. Download and install the [MinGW](http://www.mingw.org/) compiler.
+1. Download and install the [MinGW-W64](https://mingw-w64.org/doku.php) compiler.
 2. Clone the repository using `git clone https://github.com/Netflux/Villa.git`.
 3. Using the command prompt, `cd` into the folder and use `mingw32-make`.
 4. The binary file `Villa` will be available in the `bin` folder.

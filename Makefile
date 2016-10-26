@@ -9,6 +9,9 @@ OBJS = $(subst ./src, ./obj, $(SRC:.cpp=.o))
 
 #OBJ_NAME specifies the name of our executable
 OBJ_NAME = ./bin/Villa
+	
+#RM specifies the tool for cleaning files
+RM = rm -f $(OBJS) $(OBJ_NAME) $(OBJ_NAME).exe
 
 ifeq ($(OS),Windows_NT)
 	#INCLUDE_PATHS specifies the additional include paths we'll need
@@ -26,9 +29,6 @@ ifeq ($(OS),Windows_NT)
 
 	#LINKER_FLAGS specifies the libraries we're linking against
 	LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
-	
-	#RM specifies the tool for cleaning files
-	RM = del /F $(subst /,\,$(OBJS) $(OBJ_NAME) $(OBJ_NAME).exe)
 else
 	#INCLUDE_PATHS specifies the additional include paths we'll need
 	INCLUDE_PATHS = -I./include -I./include/model
@@ -42,9 +42,6 @@ else
 	# -Wall enables all major warnings
 	# -pedantic enables all warnings demanded by strict ISO C.
 	COMPILER_FLAGS = -Wall -pedantic
-	
-	#RM specifies the tool for cleaning files
-	RM = rm -f $(OBJS) $(OBJ_NAME) $(OBJ_NAME).exe
 endif
 
 #Define makefile targets

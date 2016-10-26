@@ -92,9 +92,8 @@
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="refreshScope" versionNumber="2">
-		<configuration configurationName="Default [Linux]">
-			<resource resourceType="PROJECT" workspacePath="/Villa"/>
-		</configuration>
+		<configuration configurationName="Default [Windows]"/>
+		<configuration configurationName="Default [Linux]"/>
 		<configuration configurationName="Default">
 			<resource resourceType="PROJECT" workspacePath="/Villa"/>
 		</configuration>
