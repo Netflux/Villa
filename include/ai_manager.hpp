@@ -9,14 +9,14 @@ namespace villa
 	class ai_manager
 	{
 		public:
-			ai_manager(map* simulation_map);
+			ai_manager(map* simulation_map, std::mt19937& rng);
 			void think();
 			unsigned int get_time();
 			void set_time(unsigned int time);
 
 		private:
 			map* simulation_map;
-			unsigned int time;
+			std::mt19937& rng;
 	};
 }
 

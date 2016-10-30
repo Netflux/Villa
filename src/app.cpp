@@ -5,10 +5,13 @@ namespace villa
 	/**
 	 * Constructor for the App class.
 	 */
-	app::app() : time(0), window(nullptr), renderer(nullptr)
+	app::app() : app_time(0), window(nullptr), renderer(nullptr)
 	{
 		// Set initial state to exit
 		state.push(appstate::exit);
+
+		// Seed the random number generator
+		rng.seed(time(nullptr));
 	}
 
 	/**
@@ -48,8 +51,8 @@ namespace villa
 			// Loop until the user exits the application
 			while(state.top() != appstate::exit)
 			{
-				accumulator += SDL_GetTicks() - time;
-				time = SDL_GetTicks();
+				accumulator += SDL_GetTicks() - app_time;
+				app_time = SDL_GetTicks();
 
 				while(accumulator >= UPDATE_TIME)
 				{
@@ -58,7 +61,7 @@ namespace villa
 					// If running the simulation, update the AI
 					if(state.top() == appstate::simulation)
 					{
-						simulation_ai->set_time(simulation_time);
+						update_simulation();
 						simulation_ai->think();
 					}
 
@@ -347,6 +350,44 @@ namespace villa
 			else if(event.type == SDL_QUIT)
 			{
 				state.push(appstate::exit);
+			}
+		}
+	}
+
+	/**
+	 * Updates the entities within the simulation.
+	 * Handles time-based state changes.
+	 */
+	void app::update_simulation()
+	{
+		std::vector<resource*> resources = simulation_map->get_resources();
+
+		// Loop through each resource in the vector
+		for(std::vector<resource*>::const_iterator iterator = resources.begin(); iterator != resources.end(); ++iterator)
+		{
+			// Once the time has passed the resource timeout duration, set it as harvestable
+			// Also resets the inventory with a new set of items
+			if((*iterator)->get_harvestable() == false && SDL_GetTicks() > (*iterator)->get_harvestable_time())
+			{
+				(*iterator)->set_harvestable(true);
+
+				switch((*iterator)->get_type())
+				{
+					case resourcetype::water :
+						break;
+
+					case resourcetype::food :
+						break;
+
+					case resourcetype::tree :
+						break;
+
+					case resourcetype::stone :
+						break;
+
+					case resourcetype::ore :
+						break;
+				}
 			}
 		}
 	}

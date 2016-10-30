@@ -6,7 +6,7 @@ namespace villa
 	 * Constructor for the Villager AI class.
 	 * @param simulation_map - The map of the simulation.
 	 */
-	ai_manager::ai_manager(map* simulation_map) : simulation_map(simulation_map), time(0) { }
+	ai_manager::ai_manager(map* simulation_map, std::mt19937& rng) : simulation_map(simulation_map), rng(rng) { }
 
 	/**
 	 * Executes the current task of each villager.
@@ -55,6 +55,24 @@ namespace villa
 						break;
 					}
 
+				case tasktype::take_item :
+					{
+						inventory* inv = (*iterator)->get_inventory();
+						inventory* target_inv = data.target_item.first->get_inventory();
+
+						inv->add_item(target_inv->take_item(data.target_item.second));
+						break;
+					}
+
+				case tasktype::store_item :
+					{
+						inventory* inv = (*iterator)->get_inventory();
+						inventory* target_inv = data.target_item.first->get_inventory();
+
+						target_inv->add_item(inv->take_item(data.target_item.second));
+						break;
+					}
+
 				case tasktype::rest :
 					if(SDL_GetTicks() > data.time)
 					{
@@ -66,23 +84,5 @@ namespace villa
 					break;
 			}
 		}
-	}
-
-	/**
-	 * Gets the last update time.
-	 * @return The last update time.
-	 */
-	unsigned int ai_manager::get_time()
-	{
-		return time;
-	}
-
-	/**
-	 * Sets the last update time.
-	 * @param time - The last update time.
-	 */
-	void ai_manager::set_time(unsigned int time)
-	{
-		this->time = time;
 	}
 }

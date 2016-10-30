@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <memory>
+#include <random>
 #include <stack>
 #include "ai_manager.hpp"
 #include "map.hpp"
@@ -30,6 +31,7 @@ namespace villa
 	class app
 	{
 		public:
+			std::mt19937 rng;
 			app();
 			~app();
 			void start();
@@ -39,11 +41,12 @@ namespace villa
 			void load_resources();
 			void load_ui();
 			void handle_input();
+			void update_simulation();
 			void update_display();
 			void display_menu_main();
 			void display_simulation();
 			void display_simulation_tile(int x, int y, tiletype type, std::string name);
-			unsigned int time;
+			unsigned int app_time;
 			std::stack<appstate> state;
 			std::unique_ptr<resource_manager> resources;
 			std::unique_ptr<ui_manager> user_interface;
