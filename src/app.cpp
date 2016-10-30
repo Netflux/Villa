@@ -5,7 +5,7 @@ namespace villa
 	/**
 	 * Constructor for the App class.
 	 */
-	app::app() : window(nullptr), renderer(nullptr)
+	app::app() : time(0), window(nullptr), renderer(nullptr)
 	{
 		// Set initial state to exit
 		state.push(appstate::exit);
@@ -19,8 +19,8 @@ namespace villa
 		SDL_DestroyRenderer(renderer);
 		SDL_DestroyWindow(window);
 
-		//IMG_Quit();
-		//TTF_Quit();
+		IMG_Quit();
+		TTF_Quit();
 
 		SDL_Quit();
 	}
@@ -41,10 +41,31 @@ namespace villa
 			load_ui();
 			state.push(appstate::menu_main);
 
+			// Initialize time-related variables
+			const int UPDATE_TIME = 1000 / 60;
+			unsigned int accumulator = 0, simulation_time = 0;
+
 			// Loop until the user exits the application
 			while(state.top() != appstate::exit)
 			{
-				handle_input();
+				accumulator += SDL_GetTicks() - time;
+				time = SDL_GetTicks();
+
+				while(accumulator >= UPDATE_TIME)
+				{
+					handle_input();
+
+					// If running the simulation, update the AI
+					if(state.top() == appstate::simulation)
+					{
+						simulation_ai->set_time(simulation_time);
+						simulation_ai->think();
+					}
+
+					accumulator -= UPDATE_TIME;
+					simulation_time += UPDATE_TIME;
+				}
+
 				update_display();
 			}
 
@@ -198,6 +219,13 @@ namespace villa
 		resources->load_texture("roof_small_back", "assets/images/buildings/roof_small_back.png");
 		resources->load_texture("wall_small_base", "assets/images/buildings/wall_small_base.png");
 
+		// Load entity images
+		resources->load_texture("villager", "assets/images/entities/villager.png");
+		resources->load_texture("villager_alt", "assets/images/entities/villager_alt.png");
+		resources->load_texture("villager_blacksmith", "assets/images/entities/villager_blacksmith.png");
+		resources->load_texture("villager_miner", "assets/images/entities/villager_miner.png");
+
+
 		// Load UI images
 		resources->load_texture("buttonLong_brown", "assets/images/ui/buttonLong_brown.png");
 		resources->load_texture("buttonLong_brown_pressed", "assets/images/ui/buttonLong_brown_pressed.png");
@@ -283,6 +311,11 @@ namespace villa
 
 								simulation_map->add_villager(new villager());
 								simulation_map->add_building(new building(25, 25, 1, 2, buildingtype::house_small, new inventory()));
+
+								simulation_map->get_villagers()[0]->set_x(400);
+								simulation_map->get_villagers()[0]->set_y(400);
+
+								simulation_ai.reset(new ai_manager(simulation_map.get()));
 							}
 							else if(target == "Options Button")
 							{
@@ -293,6 +326,13 @@ namespace villa
 								// Revert to the previous application state (quit state)
 								state.pop();
 							}
+						}
+						break;
+
+					case appstate::simulation :
+						if(event.button.button == SDL_BUTTON_LEFT)
+						{
+							simulation_map->get_villagers()[0]->add_task(new task(tasktype::move, {std::make_pair(x, y)}));
 						}
 						break;
 
@@ -400,41 +440,56 @@ namespace villa
 				{
 					display_simulation_tile(i, j, tiletype::water, "water");
 				}
-				else if(target->get_type() == tiletype::dirt)
+				else
 				{
+					// Render a grass tile as the default underlying texture
+					// We do not need an if statement for grass tiles due to this
 					resources->render_texture(i * 16, j * 16, "grass_c");
-					display_simulation_tile(i, j, tiletype::dirt, "dirt");
-				}
-				else if(target->get_type() == tiletype::grass)
-				{
-					resources->render_texture(i * 16, j * 16, "grass_c");
-				}
-				else if(target->get_type() == tiletype::sand)
-				{
-					resources->render_texture(i * 16, j * 16, "grass_c");
-					display_simulation_tile(i, j, tiletype::sand, "sand");
+
+					if(target->get_type() == tiletype::dirt)
+					{
+						display_simulation_tile(i, j, tiletype::dirt, "dirt");
+					}
+					else if(target->get_type() == tiletype::sand)
+					{
+						display_simulation_tile(i, j, tiletype::sand, "sand");
+					}
 				}
 			}
 		}
 
 		// Render the buildings
-		std::vector<std::shared_ptr<building>> buildings = simulation_map->get_buildings();
+		std::vector<building*> buildings = simulation_map->get_buildings();
 
 		// Loop through each building in the vector
-		for(std::vector<std::shared_ptr<building>>::iterator iterator = buildings.begin(); iterator != buildings.end(); ++iterator)
+		for(std::vector<building*>::const_iterator iterator = buildings.begin(); iterator != buildings.end(); ++iterator)
 		{
-			int x = iterator->get()->get_x(), y = iterator->get()->get_y();
+			int x = (*iterator)->get_x(), y = (*iterator)->get_y();
 
-			switch(iterator->get()->get_type())
+			// Display the appropriate building according to type
+			switch((*iterator)->get_type())
 			{
-				default :
+				case buildingtype::house_small :
 					resources->render_texture(x * 16, y * 16, "wall_small_base");
+					resources->render_texture(x * 16, (y * 16) - 16, "roof_small_back");
 					resources->render_texture(x * 16, (y * 16) - 8, "roof_small_front");
-					resources->render_texture(x * 16, (y * 16) - 24, "roof_small_back");
+					break;
+
+				default :
+					break;
 			}
 		}
 
 		// Render the villagers
+		std::vector<villager*> villagers = simulation_map->get_villagers();
+
+		// Loop through each villager in the vector
+		for(std::vector<villager*>::const_iterator iterator = villagers.begin(); iterator != villagers.end(); ++iterator)
+		{
+			int x = (*iterator)->get_x(), y = (*iterator)->get_y();
+
+			resources->render_texture(x - 12, y - 24, "villager");
+		}
 	}
 
 	/**

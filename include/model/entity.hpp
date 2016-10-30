@@ -23,8 +23,8 @@ namespace villa
 		protected:
 			entity();
 			entity(int x, int y, inventory* storage);
-			int x;
-			int y;
+			double x;
+			double y;
 			std::unique_ptr<inventory> storage;
 	};
 }

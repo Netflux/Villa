@@ -17,7 +17,7 @@ namespace villa
 		public:
 			villager();
 			virtual ~villager();
-			void move();
+			void move(int x, int y);
 			virtual void rest();
 			virtual void harvest();
 			void add_task(task* value);
@@ -40,7 +40,7 @@ namespace villa
 			int hunger;
 			int thirst;
 			int fatigue;
-			std::stack<std::shared_ptr<task>> tasks;
+			std::stack<std::unique_ptr<task>> tasks;
 	};
 }
 

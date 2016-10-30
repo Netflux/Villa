@@ -4,6 +4,7 @@
 #include <iostream>
 #include <memory>
 #include <stack>
+#include "ai_manager.hpp"
 #include "map.hpp"
 #include "resource_manager.hpp"
 #include "ui_manager.hpp"
@@ -42,10 +43,12 @@ namespace villa
 			void display_menu_main();
 			void display_simulation();
 			void display_simulation_tile(int x, int y, tiletype type, std::string name);
+			unsigned int time;
 			std::stack<appstate> state;
 			std::unique_ptr<resource_manager> resources;
 			std::unique_ptr<ui_manager> user_interface;
 			std::unique_ptr<map> simulation_map;
+			std::unique_ptr<ai_manager> simulation_ai;
 			SDL_Window* window;
 			SDL_Renderer* renderer;
 			SDL_Event event;

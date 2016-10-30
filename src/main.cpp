@@ -9,30 +9,25 @@ int main(int argc, char *argv[])
 	// Sample tests for inventory and items
 	inventory* inv_test = new inventory();
 
-	// Test creating items
-	item* water = new item(itemtype::water);
-	item* food = new item(itemtype::food);
-	tool* pickaxe = new tool(itemtype::pickaxe, 50);
-	tool* axe = new tool(itemtype::axe, 25);
-
 	// Test adding items into the inventory
-	inv_test->add_item(water, 20);
-	inv_test->add_item(food, 5);
-	inv_test->add_item(pickaxe, 75);
-	inv_test->add_item(new tool(itemtype::bucket, 79), 3);
-	inv_test->add_item(new tool(itemtype::bucket, 100), 1);
-	inv_test->add_item(axe, 100);
+	for(int i = 0; i < 20; ++i) inv_test->add_item(new item(itemtype::water));
+	for(int i = 0; i < 5; ++i) inv_test->add_item(new item(itemtype::food));
+	for(int i = 0; i < 75; ++i) inv_test->add_item(new tool(itemtype::pickaxe, 50));
+	for(int i = 0; i < 3; ++i) inv_test->add_item(new tool(itemtype::bucket, 79));
+	for(int i = 0; i < 1; ++i) inv_test->add_item(new tool(itemtype::bucket, 100));
+	for(int i = 0; i < 100; ++i) inv_test->add_item(new tool(itemtype::axe, 25));
 
 	// Test removing items from the inventory
-	inv_test->remove_item(pickaxe, 71);
-	inv_test->remove_item(inv_test->get_item(itemtype::axe), 98);
+	item* remove = new item(itemtype::null);
+	inv_test->add_item(remove);
+	inv_test->remove_item(remove);
 
-	std::vector<std::shared_ptr<item>> items = inv_test->get_items();
+	std::vector<item*> items = inv_test->get_items();
 
 	// Loop through items and print results
-	for(std::vector<std::shared_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
+	for(std::vector<item*>::const_iterator iterator = items.begin(); iterator != items.end(); ++iterator)
 	{
-		std::shared_ptr<item> temp = *iterator;
+		item* temp = *iterator;
 
 		if(temp->get_type() == itemtype::water)
 		{
@@ -45,12 +40,16 @@ int main(int argc, char *argv[])
 		else if(temp->get_type() == itemtype::pickaxe)
 		{
 			std::cout << "Type : Pickaxe" << std::endl;
-			std::cout << "Efficiency : " << std::static_pointer_cast<tool>(temp)->get_efficiency() << std::endl;
+			std::cout << "Efficiency : " << static_cast<tool*>(temp)->get_efficiency() << std::endl;
 		}
 		else if(temp->get_type() == itemtype::axe)
 		{
 			std::cout << "Type : Axe" << std::endl;
-			std::cout << "Efficiency : " << std::static_pointer_cast<tool>(temp)->get_efficiency() << std::endl;
+			std::cout << "Efficiency : " << static_cast<tool*>(temp)->get_efficiency() << std::endl;
+		}
+		else if(temp->get_type() == itemtype::null)
+		{
+			std::cout << "Type : Null" << std::endl;
 		}
 	}
 

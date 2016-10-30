@@ -1,20 +1,39 @@
 #include "villager.hpp"
-
+#include <iostream>
 namespace villa
 {
 	/**
 	 * Constructor for the Villager class.
 	 */
-	villager::villager() : entity(), speed(100), health(100), hunger(0), thirst(0), fatigue(0) { }
+	villager::villager() : entity(), speed(100), health(100), hunger(0), thirst(0), fatigue(0)
+	{
+		add_task(new task(tasktype::idle, taskdata(std::make_pair(x, y))));
+	}
 
 	/**
 	 * Destructor for the Villager class.
 	 */
 	villager::~villager() { }
 
-	void villager::move()
+	void villager::move(int x, int y)
 	{
+		if(this->x > x)
+		{
+			this->x -= speed / 60;
+		}
+		else if(this->x < x)
+		{
+			this->x += speed / 60;
+		}
 
+		if(this->y > y)
+		{
+			this->y -= speed / 60;
+		}
+		else if(this->y < y)
+		{
+			this->y += speed / 60;
+		}
 	}
 
 	void villager::rest()
@@ -33,7 +52,7 @@ namespace villa
 	 */
 	void villager::add_task(task* value)
 	{
-		tasks.push(std::shared_ptr<task>(value));
+		tasks.push(std::unique_ptr<task>(value));
 	}
 
 	/**

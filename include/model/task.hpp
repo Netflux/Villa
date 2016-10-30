@@ -3,7 +3,7 @@
 
 #include <unordered_map>
 #include "entity.hpp"
-#include "inventory.hpp"
+#include "item.hpp"
 #include "tile.hpp"
 
 namespace villa
@@ -11,11 +11,20 @@ namespace villa
 	/**
 	 * Task data union.
 	 */
-	union taskdata
+	struct taskdata
 	{
+		taskdata(std::pair<int, int> target_coords);
+		taskdata(std::pair<int, int> target_coords, entity* target_entity);
+		taskdata(std::pair<int, int> target_coords, std::pair<entity*, item*> target_item);
+		taskdata(std::pair<int, int> target_coords, unsigned int time);
+
 		std::pair<int, int> target_coords;
-		tile* target_tile;
-		entity* target_entity;
+		union
+		{
+			entity* target_entity;
+			std::pair<entity*, item*> target_item;
+			unsigned int time;
+		};
 	};
 
 	/**

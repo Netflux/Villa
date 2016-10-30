@@ -17,23 +17,39 @@ namespace villa
 	 */
 	void inventory::add_item(item* value)
 	{
-		items.push_back(std::shared_ptr<item>(value));
+		items.push_back(std::unique_ptr<item>(value));
 	}
 
 	/**
 	 * Adds the item to the inventory.
 	 * @param value - The item to add.
-	 * @param quantity - The number of items to add.
 	 */
-	void inventory::add_item(item* value, int quantity)
+	void inventory::add_item(std::unique_ptr<item> value)
 	{
-		std::shared_ptr<item> target(value);
+		items.push_back(std::move(value));
+	}
 
-		// Loop as many times as the quantity and add the item each cycle
-		for(int i = 0; i < quantity; ++i)
+	/**
+	 * Gets the specific item from the inventory.
+	 * @param value - The item to take.
+	 * @return The item (nullptr if not found).
+	 */
+	std::unique_ptr<item> inventory::take_item(item* value)
+	{
+		std::unique_ptr<item> target;
+
+		// Loop through each item in the vector
+		// If we've found the target item, remove it from the vector, stop the loop and return the value
+		for(std::vector<std::unique_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
 		{
-			items.push_back(target);
+			if(iterator->get() == value)
+			{
+				target = std::move(*iterator);
+				items.erase(iterator);
+			}
 		}
+
+		return std::move(target);
 	}
 
 	/**
@@ -44,27 +60,13 @@ namespace villa
 	{
 		// Loop through each item in the vector
 		// If we've found the target item, remove it from the vector and stop the loop
-		for(std::vector<std::shared_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
+		for(std::vector<std::unique_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
 		{
 			if(iterator->get() == value)
 			{
 				items.erase(iterator);
 				break;
 			}
-		}
-	}
-
-	/**
-	 * Removes the item from the inventory.
-	 * @param value - The item to remove.
-	 * @param quantity - The number of items to remove.
-	 */
-	void inventory::remove_item(item* value, int quantity)
-	{
-		// Loop as many times as the quantity and remove the item each cycle
-		for(int i = 0; i < quantity; ++i)
-		{
-			this->remove_item(value);
 		}
 	}
 
@@ -77,7 +79,7 @@ namespace villa
 	{
 		// Loop through each item in the vector
 		// If we've found the target item, return its pointer (null pointer if none exists)
-		for(std::vector<std::shared_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
+		for(std::vector<std::unique_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
 		{
 			if(iterator->get()->get_type() == type)
 			{
@@ -92,9 +94,18 @@ namespace villa
 	 * Gets the vector of items.
 	 * @return The item vector.
 	 */
-	std::vector<std::shared_ptr<item>> inventory::get_items()
+	std::vector<item*> inventory::get_items()
 	{
-		return items;
+		std::vector<item*> target;
+
+		// Loop through each item in the vector, and pushes to a new vector
+		// Returns the new list of pointers
+		for(std::vector<std::unique_ptr<item>>::const_iterator iterator = items.begin(); iterator != items.end(); ++iterator)
+		{
+			target.push_back(iterator->get());
+		}
+
+		return target;
 	}
 
 	/**
@@ -119,24 +130,24 @@ namespace villa
 				break;
 		}
 
-		std::shared_ptr<tool> target = nullptr;
+		tool* target = nullptr;
 		int efficiency_highest = 0;
 
 		// Loop through each item in the vector
 		// Once we've found the highest efficiency tool, return its pointer (null pointer if none exists)
-		for(std::vector<std::shared_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
+		for(std::vector<std::unique_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
 		{
-			std::shared_ptr<item> temp = *iterator;
+			item* temp = iterator->get();
 
 			// The pointer needs to be down-casted to the tool class since the vector stores the pointers as its base class type.
 			// We already ensured that the item is a tool based on its itemtype in the switch.
-			if(temp->get_type() == type && std::static_pointer_cast<tool>(temp)->get_efficiency() > efficiency_highest)
+			if(temp->get_type() == type && static_cast<tool*>(temp)->get_efficiency() > efficiency_highest)
 			{
-				efficiency_highest = std::static_pointer_cast<tool>(temp)->get_efficiency();
-				target = std::static_pointer_cast<tool>(temp);
+				efficiency_highest = static_cast<tool*>(temp)->get_efficiency();
+				target = static_cast<tool*>(temp);
 			}
 		}
 
-		return target.get();
+		return target;
 	}
 }

@@ -23,7 +23,7 @@ namespace villa
 	bool entity::is_at(int x, int y)
 	{
 		// If entity is within 8 pixels (1/2 tile) of the target, return true
-		if((this->x - x < 8 || this->x - x > -8) && (this->y - y < 8 || this->y - y > -8))
+		if(this->x - x < 8 && this->x - x > -8 && this->y - y < 8 && this->y - y > -8)
 		{
 			return true;
 		}

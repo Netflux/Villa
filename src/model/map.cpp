@@ -62,7 +62,7 @@ namespace villa
 	 */
 	void map::add_building(building* value)
 	{
-		buildings.push_back(std::shared_ptr<building>(value));
+		buildings.push_back(std::unique_ptr<building>(value));
 	}
 
 	/**
@@ -73,7 +73,7 @@ namespace villa
 	{
 		// Loop through each building in the vector
 		// If we've found the target building, remove it from the vector and stop the loop
-		for(std::vector<std::shared_ptr<building>>::iterator iterator = buildings.begin(); iterator != buildings.end(); ++iterator)
+		for(std::vector<std::unique_ptr<building>>::iterator iterator = buildings.begin(); iterator != buildings.end(); ++iterator)
 		{
 			if(iterator->get() == value)
 			{
@@ -89,7 +89,7 @@ namespace villa
 	 */
 	void map::add_villager(villager* value)
 	{
-		villagers.push_back(std::shared_ptr<villager>(value));
+		villagers.push_back(std::unique_ptr<villager>(value));
 	}
 
 	/**
@@ -100,7 +100,7 @@ namespace villa
 	{
 		// Loop through each villager in the vector
 		// If we've found the target villager, remove it from the vector and stop the loop
-		for(std::vector<std::shared_ptr<villager>>::iterator iterator = villagers.begin(); iterator != villagers.end(); ++iterator)
+		for(std::vector<std::unique_ptr<villager>>::iterator iterator = villagers.begin(); iterator != villagers.end(); ++iterator)
 		{
 			if(iterator->get() == value)
 			{
@@ -114,27 +114,54 @@ namespace villa
 	 * Gets the vector of buildings.
 	 * @return The building vector.
 	 */
-	std::vector<std::shared_ptr<building>> map::get_buildings()
+	std::vector<building*> map::get_buildings()
 	{
-		return buildings;
+		std::vector<building*> target;
+
+		// Loop through each building in the vector, and pushes to a new vector
+		// Returns the new list of pointers
+		for(std::vector<std::unique_ptr<building>>::const_iterator iterator = buildings.begin(); iterator != buildings.end(); ++iterator)
+		{
+			target.push_back(iterator->get());
+		}
+
+		return target;
 	}
 
 	/**
 	 * Gets the vector of resources.
 	 * @return - The resource vector.
 	 */
-	std::vector<std::shared_ptr<resource>> map::get_resources()
+	std::vector<resource*> map::get_resources()
 	{
-		return resources;
+		std::vector<resource*> target;
+
+		// Loop through each item in the vector, and pushes to a new vector
+		// Returns the new list of pointers
+		for(std::vector<std::unique_ptr<resource>>::const_iterator iterator = resources.begin(); iterator != resources.end(); ++iterator)
+		{
+			target.push_back(iterator->get());
+		}
+
+		return target;
 	}
 
 	/**
 	 * Gets the vector of villagers.
 	 * @return The villager vector.
 	 */
-	std::vector<std::shared_ptr<villager>> map::get_villagers()
+	std::vector<villager*> map::get_villagers()
 	{
-		return villagers;
+		std::vector<villager*> target;
+
+		// Loop through each item in the vector, and pushes to a new vector
+		// Returns the new list of pointers
+		for(std::vector<std::unique_ptr<villager>>::const_iterator iterator = villagers.begin(); iterator != villagers.end(); ++iterator)
+		{
+			target.push_back(iterator->get());
+		}
+
+		return target;
 	}
 
 	/**
