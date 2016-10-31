@@ -9,9 +9,9 @@ namespace villa
 	resource_manager::resource_manager(SDL_Renderer& renderer) : renderer(renderer) { }
 
 	/**
-	 * Destructor for the Resource Manager class.
+	 * Unloads all resources in the resource manager.
 	 */
-	resource_manager::~resource_manager()
+	void resource_manager::unload_resources()
 	{
 		// Loop through each loaded texture and clean from memory
 		for(std::unordered_map<std::string, SDL_Texture*>::iterator it = textures.begin(); it != textures.end(); ++it)

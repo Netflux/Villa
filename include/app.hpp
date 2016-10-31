@@ -5,6 +5,7 @@
 #include <memory>
 #include <random>
 #include <stack>
+#include <time.h>
 #include "ai_manager.hpp"
 #include "map.hpp"
 #include "resource_manager.hpp"

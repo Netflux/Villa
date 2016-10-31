@@ -22,6 +22,8 @@ namespace villa
 		SDL_DestroyRenderer(renderer);
 		SDL_DestroyWindow(window);
 
+		resources->unload_resources();
+
 		IMG_Quit();
 		TTF_Quit();
 
@@ -318,7 +320,7 @@ namespace villa
 								simulation_map->get_villagers()[0]->set_x(400);
 								simulation_map->get_villagers()[0]->set_y(400);
 
-								simulation_ai.reset(new ai_manager(simulation_map.get()));
+								simulation_ai.reset(new ai_manager(simulation_map.get(), rng));
 							}
 							else if(target == "Options Button")
 							{

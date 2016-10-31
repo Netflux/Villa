@@ -18,7 +18,7 @@ namespace villa
 	{
 		public:
 			resource_manager(SDL_Renderer& renderer);
-			~resource_manager();
+			void unload_resources();
 			void load_texture(std::string name, std::string path);
 			void load_font(std::string name, std::string path, int size);
 			void render_texture(int x, int y, std::string name);
