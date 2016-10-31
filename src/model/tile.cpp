@@ -5,13 +5,15 @@ namespace villa
 	/**
 	 * Constructor for the Tile class.
 	 */
-	tile::tile() : tile(tiletype::water) { }
+	tile::tile() : tile(tiletype::water, false, false) { }
 
 	/**
 	 * Constructor for the Tile class.
 	 * @param type - The tile type.
+	 * @param pathable - Boolean representing whether the tile is pathable.
+	 * @param has_road - Boolean representing whether the tile has a road.
 	 */
-	tile::tile(tiletype type) : type(type), pathable(true), has_road(false) { }
+	tile::tile(tiletype type, bool pathable, bool has_road) : type(type), pathable(pathable), has_road(has_road) { }
 
 	/**
 	 * Gets the type of the tile.

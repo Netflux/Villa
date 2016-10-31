@@ -4,13 +4,11 @@ namespace villa
 {
 	/**
 	 * Constructor for the Resource class.
-	 * @param type - The resource type.
 	 * @param x - The x-coords of the resource.
 	 * @param y - The y-coords of the resource.
-	 * @param storage - The resource inventory.
-	 * @param harvestable - Boolean representing whether the resource is harvestable.
+	 * @param type - The resource type.
 	 */
-	resource::resource(int x, int y, resourcetype type, inventory* storage, bool harvestable) : entity(x, y, storage), type(type), harvestable(harvestable), harvestable_time(0) { }
+	resource::resource(int x, int y, resourcetype type) : entity(x, y, new inventory()), type(type), harvestable(false), harvestable_time(0) { }
 
 	/**
 	 * Gets the type of the resource.

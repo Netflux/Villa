@@ -32,7 +32,10 @@ namespace villa
 			// Perform the appropriate action according to task type
 			switch(current_task->get_type())
 			{
-				case tasktype::move :
+				case tasktype::idle : // Roll for a chance to perform a new task
+					break;
+
+				case tasktype::move : // Move towards the target coordinates
 					(*iterator)->move(data.target_coords.first, data.target_coords.second);
 
 					if((*iterator)->is_at(data.target_coords.first, data.target_coords.second))
@@ -45,35 +48,54 @@ namespace villa
 					{
 						inventory* inv = (*iterator)->get_inventory();
 						inventory* target_inv = data.target_entity->get_inventory();
+						int rest_time = 0;
 
 						for(std::vector<item*>::iterator it = target_inv->get_items().begin(); it != target_inv->get_items().end(); ++it)
 						{
 							inv->add_item(std::move(target_inv->take_item(*it)));
+							rest_time += 2000;
 						}
 
-						(*iterator)->add_task(new task(tasktype::rest, taskdata(std::make_pair((*iterator)->get_x(), (*iterator)->get_y()), SDL_GetTicks() + 5000)));
+						(*iterator)->remove_task();
+						(*iterator)->add_task(new task(tasktype::rest, taskdata(std::make_pair((*iterator)->get_x(), (*iterator)->get_y()), SDL_GetTicks() + rest_time)));
 						break;
 					}
 
-				case tasktype::take_item :
+				case tasktype::take_item : // Take the item from the target entity
 					{
 						inventory* inv = (*iterator)->get_inventory();
 						inventory* target_inv = data.target_item.first->get_inventory();
 
-						inv->add_item(target_inv->take_item(data.target_item.second));
+						std::unique_ptr<item> target_item = target_inv->take_item(data.target_item.second);
+
+						if(target_item.get() != nullptr)
+						{
+							inv->add_item(std::move(target_item));
+						}
+
+						(*iterator)->remove_task();
+						(*iterator)->add_task(new task(tasktype::rest, taskdata(std::make_pair((*iterator)->get_x(), (*iterator)->get_y()), SDL_GetTicks() + 250)));
 						break;
 					}
 
-				case tasktype::store_item :
+				case tasktype::store_item : // Store the item into the target entity
 					{
 						inventory* inv = (*iterator)->get_inventory();
 						inventory* target_inv = data.target_item.first->get_inventory();
 
-						target_inv->add_item(inv->take_item(data.target_item.second));
+						std::unique_ptr<item> target_item = inv->take_item(data.target_item.second);
+
+						if(target_item.get() != nullptr)
+						{
+							target_inv->add_item(std::move(target_item));
+						}
+
+						(*iterator)->remove_task();
+						(*iterator)->add_task(new task(tasktype::rest, taskdata(std::make_pair((*iterator)->get_x(), (*iterator)->get_y()), SDL_GetTicks() + 250)));
 						break;
 					}
 
-				case tasktype::rest :
+				case tasktype::rest : // Wait until the set duration has passed
 					if(SDL_GetTicks() > data.time)
 					{
 						(*iterator)->remove_task();

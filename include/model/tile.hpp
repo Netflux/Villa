@@ -22,7 +22,7 @@ namespace villa
 	{
 		public:
 			tile();
-			tile(tiletype type);
+			tile(tiletype type, bool pathable, bool has_road);
 			tiletype get_type();
 			void set_type(tiletype type);
 			bool get_pathable();

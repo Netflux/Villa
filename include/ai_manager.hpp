@@ -7,6 +7,10 @@
 
 namespace villa
 {
+	/**
+	 * AI Manager class.
+	 * Handles all villager behaviour and decision-making.
+	 */
 	class ai_manager
 	{
 		public:

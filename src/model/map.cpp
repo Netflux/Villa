@@ -5,13 +5,13 @@ namespace villa
 	/**
 	 * Constructor for the Map class.
 	 */
-	map::map()
+	map::map(std::mt19937& rng) : rng(rng)
 	{
 		for(int i = 0; i < 50; ++i)
 		{
 			for(int j = 0; j < 50; ++j)
 			{
-				tiles[i][j].reset(new tile(tiletype::water));
+				tiles[i][j].reset(new tile(tiletype::water, false, false));
 			}
 		}
 
@@ -19,7 +19,7 @@ namespace villa
 		{
 			for(int j = 2; j < 48; ++j)
 			{
-				tiles[i][j].reset(new tile(tiletype::grass));
+				tiles[i][j].reset(new tile(tiletype::grass, true, false));
 			}
 		}
 
@@ -27,7 +27,7 @@ namespace villa
 		{
 			for(int j = 5; j < 45; ++j)
 			{
-				tiles[i][j].reset(new tile(tiletype::sand));
+				tiles[i][j].reset(new tile(tiletype::sand, true, false));
 			}
 		}
 
@@ -35,7 +35,7 @@ namespace villa
 		{
 			for(int j = 10; j < 40; ++j)
 			{
-				tiles[i][j].reset(new tile(tiletype::dirt));
+				tiles[i][j].reset(new tile(tiletype::dirt, true, false));
 			}
 		}
 
@@ -43,7 +43,7 @@ namespace villa
 		{
 			for(int j = 15; j < 35; ++j)
 			{
-				tiles[i][j].reset(new tile(tiletype::grass));
+				tiles[i][j].reset(new tile(tiletype::grass, true, false));
 			}
 		}
 
@@ -51,13 +51,21 @@ namespace villa
 		{
 			for(int j = 20; j < 30; ++j)
 			{
-				tiles[i][j].reset(new tile(tiletype::water));
+				tiles[i][j].reset(new tile(tiletype::water, true, false));
+			}
+		}
+
+		for(int i = 5; i < 10; ++i)
+		{
+			for(int j = 5; j < 10; ++j)
+			{
+				add_resource(new resource(i * 16, j * 16, resourcetype::tree));
 			}
 		}
 	}
 
 	/**
-	 * Adds the building to the village.
+	 * Adds the building to the map.
 	 * @param value - The building to add.
 	 */
 	void map::add_building(building* value)
@@ -66,7 +74,7 @@ namespace villa
 	}
 
 	/**
-	 * Removes the building from the village.
+	 * Removes the building from the map.
 	 * @param value - The building to remove.
 	 */
 	void map::remove_building(building* value)
@@ -84,7 +92,34 @@ namespace villa
 	}
 
 	/**
-	 * Adds the villager to the village.
+	 * Adds the resource to the map.
+	 * @param value - The resource to add.
+	 */
+	void map::add_resource(resource* value)
+	{
+		resources.push_back(std::unique_ptr<resource>(value));
+	}
+
+	/**
+	 * Removes the resource from the map.
+	 * @param value - The resource to remove.
+	 */
+	void map::remove_resource(resource* value)
+	{
+		// Loop through each resource in the vector
+		// If we've found the target resource, remove it from the vector and stop the loop
+		for(std::vector<std::unique_ptr<resource>>::iterator iterator = resources.begin(); iterator != resources.end(); ++iterator)
+		{
+			if(iterator->get() == value)
+			{
+				resources.erase(iterator);
+				break;
+			}
+		}
+	}
+
+	/**
+	 * Adds the villager to the map.
 	 * @param value - The villager to add.
 	 */
 	void map::add_villager(villager* value)
@@ -93,7 +128,7 @@ namespace villa
 	}
 
 	/**
-	 * Removes the villager from the village.
+	 * Removes the villager from the map.
 	 * @param value - The villager to remove.
 	 */
 	void map::remove_villager(villager* value)

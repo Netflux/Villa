@@ -5,7 +5,7 @@ namespace villa
 	/**
 	 * Constructor for the Building class.
 	 */
-	building::building() : building(0, 0, 1, 1, buildingtype::null, new inventory()) { }
+	building::building() : building(0, 0, 1, 1, buildingtype::null) { }
 
 	/**
 	 * Constructor for the Building class.
@@ -14,9 +14,8 @@ namespace villa
 	 * @param width - The width (grid) of the building.
 	 * @param height - The height (grid) of the building.
 	 * @param type - The building type.
-	 * @param storage - The building inventory.
 	 */
-	building::building(int x, int y, int width, int height, buildingtype type, inventory* storage) : entity(x, y, storage), type(type), width(width), height(height) { }
+	building::building(int x, int y, int width, int height, buildingtype type) : entity(x, y, new inventory()), type(type), width(width), height(height) { }
 
 	/**
 	 * Gets the type of the building.

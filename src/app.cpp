@@ -312,10 +312,10 @@ namespace villa
 							{
 								state.push(appstate::simulation);
 
-								simulation_map.reset(new map());
+								simulation_map.reset(new map(rng));
 
 								simulation_map->add_villager(new villager());
-								simulation_map->add_building(new building(25, 25, 1, 2, buildingtype::house_small, new inventory()));
+								simulation_map->add_building(new building(25, 25, 1, 2, buildingtype::house_small));
 
 								simulation_map->get_villagers()[0]->set_x(400);
 								simulation_map->get_villagers()[0]->set_y(400);
@@ -373,21 +373,45 @@ namespace villa
 			{
 				(*iterator)->set_harvestable(true);
 
+				// Scale down random number while preserving uniform distribution
+				std::uniform_int_distribution<int> distribution(1, 5);
+				int quantity = distribution(rng);
+
 				switch((*iterator)->get_type())
 				{
 					case resourcetype::water :
+						for(int i = 0; i < quantity; ++i)
+						{
+							(*iterator)->get_inventory()->add_item(new item(itemtype::water));
+						}
 						break;
 
 					case resourcetype::food :
+						for(int i = 0; i < quantity; ++i)
+						{
+							(*iterator)->get_inventory()->add_item(new item(itemtype::food));
+						}
 						break;
 
 					case resourcetype::tree :
+						for(int i = 0; i < quantity; ++i)
+						{
+							(*iterator)->get_inventory()->add_item(new item(itemtype::lumber));
+						}
 						break;
 
 					case resourcetype::stone :
+						for(int i = 0; i < quantity; ++i)
+						{
+							(*iterator)->get_inventory()->add_item(new item(itemtype::stone));
+						}
 						break;
 
 					case resourcetype::ore :
+						for(int i = 0; i < quantity; ++i)
+						{
+							(*iterator)->get_inventory()->add_item(new item(itemtype::ore));
+						}
 						break;
 				}
 			}

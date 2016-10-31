@@ -1,6 +1,7 @@
 #ifndef INCLUDE_MAP_H_
 #define INCLUDE_MAP_H_
 
+#include <random>
 #include "building.hpp"
 #include "resource.hpp"
 #include "tile.hpp"
@@ -15,9 +16,11 @@ namespace villa
 	class map
 	{
 		public:
-			map();
+			map(std::mt19937& rng);
 			void add_building(building* value);
 			void remove_building(building* value);
+			void add_resource(resource* value);
+			void remove_resource(resource* value);
 			void add_villager(villager* value);
 			void remove_villager(villager* value);
 			std::vector<building*> get_buildings();
@@ -30,6 +33,7 @@ namespace villa
 			std::vector<std::unique_ptr<resource>> resources;
 			std::unique_ptr<tile> tiles[50][50];
 			std::vector<std::unique_ptr<villager>> villagers;
+			std::mt19937& rng;
 	};
 }
 
