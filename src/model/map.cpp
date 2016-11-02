@@ -51,7 +51,7 @@ namespace villa
 		{
 			for(int j = 20; j < 30; ++j)
 			{
-				tiles[i][j].reset(new tile(tiletype::water, true, false));
+				tiles[i][j].reset(new tile(tiletype::water, false, false));
 			}
 		}
 
@@ -208,5 +208,79 @@ namespace villa
 	tile* map::get_tile_at(int x, int y)
 	{
 		return tiles[x][y].get();
+	}
+
+	/**
+	 * Gets the coordinates of the given tile.
+	 * @param value - The tile to find.
+	 * @return The coordinates of the tile (0, 0 if not found).
+	 */
+	std::pair<int, int> map::get_tile_coords(tile* value)
+	{
+		// Loops through each tile in the 2D array, and returns the tile if found
+		for(int x = 0; x < 50; ++x)
+		{
+			for(int y = 0; y < 50; ++y)
+			{
+				if(tiles[x][y].get() == value)
+				{
+					return std::make_pair(x, y);
+				}
+			}
+		}
+
+		return std::make_pair(0, 0);
+	}
+
+	/**
+	 * Gets the tiles that are neighbours to the target tile.
+	 * @param value - The tile to check for neighbours.
+	 * @return The neighbouring tiles.
+	 */
+	std::vector<tile*> map::get_neighbour_tiles(int x, int y)
+	{
+		std::vector<tile*> neighbors;
+
+		if(y - 1 > 0 && tiles[x][y - 1]->get_pathable() == true) // North
+		{
+			neighbors.push_back(tiles[x][y - 1].get());
+		}
+
+		if(x - 1 > 0 && tiles[x - 1][y]->get_pathable() == true) // West
+		{
+			neighbors.push_back(tiles[x - 1][y].get());
+		}
+
+		if(x + 1 < 50 && tiles[x + 1][y]->get_pathable() == true) // East
+		{
+			neighbors.push_back(tiles[x + 1][y].get());
+		}
+
+		if(y + 1 < 50 && tiles[x][y + 1]->get_pathable() == true) // South
+		{
+			neighbors.push_back(tiles[x][y + 1].get());
+		}
+
+		if(x - 1 > 0 && y - 1 > 0 && tiles[x - 1][y - 1]->get_pathable() == true) // North-West
+		{
+			neighbors.push_back(tiles[x - 1][y - 1].get());
+		}
+
+		if(x + 1 < 50 && y - 1 > 0 && tiles[x + 1][y - 1]->get_pathable() == true) // North-East
+		{
+			neighbors.push_back(tiles[x + 1][y - 1].get());
+		}
+
+		if(x - 1 < 0 && y + 1 < 50 && tiles[x - 1][y + 1]->get_pathable() == true) // South-West
+		{
+			neighbors.push_back(tiles[x - 1][y + 1].get());
+		}
+
+		if(x + 1 < 50 && y + 1 < 50 && tiles[x + 1][y + 1]->get_pathable() == true) // South-East
+		{
+			neighbors.push_back(tiles[x + 1][y + 1].get());
+		}
+
+		return neighbors;
 	}
 }

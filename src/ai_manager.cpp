@@ -1,6 +1,5 @@
 #include "ai_manager.hpp"
-#include "pathfinder.cpp"
-#include <tuple>
+#include <iostream>
 
 namespace villa
 {
@@ -30,10 +29,19 @@ namespace villa
 			{
 				std::vector<std::pair<int, int>> path = get_path((*iterator)->get_x(), (*iterator)->get_y(), data.target_coords.first, data.target_coords.second);
 
-				// Add a move task for each point towards the target location
-				for(std::vector<std::pair<int, int>>::const_iterator it = path.begin(); it != path.end(); ++it)
+				// Check if there is a valid path to the target
+				if(!path.empty())
 				{
-					(*iterator)->add_task(new task(tasktype::move, taskdata(std::make_pair((it->first * 16) + 8, (it->second * 16) + 8))));
+					// Add a move task for each point towards the target location
+					for(std::vector<std::pair<int, int>>::const_iterator it = path.begin(); it != path.end(); ++it)
+					{
+						(*iterator)->add_task(new task(tasktype::move, taskdata(std::make_pair((it->first * 16) + 8, (it->second * 16) + 8))));
+					}
+				}
+				// If there is no valid path to the target, assume the task is invalid and remove it
+				else
+				{
+					(*iterator)->remove_task();
 				}
 			}
 
@@ -124,36 +132,62 @@ namespace villa
 	 */
 	std::vector<std::pair<int, int>> ai_manager::get_path(int x, int y, int target_x, int target_y)
 	{
-		GridWithWeights grid(50, 50);
-		SquareGrid::Location start{x, y};
-		SquareGrid::Location goal{target_x, target_y};
-		std::unordered_map<SquareGrid::Location, SquareGrid::Location> came_from;
-		std::unordered_map<SquareGrid::Location, double> cost_so_far;
+		tile* start = simulation_map->get_tile_at(x / 16, y / 16);
+		tile* goal = simulation_map->get_tile_at(target_x / 16, target_y / 16);
+		std::unordered_map<tile*, tile*> came_from;
+		std::unordered_map<tile*, double> cost_so_far;
+		PriorityQueue<tile*, double> frontier;
 
-		// Add walls to the grid for tiles that are not pathable
-		for(int x = 0; x < 50; ++x)
+		frontier.put(start, 0);
+		came_from[start] = start;
+		cost_so_far[start] = 0;
+
+		// Keep searching until the the goal is found, or the entire map has been checked
+		while(!frontier.empty())
 		{
-			for(int y = 0; y < 50; ++y)
-			{
-				tile* target = simulation_map->get_tile_at(x, y);
+			tile* current = frontier.get();
 
-				if(target->get_pathable() == false)
+			if(current == goal)
+			{
+				break;
+			}
+
+			std::pair<int, int> current_coords = simulation_map->get_tile_coords(current);
+			std::vector<tile*> neighbours = simulation_map->get_neighbour_tiles(current_coords.first, current_coords.second);
+
+			// Check each neighbouring tile and calculate the movement cost
+			for(std::vector<tile*>::const_iterator it = neighbours.begin(); it != neighbours.end(); ++it )
+			{
+				// The additional movement cost is lower if there's a road (1 vs 5)
+				// Additional movement cost is added for diagonal movement (1 vs 1.414)
+				// We use 1.414 (square root of two) as it represent the actual diagonal distance covered
+				double new_cost = (cost_so_far[current] + ((*it)->get_has_road() ? 1 : 5)) + (it - neighbours.begin() < 4 ? 1 : 1.414);
+				if(!cost_so_far.count(*it) || new_cost < cost_so_far[*it])
 				{
-					grid.walls.insert(SquareGrid::Location { x, y });
+					cost_so_far[*it] = new_cost;
+					double priority = new_cost + abs((x / 16) - (target_x / 16)) + abs((y / 16) - (target_y / 16));
+					frontier.put(*it, priority);
+					came_from[*it] = current;
 				}
 			}
 		}
 
-		a_star_search(grid, start, goal, came_from, cost_so_far);
-		std::vector<SquareGrid::Location> path = reconstruct_path(start, goal, came_from);
-		std::vector<std::pair<int, int>> target;
+		std::vector<std::pair<int, int>> path;
+		path.push_back(std::make_pair(target_x / 16, target_y / 16));
+		tile* current = goal;
+		int count = 0;
 
-		// Loop through each coordinate in the vector
-		for(std::vector<SquareGrid::Location>::const_iterator iterator = path.begin(); iterator != path.end(); ++iterator)
+		// Get the path from the start to the goal by checking backwards from the goal tile
+		// The count is used to ensure that the pathfinder will stop if a path cannot be found
+		while(current != start && count < 200)
 		{
-			target.push_back(std::make_pair(std::get<0>(*iterator), std::get<1>(*iterator)));
+			std::cout << "X: " << simulation_map->get_tile_coords(current).first << " Y: " << simulation_map->get_tile_coords(current).second << std::endl;
+			current = came_from[current];
+			path.push_back(simulation_map->get_tile_coords(current));
+			++count;
 		}
 
-		return target;
+		// If a valid path was found within 200 checks, return it. Otherwise, return an empty vector
+		return count < 200 ? path : std::vector<std::pair<int, int>>();
 	}
 }

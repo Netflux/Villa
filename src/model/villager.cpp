@@ -1,5 +1,5 @@
 #include "villager.hpp"
-#include <iostream>
+
 namespace villa
 {
 	/**
