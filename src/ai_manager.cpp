@@ -1,4 +1,6 @@
 #include "ai_manager.hpp"
+#include "pathfinder.cpp"
+#include <tuple>
 
 namespace villa
 {
@@ -26,7 +28,13 @@ namespace villa
 			// Ignore if the current task is to move or idle
 			if(!(*iterator)->is_at(data.target_coords.first, data.target_coords.second) && current_task->get_type() != tasktype::move && current_task->get_type() != tasktype::idle)
 			{
-				(*iterator)->add_task(new task(tasktype::move, taskdata(std::make_pair(data.target_coords.first, data.target_coords.second))));
+				std::vector<std::pair<int, int>> path = get_path((*iterator)->get_x(), (*iterator)->get_y(), data.target_coords.first, data.target_coords.second);
+
+				// Add a move task for each point towards the target location
+				for(std::vector<std::pair<int, int>>::const_iterator it = path.begin(); it != path.end(); ++it)
+				{
+					(*iterator)->add_task(new task(tasktype::move, taskdata(std::make_pair((it->first * 16) + 8, (it->second * 16) + 8))));
+				}
 			}
 
 			// Perform the appropriate action according to task type
@@ -106,5 +114,46 @@ namespace villa
 					break;
 			}
 		}
+	}
+
+	/**
+	 * Gets a path to the target x and y coords.
+	 * @param x - The x-coord of the target.
+	 * @param y - The y-coord of the target.
+	 * @return Path to the target.
+	 */
+	std::vector<std::pair<int, int>> ai_manager::get_path(int x, int y, int target_x, int target_y)
+	{
+		GridWithWeights grid(50, 50);
+		SquareGrid::Location start{x, y};
+		SquareGrid::Location goal{target_x, target_y};
+		std::unordered_map<SquareGrid::Location, SquareGrid::Location> came_from;
+		std::unordered_map<SquareGrid::Location, double> cost_so_far;
+
+		// Add walls to the grid for tiles that are not pathable
+		for(int x = 0; x < 50; ++x)
+		{
+			for(int y = 0; y < 50; ++y)
+			{
+				tile* target = simulation_map->get_tile_at(x, y);
+
+				if(target->get_pathable() == false)
+				{
+					grid.walls.insert(SquareGrid::Location { x, y });
+				}
+			}
+		}
+
+		a_star_search(grid, start, goal, came_from, cost_so_far);
+		std::vector<SquareGrid::Location> path = reconstruct_path(start, goal, came_from);
+		std::vector<std::pair<int, int>> target;
+
+		// Loop through each coordinate in the vector
+		for(std::vector<SquareGrid::Location>::const_iterator iterator = path.begin(); iterator != path.end(); ++iterator)
+		{
+			target.push_back(std::make_pair(std::get<0>(*iterator), std::get<1>(*iterator)));
+		}
+
+		return target;
 	}
 }

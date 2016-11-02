@@ -317,8 +317,8 @@ namespace villa
 								simulation_map->add_villager(new villager());
 								simulation_map->add_building(new building(25, 25, 1, 2, buildingtype::house_small));
 
-								simulation_map->get_villagers()[0]->set_x(400);
-								simulation_map->get_villagers()[0]->set_y(400);
+								simulation_map->get_villagers()[0]->set_x(200);
+								simulation_map->get_villagers()[0]->set_y(200);
 
 								simulation_ai.reset(new ai_manager(simulation_map.get(), rng));
 							}
@@ -337,7 +337,7 @@ namespace villa
 					case appstate::simulation :
 						if(event.button.button == SDL_BUTTON_LEFT)
 						{
-							simulation_map->get_villagers()[0]->add_task(new task(tasktype::move, {std::make_pair(x, y)}));
+							simulation_map->get_villagers()[0]->add_task(new task(tasktype::rest, {std::make_pair(x, y)}));
 						}
 						break;
 
