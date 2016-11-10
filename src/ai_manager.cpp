@@ -60,20 +60,48 @@ namespace villa
 					}
 					break;
 
-				case tasktype::harvest : // Take all the items from the target resource, then rest
+				case tasktype::harvest : // Take all the items from the target resource, resting between each harvest cycle
 					{
 						inventory* inv = (*iterator)->get_inventory();
 						inventory* target_inv = data.target_entity->get_inventory();
-						int rest_time = 0;
 
-						for(std::vector<item*>::iterator it = target_inv->get_items().begin(); it != target_inv->get_items().end(); ++it)
+						if(target_inv->get_item_count() > 0)
 						{
-							inv->add_item(std::move(target_inv->take_item(*it)));
-							rest_time += 2000;
+							tool* best_tool = nullptr;
+							int pause_time = 2000;
+
+							switch(static_cast<resource*>(data.target_entity)->get_type())
+							{
+								case resourcetype::water :
+									best_tool = inv->get_tool_highest_efficiency(itemtype::bucket);
+									break;
+
+								case resourcetype::tree :
+									best_tool = inv->get_tool_highest_efficiency(itemtype::axe);
+									break;
+
+								case resourcetype::stone :
+								case resourcetype::ore :
+									best_tool = inv->get_tool_highest_efficiency(itemtype::pickaxe);
+									break;
+
+								default :
+									break;
+							}
+
+							if(best_tool != nullptr)
+							{
+								pause_time -= best_tool->get_efficiency() * 10;
+							}
+
+							inv->add_item(std::move(target_inv->take_item(target_inv->get_items().back())));
+							(*iterator)->add_task(new task(tasktype::rest, taskdata(std::make_pair((*iterator)->get_x(), (*iterator)->get_y()), SDL_GetTicks() + pause_time)));
+						}
+						else
+						{
+							(*iterator)->remove_task();
 						}
 
-						(*iterator)->remove_task();
-						(*iterator)->add_task(new task(tasktype::rest, taskdata(std::make_pair((*iterator)->get_x(), (*iterator)->get_y()), SDL_GetTicks() + rest_time)));
 						break;
 					}
 
@@ -90,7 +118,7 @@ namespace villa
 						}
 
 						(*iterator)->remove_task();
-						(*iterator)->add_task(new task(tasktype::rest, taskdata(std::make_pair((*iterator)->get_x(), (*iterator)->get_y()), SDL_GetTicks() + 250)));
+						(*iterator)->add_task(new task(tasktype::rest, taskdata(std::make_pair((*iterator)->get_x(), (*iterator)->get_y()), SDL_GetTicks() + 500)));
 						break;
 					}
 
@@ -107,7 +135,7 @@ namespace villa
 						}
 
 						(*iterator)->remove_task();
-						(*iterator)->add_task(new task(tasktype::rest, taskdata(std::make_pair((*iterator)->get_x(), (*iterator)->get_y()), SDL_GetTicks() + 250)));
+						(*iterator)->add_task(new task(tasktype::rest, taskdata(std::make_pair((*iterator)->get_x(), (*iterator)->get_y()), SDL_GetTicks() + 500)));
 						break;
 					}
 

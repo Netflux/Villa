@@ -224,12 +224,40 @@ namespace villa
 		resources->load_texture("roof_small_back", "assets/images/buildings/roof_small_back.png");
 		resources->load_texture("wall_small_base", "assets/images/buildings/wall_small_base.png");
 
+		// Load resource images
+		resources->load_texture("food_1", "assets/images/resources/food_1.png");
+		resources->load_texture("food_2", "assets/images/resources/food_2.png");
+		resources->load_texture("food_3", "assets/images/resources/food_3.png");
+		resources->load_texture("food_harvested", "assets/images/resources/food_harvested.png");
+
+		resources->load_texture("ore_1", "assets/images/resources/ore_1.png");
+		resources->load_texture("ore_2", "assets/images/resources/ore_2.png");
+		resources->load_texture("ore_3", "assets/images/resources/ore_3.png");
+		resources->load_texture("ore_4", "assets/images/resources/ore_4.png");
+		resources->load_texture("ore_5", "assets/images/resources/ore_5.png");
+		resources->load_texture("ore_6", "assets/images/resources/ore_6.png");
+
+		resources->load_texture("stone_1", "assets/images/resources/stone_1.png");
+		resources->load_texture("stone_2", "assets/images/resources/stone_2.png");
+		resources->load_texture("stone_3", "assets/images/resources/stone_3.png");
+		resources->load_texture("stone_4", "assets/images/resources/stone_4.png");
+		resources->load_texture("stone_5", "assets/images/resources/stone_5.png");
+		resources->load_texture("stone_6", "assets/images/resources/stone_6.png");
+
+		resources->load_texture("tree_small", "assets/images/resources/tree_small.png");
+		resources->load_texture("tree_small_harvested", "assets/images/resources/tree_small_harvested.png");
+		resources->load_texture("tree_top", "assets/images/resources/tree_top.png");
+		resources->load_texture("tree_top_alt", "assets/images/resources/tree_top_alt.png");
+		resources->load_texture("tree_top_harvested", "assets/images/resources/tree_top_harvested.png");
+		resources->load_texture("tree_bottom", "assets/images/resources/tree_bottom.png");
+		resources->load_texture("tree_bottom_alt", "assets/images/resources/tree_bottom_alt.png");
+		resources->load_texture("tree_bottom_harvested", "assets/images/resources/tree_bottom_harvested.png");
+
 		// Load entity images
 		resources->load_texture("villager", "assets/images/entities/villager.png");
 		resources->load_texture("villager_alt", "assets/images/entities/villager_alt.png");
 		resources->load_texture("villager_blacksmith", "assets/images/entities/villager_blacksmith.png");
 		resources->load_texture("villager_miner", "assets/images/entities/villager_miner.png");
-
 
 		// Load UI images
 		resources->load_texture("buttonLong_brown", "assets/images/ui/buttonLong_brown.png");
