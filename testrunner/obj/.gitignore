@@ -1,0 +1,5 @@
+# Ignore all library and object files in the directory
+# The only exception is the .gitignore file
+*.a
+*.o
+!.gitignore

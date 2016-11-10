@@ -1,0 +1,6 @@
+# Ignore all binary files in this directory
+# The only exception is the .gitignore file
+testrunner
+testrunner.exe
+gtest_main.a
+!.gitignore
