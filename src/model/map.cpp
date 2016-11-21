@@ -1,4 +1,5 @@
 #include "map.hpp"
+#include <iostream>
 
 namespace villa
 {
@@ -7,6 +8,10 @@ namespace villa
 	 */
 	map::map(std::mt19937& rng) : rng(rng)
 	{
+		// Seed the Perlin Noise generator
+		PerlinNoise pn(time(nullptr));
+
+		// Reset the map to contain water tiles
 		for(int i = 0; i < 50; ++i)
 		{
 			for(int j = 0; j < 50; ++j)
@@ -15,51 +20,97 @@ namespace villa
 			}
 		}
 
+		// Generate a new map based on the Perlin Noise values
 		for(int i = 2; i < 48; ++i)
 		{
 			for(int j = 2; j < 48; ++j)
 			{
-				tiles[i][j].reset(new tile(tiletype::grass, true, false));
+				double x = (double)j/((double)48) / 8;
+				double y = (double)i/((double)48) / 8;
+				double n = pn.noise(10 * x, 10 * y, 0);
+
+				if(n < 0.4)
+				{
+					tiles[i][j].reset(new tile(tiletype::water, false, false));
+				}
+				else if(n < 0.475)
+				{
+					tiles[i][j].reset(new tile(tiletype::sand, true, false));
+				}
+				else if(n < 0.6)
+				{
+					tiles[i][j].reset(new tile(tiletype::grass, true, false));
+				}
+				else
+				{
+					tiles[i][j].reset(new tile(tiletype::dirt, true, false));
+				}
 			}
 		}
 
-		for(int i = 5; i < 45; ++i)
+		// Scale down random number while preserving uniform distribution
+		std::uniform_int_distribution<int> distribution_resource(40, 200);
+		std::uniform_int_distribution<int> distribution_tiles(16, 784);
+		int quantity = 0;
+
+		while(quantity < distribution_resource(rng))
 		{
-			for(int j = 5; j < 45; ++j)
+			int x = distribution_tiles(rng);
+			int y = distribution_tiles(rng);
+			double n = pn.noise((double)x / (double)784, (double)y / (double)784, 0);
+
+			if(tiles[x / 16][y / 16]->get_pathable() == true)
 			{
-				tiles[i][j].reset(new tile(tiletype::sand, true, false));
+				if(n < 0.4)
+				{
+					add_resource(new resource(x, y, resourcetype::food));
+					quantity += 1;
+				}
+				else if(n < 0.525)
+				{
+					add_resource(new resource(x, y, resourcetype::tree));
+					quantity += 1;
+				}
+				else if(n < 0.625)
+				{
+					add_resource(new resource(x, y, resourcetype::stone));
+					quantity += 1;
+				}
+				else
+				{
+					add_resource(new resource(x, y, resourcetype::ore));
+					quantity += 1;
+				}
 			}
 		}
 
-		for(int i = 10; i < 40; ++i)
+		// Add a water resource on each tile adjacent to a water tile
+		for(int i = 0; i < 50; ++i)
 		{
-			for(int j = 10; j < 40; ++j)
+			for(int j = 0; j < 50; ++j)
 			{
-				tiles[i][j].reset(new tile(tiletype::dirt, true, false));
-			}
-		}
+				if(tiles[i][j]->get_type() == tiletype::water)
+				{
+					if(i - 1 >= 0 && tiles[i - 1][j]->get_type() != tiletype::water)
+					{
+						add_resource(new resource(((i - 1) * 16) + 8, (j * 16) + 8, resourcetype::water));
+					}
 
-		for(int i = 15; i < 35; ++i)
-		{
-			for(int j = 15; j < 35; ++j)
-			{
-				tiles[i][j].reset(new tile(tiletype::grass, true, false));
-			}
-		}
+					if(i + 1 < 50 && tiles[i + 1][j]->get_type() != tiletype::water)
+					{
+						add_resource(new resource(((i + 1) * 16) + 8, (j * 16) + 8, resourcetype::water));
+					}
 
-		for(int i = 20; i < 30; ++i)
-		{
-			for(int j = 20; j < 30; ++j)
-			{
-				tiles[i][j].reset(new tile(tiletype::water, false, false));
-			}
-		}
+					if(j - 1 >= 0 && tiles[i][j - 1]->get_type() != tiletype::water)
+					{
+						add_resource(new resource((i * 16) + 8, ((j - 1) * 16) + 8, resourcetype::water));
+					}
 
-		for(int i = 5; i < 10; ++i)
-		{
-			for(int j = 5; j < 10; ++j)
-			{
-				add_resource(new resource(i * 16, j * 16, resourcetype::tree));
+					if(j + 1 < 50 && tiles[i][j + 1]->get_type() != tiletype::water)
+					{
+						add_resource(new resource((i * 16) + 8, ((j + 1) * 16) + 8, resourcetype::water));
+					}
+				}
 			}
 		}
 	}

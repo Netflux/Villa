@@ -2,6 +2,8 @@
 #define INCLUDE_MAP_H_
 
 #include <random>
+#include <time.h>
+#include "PerlinNoise.h"
 #include "building.hpp"
 #include "resource.hpp"
 #include "tile.hpp"

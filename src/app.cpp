@@ -470,6 +470,7 @@ namespace villa
 					case resourcetype::ore :
 						for(int i = 0; i < quantity; ++i)
 						{
+							(*iterator)->get_inventory()->add_item(new item(itemtype::stone));
 							(*iterator)->get_inventory()->add_item(new item(itemtype::ore));
 						}
 						break;
