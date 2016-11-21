@@ -220,9 +220,41 @@ namespace villa
 		resources->load_texture("stone_corner_se", "assets/images/tiles/stone_corner_se.png");
 
 		// Load building images
+		resources->load_texture("door_small", "assets/images/buildings/door_small.png");
+		resources->load_texture("door_small_alt", "assets/images/buildings/door_small_alt.png");
 		resources->load_texture("roof_small_front", "assets/images/buildings/roof_small_front.png");
 		resources->load_texture("roof_small_back", "assets/images/buildings/roof_small_back.png");
 		resources->load_texture("wall_small_base", "assets/images/buildings/wall_small_base.png");
+
+		resources->load_texture("door_large1", "assets/images/buildings/door_large1.png");
+		resources->load_texture("door_large2", "assets/images/buildings/door_large2.png");
+		resources->load_texture("roof_large_front1", "assets/images/buildings/roof_large_front1.png");
+		resources->load_texture("roof_large_front2", "assets/images/buildings/roof_large_front2.png");
+		resources->load_texture("roof_large_front1_alt", "assets/images/buildings/roof_large_front1_alt.png");
+		resources->load_texture("roof_large_front2_alt", "assets/images/buildings/roof_large_front2_alt.png");
+		resources->load_texture("roof_large_middle1", "assets/images/buildings/roof_large_middle1.png");
+		resources->load_texture("roof_large_middle2", "assets/images/buildings/roof_large_middle2.png");
+		resources->load_texture("roof_large_back1", "assets/images/buildings/roof_large_back1.png");
+		resources->load_texture("roof_large_back2", "assets/images/buildings/roof_large_back2.png");
+		resources->load_texture("roof_large_back1_alt", "assets/images/buildings/roof_large_back1_alt.png");
+		resources->load_texture("roof_large_back2_alt", "assets/images/buildings/roof_large_back2_alt.png");
+		resources->load_texture("wall_large_middle1", "assets/images/buildings/wall_large_middle1.png");
+		resources->load_texture("wall_large_middle2", "assets/images/buildings/wall_large_middle2.png");
+		resources->load_texture("wall_large_base1", "assets/images/buildings/wall_large_base1.png");
+		resources->load_texture("wall_large_base2", "assets/images/buildings/wall_large_base2.png");
+
+		resources->load_texture("blacksmith_forge", "assets/images/buildings/blacksmith_forge.png");
+		resources->load_texture("roof_flat_back1", "assets/images/buildings/roof_flat_back1.png");
+		resources->load_texture("roof_flat_back2", "assets/images/buildings/roof_flat_back2.png");
+
+		resources->load_texture("stall_roof1", "assets/images/buildings/stall_roof1.png");
+		resources->load_texture("stall_roof2", "assets/images/buildings/stall_roof2.png");
+		resources->load_texture("stall_roof1_alt", "assets/images/buildings/stall_roof1_alt.png");
+		resources->load_texture("stall_roof2_alt", "assets/images/buildings/stall_roof2_alt.png");
+		resources->load_texture("stall_base1", "assets/images/buildings/stall_base1.png");
+		resources->load_texture("stall_base2", "assets/images/buildings/stall_base2.png");
+		resources->load_texture("stall_base1_alt", "assets/images/buildings/stall_base1_alt.png");
+		resources->load_texture("stall_base2_alt", "assets/images/buildings/stall_base2_alt.png");
 
 		// Load resource images
 		resources->load_texture("food_1", "assets/images/resources/food_1.png");
@@ -343,7 +375,7 @@ namespace villa
 								simulation_map.reset(new map(rng));
 
 								simulation_map->add_villager(new villager());
-								simulation_map->add_building(new building(25, 25, 1, 2, buildingtype::house_small));
+								simulation_map->add_building(new building(25, 25, 1, 2, buildingtype::blacksmith));
 
 								simulation_map->get_villagers()[0]->set_x(200);
 								simulation_map->get_villagers()[0]->set_y(200);
@@ -553,6 +585,146 @@ namespace villa
 			}
 		}
 
+		// Render the resources
+		std::vector<resource*> map_resources = simulation_map->get_resources();
+
+		// Loop through each resource in the vector
+		for(std::vector<resource*>::const_iterator iterator = map_resources.begin(); iterator != map_resources.end(); ++iterator)
+		{
+			int x = (*iterator)->get_x(), y = (*iterator)->get_y();
+
+			// Display the appropriate resource according to type
+			switch((*iterator)->get_type())
+			{
+				case resourcetype::food :
+					if((*iterator)->get_harvestable() == true)
+					{
+						int texture_variant = std::hash<resource*>{}(*iterator) % 3;
+
+						if(texture_variant == 0)
+						{
+							resources->render_texture(x - 8, y - 16, "food_1");
+						}
+						else if(texture_variant == 1)
+						{
+							resources->render_texture(x - 8, y - 16, "food_2");
+						}
+						else if(texture_variant == 2)
+						{
+							resources->render_texture(x - 8, y - 16, "food_3");
+						}
+					}
+					else
+					{
+						resources->render_texture(x - 8, y - 16, "food_harvested");
+					}
+					break;
+
+				case resourcetype::tree :
+					{
+						int texture_variant = std::hash<resource*>{}(*iterator) % 3;
+
+						if((*iterator)->get_harvestable() == true)
+						{
+							if(texture_variant == 0)
+							{
+								resources->render_texture(x - 8, y - 16, "tree_small");
+							}
+							else if(texture_variant == 1)
+							{
+								resources->render_texture(x - 8, y - 16, "tree_bottom");
+								resources->render_texture(x - 8, y - 32, "tree_top");
+							}
+							else if(texture_variant == 2)
+							{
+								resources->render_texture(x - 8, y - 16, "tree_bottom_alt");
+								resources->render_texture(x - 8, y - 32, "tree_top_alt");
+							}
+						}
+						else
+						{
+							if(texture_variant == 0)
+							{
+								resources->render_texture(x - 8, y - 16, "tree_small_harvested");
+							}
+							else if(texture_variant == 1 || texture_variant == 2)
+							{
+								resources->render_texture(x - 8, y - 16, "tree_bottom_harvested");
+								resources->render_texture(x - 8, y - 32, "tree_top_harvested");
+							}
+						}
+					}
+					break;
+
+				case resourcetype::stone :
+					if((*iterator)->get_harvestable() == true)
+					{
+						int texture_variant = std::hash<resource*>{}(*iterator) % 6;
+
+						if(texture_variant == 0)
+						{
+							resources->render_texture(x - 8, y - 16, "stone_1");
+						}
+						else if(texture_variant == 1)
+						{
+							resources->render_texture(x - 8, y - 16, "stone_2");
+						}
+						else if(texture_variant == 2)
+						{
+							resources->render_texture(x - 8, y - 16, "stone_3");
+						}
+						else if(texture_variant == 3)
+						{
+							resources->render_texture(x - 8, y - 16, "stone_4");
+						}
+						else if(texture_variant == 4)
+						{
+							resources->render_texture(x - 8, y - 16, "stone_5");
+						}
+						else if(texture_variant == 5)
+						{
+							resources->render_texture(x - 8, y - 16, "stone_6");
+						}
+					}
+					break;
+
+				case resourcetype::ore :
+					if((*iterator)->get_harvestable() == true)
+					{
+						int texture_variant = std::hash<resource*>{}(*iterator) % 6;
+
+						if(texture_variant == 0)
+						{
+							resources->render_texture(x - 8, y - 16, "ore_1");
+						}
+						else if(texture_variant == 1)
+						{
+							resources->render_texture(x - 8, y - 16, "ore_2");
+						}
+						else if(texture_variant == 2)
+						{
+							resources->render_texture(x - 8, y - 16, "ore_3");
+						}
+						else if(texture_variant == 3)
+						{
+							resources->render_texture(x - 8, y - 16, "ore_4");
+						}
+						else if(texture_variant == 4)
+						{
+							resources->render_texture(x - 8, y - 16, "ore_5");
+						}
+						else if(texture_variant == 5)
+						{
+							resources->render_texture(x - 8, y - 16, "ore_6");
+						}
+					}
+					break;
+
+				default :
+					break;
+			}
+		}
+
 		// Render the buildings
 		std::vector<building*> buildings = simulation_map->get_buildings();
 
@@ -564,10 +736,89 @@ namespace villa
 			// Display the appropriate building according to type
 			switch((*iterator)->get_type())
 			{
+				case buildingtype::town_hall :
+					resources->render_texture(x * 16, y * 16, "wall_large_base1");
+					resources->render_texture((x * 16) + 16, y * 16, "wall_large_base2");
+					resources->render_texture(x * 16, (y * 16) - 16, "wall_large_middle1");
+					resources->render_texture((x * 16) + 16, (y * 16) - 16, "wall_large_middle2");
+					resources->render_texture(x * 16, (y * 16) - 48, "roof_large_back1");
+					resources->render_texture((x * 16) + 16, (y * 16) - 48, "roof_large_back2");
+					resources->render_texture(x * 16, (y * 16) - 32, "roof_large_middle1");
+					resources->render_texture((x * 16) + 16, (y * 16) - 32, "roof_large_middle2");
+					resources->render_texture(x * 16, (y * 16) - 16, "roof_large_front1");
+					resources->render_texture((x * 16) + 16, (y * 16) - 16, "roof_large_front2");
+					resources->render_texture(x * 16, y * 16, "door_large1");
+					resources->render_texture((x * 16) + 16, y * 16, "door_large2");
+					break;
+
+				case buildingtype::house :
+					resources->render_texture(x * 16, y * 16, "wall_large_base1");
+					resources->render_texture((x * 16) + 16, y * 16, "wall_large_base2");
+					resources->render_texture(x * 16, (y * 16) - 16, "wall_large_middle1");
+					resources->render_texture((x * 16) + 16, (y * 16) - 16, "wall_large_middle2");
+					resources->render_texture(x * 16, (y * 16) - 48, "roof_large_back1");
+					resources->render_texture((x * 16) + 16, (y * 16) - 48, "roof_large_back2");
+					resources->render_texture(x * 16, (y * 16) - 32, "roof_large_middle1");
+					resources->render_texture((x * 16) + 16, (y * 16) - 32, "roof_large_middle2");
+					resources->render_texture(x * 16, (y * 16) - 16, "roof_large_front1");
+					resources->render_texture((x * 16) + 16, (y * 16) - 16, "roof_large_front2");
+					resources->render_texture((x * 16) + 8, y * 16, "door_small");
+					break;
+
 				case buildingtype::house_small :
 					resources->render_texture(x * 16, y * 16, "wall_small_base");
 					resources->render_texture(x * 16, (y * 16) - 16, "roof_small_back");
 					resources->render_texture(x * 16, (y * 16) - 8, "roof_small_front");
+					break;
+
+				case buildingtype::farmhouse :
+					resources->render_texture(x * 16, y * 16, "wall_large_base1");
+					resources->render_texture((x * 16) + 16, y * 16, "wall_large_base2");
+					resources->render_texture(x * 16, (y * 16) - 16, "wall_large_middle1");
+					resources->render_texture((x * 16) + 16, (y * 16) - 16, "wall_large_middle2");
+					resources->render_texture(x * 16, (y * 16) - 48, "roof_large_back1_alt");
+					resources->render_texture((x * 16) + 16, (y * 16) - 48, "roof_large_back2_alt");
+					resources->render_texture(x * 16, (y * 16) - 32, "roof_large_middle1");
+					resources->render_texture((x * 16) + 16, (y * 16) - 32, "roof_large_middle2");
+					resources->render_texture(x * 16, (y * 16) - 16, "roof_large_front1_alt");
+					resources->render_texture((x * 16) + 16, (y * 16) - 16, "roof_large_front2_alt");
+					resources->render_texture((x * 16) + 8, y * 16, "door_small_alt");
+					break;
+
+				case buildingtype::blacksmith :
+					resources->render_texture(x * 16, y * 16, "wall_large_base1");
+					resources->render_texture((x * 16) + 16, y * 16, "wall_large_base2");
+					resources->render_texture(x * 16, (y * 16) - 16, "roof_flat_back1");
+					resources->render_texture((x * 16) + 16, (y * 16) - 16, "roof_flat_back2");
+					resources->render_texture((x * 16) + 8, y * 16, "blacksmith_forge");
+					break;
+
+				case buildingtype::stall :
+					{
+						int texture_variant = std::hash<building*>{}(*iterator) % 4;
+
+						if(texture_variant <= 1)
+						{
+							resources->render_texture(x * 16, y * 16, "stall_base1");
+							resources->render_texture((x * 16) + 16, y * 16, "stall_base2");
+						}
+						else if(texture_variant <= 3)
+						{
+							resources->render_texture(x * 16, y * 16, "stall_base1_alt");
+							resources->render_texture((x * 16) + 16, y * 16, "stall_base2_alt");
+						}
+
+						if(texture_variant == 0 || texture_variant == 2)
+						{
+							resources->render_texture(x * 16, (y * 16) - 16, "stall_roof1");
+							resources->render_texture((x * 16) + 16, (y * 16) - 16, "stall_roof2");
+						}
+						else if(texture_variant == 1 || texture_variant == 3)
+						{
+							resources->render_texture(x * 16, (y * 16) - 16, "stall_roof1_alt");
+							resources->render_texture((x * 16) + 16, (y * 16) - 16, "stall_roof2_alt");
+						}
+					}
 					break;
 
 				default :
@@ -582,8 +833,16 @@ namespace villa
 		for(std::vector<villager*>::const_iterator iterator = villagers.begin(); iterator != villagers.end(); ++iterator)
 		{
 			int x = (*iterator)->get_x(), y = (*iterator)->get_y();
+			int texture_variant = std::hash<villager*>{}(*iterator) % 2;
 
-			resources->render_texture(x - 12, y - 24, "villager");
+			if(texture_variant == 0)
+			{
+				resources->render_texture(x - 12, y - 24, "villager");
+			}
+			else if(texture_variant == 1)
+			{
+				resources->render_texture(x - 12, y - 24, "villager_alt");
+			}
 		}
 	}
 

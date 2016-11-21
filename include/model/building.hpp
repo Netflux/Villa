@@ -13,7 +13,6 @@ namespace villa
 	{
 		null,       //!< null
 		town_hall,  //!< town_hall
-		windmill,   //!< windmill
 		house,      //!< house
 		house_small,//!< house_small
 		farmhouse,  //!< farmhouse
