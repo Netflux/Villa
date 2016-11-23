@@ -1,8 +1,9 @@
 #ifndef INCLUDE_AI_MANAGER_HPP_
 #define INCLUDE_AI_MANAGER_HPP_
 
-#include <random>
+#include <map>
 #include <queue>
+#include <random>
 #include "map.hpp"
 #include <SDL.h>
 

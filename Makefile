@@ -63,7 +63,7 @@ GTEST_SRCS_ = ./testrunner/src/gtest/*.cc ./testrunner/src/gtest/*.h $(GTEST_HEA
 all : $(OBJS)
 	$(CXX) $(OBJS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(OBJ_NAME)
 
-tests : ./src/model/*.cpp $(TESTS) ./testrunner/gtest_main.a
+tests : ./src/model/*.cpp ./src/PerlinNoise.cpp $(TESTS) ./testrunner/gtest_main.a
 	$(CXX) $(INCLUDE_PATHS) $(GTEST_CPPFLAGS) $(GTEST_CXXFLAGS) -lpthread $^ -o ./testrunner/testrunner
 
 ./obj/%.o : ./src/%.cpp

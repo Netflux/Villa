@@ -1,5 +1,5 @@
 #include "villager.hpp"
-
+#include <iostream>
 namespace villa
 {
 	/**
@@ -52,7 +52,23 @@ namespace villa
 	 */
 	void villager::add_task(task* value)
 	{
+		switch(value->get_type())
+		{
+			case tasktype::harvest :
+				std::cout << "Current Task: Harvest" << std::endl;break;
+			case tasktype::idle :
+				std::cout << "Current Task: Idle" << std::endl;break;
+			case tasktype::move :
+				std::cout << "Current Task: Move" << std::endl;break;
+			case tasktype::rest :
+				std::cout << "Current Task: Rest" << std::endl;break;
+			case tasktype::store_item :
+				std::cout << "Current Task: Store Item" << std::endl;break;
+			case tasktype::take_item :
+				std::cout << "Current Task: Take Item" << std::endl;break;
+		}
 		tasks.push(std::unique_ptr<task>(value));
+		std::cout << "Task Count: " << tasks.size() << " . Fatigue: " << fatigue << " . Thirst: " << thirst << " . Hunger: " << hunger << std::endl;
 	}
 
 	/**

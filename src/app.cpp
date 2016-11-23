@@ -397,7 +397,7 @@ namespace villa
 					case appstate::simulation :
 						if(event.button.button == SDL_BUTTON_LEFT)
 						{
-							simulation_map->get_villagers()[0]->add_task(new task(tasktype::rest, {std::make_pair(x, y)}));
+							simulation_map->get_villagers()[0]->add_task(new task(tasktype::rest, taskdata(std::make_pair(x, y), SDL_GetTicks() + 1000)));
 						}
 						break;
 
@@ -474,6 +474,41 @@ namespace villa
 							(*iterator)->get_inventory()->add_item(new item(itemtype::ore));
 						}
 						break;
+				}
+			}
+
+			// If all items have been harvested from the resource, set its harvestable state to false
+			if((*iterator)->get_inventory()->get_item_count() == 0)
+			{
+				(*iterator)->set_harvestable(false);
+				(*iterator)->set_harvestable_time(SDL_GetTicks() + 600000);
+			}
+		}
+
+		std::vector<villager*> villagers = simulation_map->get_villagers();
+
+		// Loop through each villager in the vector
+		for(std::vector<villager*>::iterator iterator = villagers.begin(); iterator != villagers.end(); ++iterator)
+		{
+			if((*iterator)->get_health() <= 0)
+			{
+				simulation_map->remove_villager(*iterator);
+			}
+			else
+			{
+				if((*iterator)->get_fatigue() < 0)
+				{
+					(*iterator)->set_fatigue(0);
+				}
+
+				if((*iterator)->get_hunger() < 0)
+				{
+					(*iterator)->set_hunger(0);
+				}
+
+				if((*iterator)->get_thirst() < 0)
+				{
+					(*iterator)->set_thirst(0);
 				}
 			}
 		}

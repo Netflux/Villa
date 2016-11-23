@@ -46,6 +46,7 @@ namespace villa
 			{
 				target = std::move(*iterator);
 				items.erase(iterator);
+				break;
 			}
 		}
 
