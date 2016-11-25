@@ -19,11 +19,11 @@ namespace villa
 	{
 		public:
 			map(std::mt19937& rng);
-			void add_building(building* value);
+			bool add_building(building* value);
 			void remove_building(building* value);
 			void add_resource(resource* value);
 			void remove_resource(resource* value);
-			void add_villager(villager* value);
+			bool add_villager(villager* value);
 			void remove_villager(villager* value);
 			std::vector<building*> get_buildings();
 			std::vector<resource*> get_resources();
@@ -31,6 +31,7 @@ namespace villa
 			tile* get_tile_at(int x, int y);
 			std::pair<int, int> get_tile_coords(tile* value);
 			std::vector<tile*> get_neighbour_tiles(int x, int y);
+			bool get_available_space(int x, int y, buildingtype type);
 
 		private:
 			std::vector<std::unique_ptr<building>> buildings;

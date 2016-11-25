@@ -50,7 +50,7 @@ namespace villa
 
 		// Scale down random number while preserving uniform distribution
 		std::uniform_int_distribution<int> distribution_resource(40, 200);
-		std::uniform_int_distribution<int> distribution_tiles(16, 784);
+		std::uniform_int_distribution<int> distribution_tiles(17, 784);
 		int quantity = 0;
 
 		while(quantity < distribution_resource(rng))
@@ -113,15 +113,57 @@ namespace villa
 				}
 			}
 		}
+
+		// Scale down random number while preserving uniform distribution
+		std::uniform_int_distribution<int> distribution(17, 784);
+		int i = distribution(rng), j = distribution(rng);
+
+		// Place the town hall in a valid spot
+		while(!add_building(new building(i, j, buildingtype::town_hall)))
+		{
+			i = distribution(rng);
+			j = distribution(rng);
+		}
+
+		// Add 5 villagers to the map at the start
+		for(int count = 0; count < 5; ++count)
+		{
+			i = distribution(rng);
+			j = distribution(rng);
+
+			while(!add_villager(new villager(i, j)))
+			{
+				i = distribution(rng);
+				j = distribution(rng);
+			}
+		}
 	}
 
 	/**
 	 * Adds the building to the map.
 	 * @param value - The building to add.
 	 */
-	void map::add_building(building* value)
+	bool map::add_building(building* value)
 	{
-		buildings.push_back(std::unique_ptr<building>(value));
+		bool result = get_available_space(value->get_x(), value->get_y(), value->get_type());
+
+		if(result == true)
+		{
+			for(int i = value->get_x(); i < (value->get_x() + (value->get_width() * 16)); i += 16)
+			{
+				for(int j = (value->get_y() - (value->get_height() * 16)); j < value->get_y(); j += 16)
+				{
+					get_tile_at(i / 16, j / 16)->set_pathable(false);
+				}
+			}
+			buildings.push_back(std::unique_ptr<building>(value));
+		}
+		else
+		{
+			delete value;
+		}
+
+		return result;
 	}
 
 	/**
@@ -173,9 +215,20 @@ namespace villa
 	 * Adds the villager to the map.
 	 * @param value - The villager to add.
 	 */
-	void map::add_villager(villager* value)
+	bool map::add_villager(villager* value)
 	{
-		villagers.push_back(std::unique_ptr<villager>(value));
+		bool result = get_tile_at(value->get_x() / 16, value->get_y() / 16)->get_pathable();
+
+		if(result == true)
+		{
+			villagers.push_back(std::unique_ptr<villager>(value));
+		}
+		else
+		{
+			delete value;
+		}
+
+		return result;
 	}
 
 	/**
@@ -333,5 +386,66 @@ namespace villa
 		}
 
 		return neighbors;
+	}
+
+	/**
+	 * Gets whether there is available space for the building type at a specific location
+	 * @param value
+	 * @return
+	 */
+	bool map::get_available_space(int x, int y, buildingtype type)
+	{
+		int width = 0, height = 0;
+
+		switch(type)
+		{
+			case buildingtype::town_hall :
+				width = 2;
+				height = 3;
+				break;
+
+			case buildingtype::house :
+				width = 2;
+				height = 2;
+				break;
+
+			case buildingtype::house_small :
+				width = 1;
+				height = 1;
+				break;
+
+			case buildingtype::farmhouse :
+				width = 2;
+				height = 2;
+				break;
+
+			case buildingtype::blacksmith :
+				width = 2;
+				height = 2;
+				break;
+
+			case buildingtype::stall :
+				width = 2;
+				height = 1;
+				break;
+
+			default :
+				break;
+		}
+
+		bool result = true;
+
+		for(int i = x; i < (x + (width * 16)) && result == true; i += 16)
+		{
+			for(int j = (y - (height * 16)); j < y && result == true; j += 16)
+			{
+				if(get_tile_at(i / 16, j / 16)->get_pathable() == false)
+				{
+					result = false;
+				}
+			}
+		}
+
+		return result;
 	}
 }

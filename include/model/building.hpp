@@ -28,7 +28,7 @@ namespace villa
 	{
 		public:
 			building();
-			building(int x, int y, int width, int height, buildingtype type);
+			building(int x, int y, buildingtype type);
 			buildingtype get_type();
 			void set_type(buildingtype value);
 			int get_width();

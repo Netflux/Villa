@@ -5,7 +5,7 @@ namespace villa
 	/**
 	 * Constructor for the Villager class.
 	 */
-	villager::villager() : entity(), speed(100), health(100), hunger(0), thirst(0), fatigue(0)
+	villager::villager(int x, int y) : entity(x, y, new inventory()), speed(100), health(100), hunger(0), thirst(0), fatigue(0)
 	{
 		add_task(new task(tasktype::idle, taskdata(std::make_pair(x, y))));
 	}
@@ -52,7 +52,7 @@ namespace villa
 	 */
 	void villager::add_task(task* value)
 	{
-		switch(value->get_type())
+		/*switch(value->get_type())
 		{
 			case tasktype::harvest :
 				std::cout << "Current Task: Harvest" << std::endl;break;
@@ -66,9 +66,11 @@ namespace villa
 				std::cout << "Current Task: Store Item" << std::endl;break;
 			case tasktype::take_item :
 				std::cout << "Current Task: Take Item" << std::endl;break;
-		}
+			case tasktype::build :
+				std::cout << "Current Task: Build" << std::endl;break;
+		}*/
 		tasks.push(std::unique_ptr<task>(value));
-		std::cout << "Task Count: " << tasks.size() << " . Fatigue: " << fatigue << " . Thirst: " << thirst << " . Hunger: " << hunger << std::endl;
+		//std::cout << "Task Count: " << tasks.size() << " . Fatigue: " << fatigue << " . Thirst: " << thirst << " . Hunger: " << hunger << " . Inventory Count: " << storage->get_item_count() << std::endl;
 	}
 
 	/**
@@ -76,6 +78,23 @@ namespace villa
 	 */
 	void villager::remove_task()
 	{
+		/*switch(tasks.top()->get_type())
+		{
+			case tasktype::harvest :
+				std::cout << "Removing Task: Harvest" << std::endl;break;
+			case tasktype::idle :
+				std::cout << "Removing Task: Idle" << std::endl;break;
+			case tasktype::move :
+				std::cout << "Removing Task: Move" << std::endl;break;
+			case tasktype::rest :
+				std::cout << "Removing Task: Rest" << std::endl;break;
+			case tasktype::store_item :
+				std::cout << "Removing Task: Store Item" << std::endl;break;
+			case tasktype::take_item :
+				std::cout << "Removing Task: Take Item" << std::endl;break;
+			case tasktype::build :
+				std::cout << "Removing Task: Build" << std::endl;break;
+		}*/
 		tasks.pop();
 	}
 

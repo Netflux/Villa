@@ -2,6 +2,7 @@
 #define INCLUDE_MODEL_TASK_HPP_
 
 #include <unordered_map>
+#include "building.hpp"
 #include "entity.hpp"
 #include "item.hpp"
 #include "tile.hpp"
@@ -15,6 +16,7 @@ namespace villa
 	{
 		taskdata(std::pair<int, int> target_coords);
 		taskdata(std::pair<int, int> target_coords, entity* target_entity);
+		taskdata(std::pair<int, int> target_coords, building* target_building);
 		taskdata(std::pair<int, int> target_coords, std::pair<entity*, item*> target_item);
 		taskdata(std::pair<int, int> target_coords, unsigned int time);
 
@@ -22,6 +24,7 @@ namespace villa
 		union
 		{
 			entity* target_entity;
+			building* target_building;
 			std::pair<entity*, item*> target_item;
 			unsigned int time;
 		};
@@ -34,10 +37,10 @@ namespace villa
 	{
 		idle,      //!< idle
 		move,      //!< move
+		build,     //!< build
 		harvest,   //!< harvest
 		take_item, //!< take_item
 		store_item,//!< store_item
-		eat,       //!< eat
 		rest       //!< rest
 	};
 

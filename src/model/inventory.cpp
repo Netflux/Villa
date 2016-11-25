@@ -12,6 +12,27 @@ namespace villa
 	}
 
 	/**
+	 * Gets the number of items in the inventory.
+	 * @param type - The type of the item.
+	 * @return The number of items in the inventory.
+	 */
+	int inventory::get_item_count(itemtype type)
+	{
+		int quantity = 0;
+
+		// Loop through each item in the vector
+		for(std::vector<std::unique_ptr<item>>::const_iterator iterator = items.begin(); iterator != items.end(); ++iterator)
+		{
+			if((*iterator)->get_type() == type)
+			{
+				quantity += 1;
+			}
+		}
+
+		return quantity;
+	}
+
+	/**
 	 * Adds the item to the inventory.
 	 * @param value - The item to add.
 	 */

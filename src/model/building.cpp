@@ -5,17 +5,52 @@ namespace villa
 	/**
 	 * Constructor for the Building class.
 	 */
-	building::building() : building(0, 0, 1, 1, buildingtype::null) { }
+	building::building() : building(0, 0, buildingtype::null) { }
 
 	/**
 	 * Constructor for the Building class.
 	 * @param x - The x-coord (grid) of the building.
 	 * @param y - The y-coord (grid) of the building.
-	 * @param width - The width (grid) of the building.
-	 * @param height - The height (grid) of the building.
 	 * @param type - The building type.
 	 */
-	building::building(int x, int y, int width, int height, buildingtype type) : entity(x, y, new inventory()), type(type), width(width), height(height) { }
+	building::building(int x, int y, buildingtype type) : entity(x, y, new inventory()), type(type)
+	{
+		switch(type)
+		{
+			case buildingtype::town_hall :
+				width = 2;
+				height = 3;
+				break;
+
+			case buildingtype::house :
+				width = 2;
+				height = 2;
+				break;
+
+			case buildingtype::house_small :
+				width = 1;
+				height = 1;
+				break;
+
+			case buildingtype::farmhouse :
+				width = 2;
+				height = 2;
+				break;
+
+			case buildingtype::blacksmith :
+				width = 2;
+				height = 2;
+				break;
+
+			case buildingtype::stall :
+				width = 2;
+				height = 1;
+				break;
+
+			default :
+				break;
+		}
+	}
 
 	/**
 	 * Gets the type of the building.

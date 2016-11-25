@@ -41,14 +41,20 @@ namespace villa
 		public:
 			ai_manager(map* simulation_map, std::mt19937& rng);
 			void think();
-			unsigned int get_time();
-			void set_time(unsigned int time);
 
 		private:
 			map* simulation_map;
 			std::mt19937& rng;
+			void handle_task_idle(villager* value);
+			void handle_task_move(villager* value);
+			void handle_task_build(villager* value);
+			void handle_task_harvest(villager* value);
+			void handle_task_take_item(villager* value);
+			void handle_task_store_item(villager* value);
+			void handle_task_rest(villager* value);
+			std::pair<building*, item*> get_item_in_building(int x, int y, itemtype type);
+			resource* get_closest_resource(int x, int y, resourcetype type);
 			std::vector<std::pair<int, int>> get_path(int x, int y, int target_x, int target_y);
-			std::vector<std::pair<int, int>> get_path_closest_resource(int x, int y, resourcetype type);
 	};
 }
 

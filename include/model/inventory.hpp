@@ -16,6 +16,7 @@ namespace villa
 	{
 		public:
 			int get_item_count();
+			int get_item_count(itemtype type);
 			void add_item(item* value);
 			void add_item(std::unique_ptr<item> value);
 			std::unique_ptr<item> take_item(item* value);

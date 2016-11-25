@@ -15,7 +15,7 @@ namespace villa
 	class villager : public entity
 	{
 		public:
-			villager();
+			villager(int x, int y);
 			virtual ~villager();
 			void move(int x, int y);
 			virtual void rest();

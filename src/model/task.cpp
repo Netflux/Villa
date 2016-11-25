@@ -18,6 +18,13 @@ namespace villa
 	/**
 	 * Constructor for the Task Data struct.
 	 * @param target_coords - The x and y coords to conduct the task.
+	 * @param target_building - The target building.
+	 */
+	taskdata::taskdata(std::pair<int, int> target_coords, building* target_building) : target_coords(target_coords), target_building(target_building) { }
+
+	/**
+	 * Constructor for the Task Data struct.
+	 * @param target_coords - The x and y coords to conduct the task.
 	 * @param target_item - The target item.
 	 */
 	taskdata::taskdata(std::pair<int, int> target_coords, std::pair<entity*, item*> target_item) : target_coords(target_coords), target_item(target_item) { }
