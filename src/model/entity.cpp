@@ -32,7 +32,7 @@ namespace villa
 	 */
 	int entity::get_x()
 	{
-		return x;
+		return this->x;
 	}
 
 	/**
@@ -41,7 +41,7 @@ namespace villa
 	 */
 	void entity::set_x(int value)
 	{
-		x = value;
+		this->x = value;
 	}
 
 	/**
@@ -50,7 +50,7 @@ namespace villa
 	 */
 	int entity::get_y()
 	{
-		return y;
+		return this->y;
 	}
 
 	/**
@@ -59,7 +59,7 @@ namespace villa
 	 */
 	void entity::set_y(int value)
 	{
-		y = value;
+		this->y = value;
 	}
 
 	/**
@@ -68,6 +68,6 @@ namespace villa
 	 */
 	inventory* entity::get_inventory()
 	{
-		return storage.get();
+		return this->storage.get();
 	}
 }

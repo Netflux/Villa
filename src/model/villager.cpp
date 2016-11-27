@@ -36,18 +36,67 @@ namespace villa
 		}
 	}
 
-	void villager::rest()
+	/**
+	 * Rests for the target duration.
+	 * @param value - The current time.
+	 */
+	void villager::rest(unsigned int value)
 	{
+		taskdata data = get_task()->get_data();
 
-	}
-
-	void villager::harvest()
-	{
-
+		if(value > data.time)
+		{
+			remove_task();
+		}
 	}
 
 	/**
-	 * Adds a task to the villager
+	 * Harvests the target resource.
+	 * @param value - The current time.
+	 */
+	void villager::harvest(unsigned int value)
+	{
+		taskdata data = get_task()->get_data();
+
+		inventory* inv = get_inventory();
+		inventory* target_inv = data.target_entity->get_inventory();
+
+		tool* best_tool = nullptr;
+		int pause_time = 1500;
+
+		switch(static_cast<resource*>(data.target_entity)->get_type())
+		{
+			case resourcetype::water :
+				best_tool = inv->get_tool_highest_efficiency(itemtype::bucket);
+				break;
+
+			case resourcetype::tree :
+				best_tool = inv->get_tool_highest_efficiency(itemtype::axe);
+				break;
+
+			case resourcetype::stone :
+			case resourcetype::ore :
+				best_tool = inv->get_tool_highest_efficiency(itemtype::pickaxe);
+				break;
+
+			default :
+				break;
+		}
+
+		if(best_tool != nullptr)
+		{
+			pause_time -= best_tool->get_efficiency() * 10;
+		}
+
+		add_task(new task(tasktype::rest, taskdata(std::make_pair(x, y), value + pause_time)));
+		set_hunger(get_hunger() + 1);
+		set_thirst(get_thirst() + 2);
+		set_fatigue(get_fatigue() + 3);
+		add_task(new task(tasktype::take_item, taskdata(std::make_pair(x, y), std::make_pair(data.target_entity, target_inv->get_items().back()))));
+	}
+
+	/**
+	 * Adds a task to the villager.
 	 * @param value - The task to add.
 	 */
 	void villager::add_task(task* value)
@@ -69,7 +118,10 @@ namespace villa
 			case tasktype::build :
 				std::cout << "Current Task: Build" << std::endl;break;
 		}*/
-		tasks.push(std::unique_ptr<task>(value));
+		if(value != nullptr)
+		{
+			this->tasks.push(std::unique_ptr<task>(value));
+		}
 		//std::cout << "Task Count: " << tasks.size() << " . Fatigue: " << fatigue << " . Thirst: " << thirst << " . Hunger: " << hunger << " . Inventory Count: " << storage->get_item_count() << std::endl;
 	}
 
@@ -95,7 +147,7 @@ namespace villa
 			case tasktype::build :
 				std::cout << "Removing Task: Build" << std::endl;break;
 		}*/
-		tasks.pop();
+		this->tasks.pop();
 	}
 
 	/**
@@ -104,7 +156,16 @@ namespace villa
 	 */
 	task* villager::get_task()
 	{
-		return tasks.top().get();
+		return this->tasks.top().get();
+	}
+
+	/**
+	 * Gets the task count of the villager.
+	 * @return The task count.
+	 */
+	int villager::get_task_count()
+	{
+		return this->tasks.size();
 	}
 
 	/**
@@ -113,7 +174,7 @@ namespace villa
 	 */
 	int villager::get_speed()
 	{
-		return speed;
+		return this->speed;
 	}
 
 	/**
@@ -122,7 +183,7 @@ namespace villa
 	 */
 	void villager::set_speed(int value)
 	{
-		speed = value;
+		this->speed = value;
 	}
 
 	/**
@@ -131,7 +192,7 @@ namespace villa
 	 */
 	int villager::get_health()
 	{
-		return health;
+		return this->health;
 	}
 
 	/**
@@ -140,7 +201,7 @@ namespace villa
 	 */
 	void villager::set_health(int value)
 	{
-		health = value;
+		this->health = value;
 	}
 
 	/**
@@ -149,7 +210,7 @@ namespace villa
 	 */
 	int villager::get_hunger()
 	{
-		return hunger;
+		return this->hunger;
 	}
 
 	/**
@@ -158,7 +219,7 @@ namespace villa
 	 */
 	void villager::set_hunger(int value)
 	{
-		hunger = value;
+		this->hunger = value;
 	}
 
 	/**
@@ -167,7 +228,7 @@ namespace villa
 	 */
 	int villager::get_thirst()
 	{
-		return thirst;
+		return this->thirst;
 	}
 
 	/**
@@ -176,7 +237,7 @@ namespace villa
 	 */
 	void villager::set_thirst(int value)
 	{
-		thirst = value;
+		this->thirst = value;
 	}
 
 	/**
@@ -185,7 +246,7 @@ namespace villa
 	 */
 	int villager::get_fatigue()
 	{
-		return fatigue;
+		return this->fatigue;
 	}
 
 	/**
@@ -194,6 +255,6 @@ namespace villa
 	 */
 	void villager::set_fatigue(int value)
 	{
-		fatigue = value;
+		this->fatigue = value;
 	}
 }

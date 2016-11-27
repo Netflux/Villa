@@ -22,7 +22,19 @@ namespace villa
 	enum class appstate {
 		menu_main,
 		simulation,
+		simulation_end,
 		exit
+	};
+
+	/**
+	 * Application timer struct.
+	 */
+	struct timer_struct
+	{
+		unsigned int app;
+		unsigned int villager_health;
+		unsigned int villager_health_regen;
+		unsigned int villager_needs;
 	};
 
 	/**
@@ -47,7 +59,7 @@ namespace villa
 			void display_menu_main();
 			void display_simulation();
 			void display_simulation_tile(int x, int y, tiletype type, std::string name);
-			unsigned int app_time;
+			timer_struct timers;
 			std::stack<appstate> state;
 			std::unique_ptr<resource_manager> resources;
 			std::unique_ptr<ui_manager> user_interface;

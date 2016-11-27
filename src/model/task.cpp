@@ -49,7 +49,7 @@ namespace villa
 	 */
 	tasktype task::get_type()
 	{
-		return data.first;
+		return this->data.first;
 	}
 
 	/**
@@ -58,6 +58,6 @@ namespace villa
 	 */
 	taskdata task::get_data()
 	{
-		return data.second;
+		return this->data.second;
 	}
 }

@@ -8,7 +8,7 @@ namespace villa
 	 */
 	int inventory::get_item_count()
 	{
-		return items.size();
+		return this->items.size();
 	}
 
 	/**
@@ -21,7 +21,7 @@ namespace villa
 		int quantity = 0;
 
 		// Loop through each item in the vector
-		for(std::vector<std::unique_ptr<item>>::const_iterator iterator = items.begin(); iterator != items.end(); ++iterator)
+		for(std::vector<std::unique_ptr<item>>::const_iterator iterator = this->items.begin(); iterator != this->items.end(); ++iterator)
 		{
 			if((*iterator)->get_type() == type)
 			{
@@ -38,7 +38,10 @@ namespace villa
 	 */
 	void inventory::add_item(item* value)
 	{
-		items.push_back(std::unique_ptr<item>(value));
+		if(value != nullptr)
+		{
+			this->items.push_back(std::unique_ptr<item>(value));
+		}
 	}
 
 	/**
@@ -47,7 +50,10 @@ namespace villa
 	 */
 	void inventory::add_item(std::unique_ptr<item> value)
 	{
-		items.push_back(std::move(value));
+		if(value != nullptr)
+		{
+			this->items.push_back(std::move(value));
+		}
 	}
 
 	/**
@@ -61,12 +67,12 @@ namespace villa
 
 		// Loop through each item in the vector
 		// If we've found the target item, remove it from the vector, stop the loop and return the value
-		for(std::vector<std::unique_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
+		for(std::vector<std::unique_ptr<item>>::iterator iterator = this->items.begin(); iterator != this->items.end(); ++iterator)
 		{
 			if(iterator->get() == value)
 			{
 				target = std::move(*iterator);
-				items.erase(iterator);
+				this->items.erase(iterator);
 				break;
 			}
 		}
@@ -82,11 +88,11 @@ namespace villa
 	{
 		// Loop through each item in the vector
 		// If we've found the target item, remove it from the vector and stop the loop
-		for(std::vector<std::unique_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
+		for(std::vector<std::unique_ptr<item>>::iterator iterator = this->items.begin(); iterator != this->items.end(); ++iterator)
 		{
 			if(iterator->get() == value)
 			{
-				items.erase(iterator);
+				this->items.erase(iterator);
 				break;
 			}
 		}
@@ -101,9 +107,9 @@ namespace villa
 	{
 		// Loop through each item in the vector
 		// If we've found the target item, return its pointer (null pointer if none exists)
-		for(std::vector<std::unique_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
+		for(std::vector<std::unique_ptr<item>>::iterator iterator = this->items.begin(); iterator != this->items.end(); ++iterator)
 		{
-			if(iterator->get()->get_type() == type)
+			if((*iterator)->get_type() == type)
 			{
 				return iterator->get();
 			}
@@ -122,7 +128,7 @@ namespace villa
 
 		// Loop through each item in the vector, and pushes to a new vector
 		// Returns the new list of pointers
-		for(std::vector<std::unique_ptr<item>>::const_iterator iterator = items.begin(); iterator != items.end(); ++iterator)
+		for(std::vector<std::unique_ptr<item>>::const_iterator iterator = this->items.begin(); iterator != this->items.end(); ++iterator)
 		{
 			target.push_back(iterator->get());
 		}
@@ -157,7 +163,7 @@ namespace villa
 
 		// Loop through each item in the vector
 		// Once we've found the highest efficiency tool, return its pointer (null pointer if none exists)
-		for(std::vector<std::unique_ptr<item>>::iterator iterator = items.begin(); iterator != items.end(); ++iterator)
+		for(std::vector<std::unique_ptr<item>>::iterator iterator = this->items.begin(); iterator != this->items.end(); ++iterator)
 		{
 			item* temp = iterator->get();
 

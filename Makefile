@@ -10,19 +10,13 @@ OBJS = $(subst ./src, ./obj, $(SRC:.cpp=.o))
 #OBJ_NAME specifies the name of our executable
 OBJ_NAME = ./bin/Villa
 	
-#RM specifies the tool for cleaning files
-RM = rm -f $(OBJS) $(OBJ_NAME) $(OBJ_NAME).exe
-	
-#RM_TESTS specifies the tool for cleaning files
-RM_TESTS = rm -f ./testrunner/gtest_main.a ./testrunner/obj/gtest_main.o ./testrunner/obj/gtest-all.o ./testrunner/testrunner ./testrunner/testrunner.exe
-	
 #COMPILER_FLAGS specifies the additional compilation options we're using
 # -w suppresses all warnings
 # -Wl,-subsystem,windows gets rid of the console window
 # -Wall enables all major warnings
 # -pedantic enables all warnings demanded by strict ISO C.
 # -std=c++11 enables support for C++ 11 features
-COMPILER_FLAGS = -Wall -pedantic -std=c++11
+COMPILER_FLAGS = -Wall -Wl,-subsystem,windows -pedantic -std=c++11
 
 ifeq ($(OS),Windows_NT)
 	#INCLUDE_PATHS specifies the additional include paths we'll need
@@ -33,12 +27,24 @@ ifeq ($(OS),Windows_NT)
 
 	#LINKER_FLAGS specifies the libraries we're linking against
 	LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
+	
+	#RM specifies the tool for cleaning files
+	RM = del /F $(subst /,\,$(OBJS) $(OBJ_NAME) $(OBJ_NAME).exe)
+	
+	#RM_TESTS specifies the tool for cleaning files
+	RM_TESTS = rm -f .\testrunner\gtest_main.a .\testrunner\obj\gtest_main.o .\testrunner\obj\gtest-all.o .\testrunner\testrunner .\testrunner\testrunner.exe
 else
 	#INCLUDE_PATHS specifies the additional include paths we'll need
 	INCLUDE_PATHS = -I./include -I./include/model
 	
 	#LIBRARY_PATHS specifies the additional library paths we'll need
 	LIBRARY_PATHS = $(shell sdl2-config --libs) -lSDL2_image -lSDL2_ttf $(shell sdl2-config --cflags)
+	
+	#RM specifies the tool for cleaning files
+	RM = rm -f $(OBJS) $(OBJ_NAME) $(OBJ_NAME).exe
+	
+	#RM_TESTS specifies the tool for cleaning files
+	RM_TESTS = rm -f ./testrunner/gtest_main.a ./testrunner/obj/gtest_main.o ./testrunner/obj/gtest-all.o ./testrunner/testrunner ./testrunner/testrunner.exe
 endif
 
 # Flags passed to the preprocessor.

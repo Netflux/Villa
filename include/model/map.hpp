@@ -31,7 +31,7 @@ namespace villa
 			tile* get_tile_at(int x, int y);
 			std::pair<int, int> get_tile_coords(tile* value);
 			std::vector<tile*> get_neighbour_tiles(int x, int y);
-			bool get_available_space(int x, int y, buildingtype type);
+			bool get_available_space(int x, int y, buildingtype value);
 
 		private:
 			std::vector<std::unique_ptr<building>> buildings;

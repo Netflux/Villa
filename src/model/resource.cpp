@@ -16,7 +16,7 @@ namespace villa
 	 */
 	resourcetype resource::get_type()
 	{
-		return type;
+		return this->type;
 	}
 
 	/**
@@ -34,7 +34,7 @@ namespace villa
 	 */
 	bool resource::get_harvestable()
 	{
-		return harvestable;
+		return this->harvestable;
 	}
 
 	/**
@@ -43,7 +43,7 @@ namespace villa
 	 */
 	void resource::set_harvestable(bool value)
 	{
-		harvestable = value;
+		this->harvestable = value;
 	}
 
 	/**
@@ -52,7 +52,7 @@ namespace villa
 	 */
 	unsigned int resource::get_harvestable_time()
 	{
-		return harvestable_time;
+		return this->harvestable_time;
 	}
 
 	/**
@@ -61,6 +61,6 @@ namespace villa
 	 */
 	void resource::set_harvestable_time(unsigned int value)
 	{
-		harvestable_time = value;
+		this->harvestable_time = value;
 	}
 }

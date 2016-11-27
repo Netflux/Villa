@@ -19,7 +19,7 @@ namespace villa
 	 */
 	itemtype item::get_type()
 	{
-		return type;
+		return this->type;
 	}
 
 	/**
@@ -28,6 +28,6 @@ namespace villa
 	 */
 	void item::set_type(itemtype value)
 	{
-		type = value;
+		this->type = value;
 	}
 }

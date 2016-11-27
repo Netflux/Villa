@@ -20,7 +20,7 @@ namespace villa
 	 */
 	int tool::get_efficiency()
 	{
-		return efficiency;
+		return this->efficiency;
 	}
 
 	/**
@@ -29,6 +29,6 @@ namespace villa
 	 */
 	void tool::set_efficiency(int value)
 	{
-		efficiency = value;
+		this->efficiency = value;
 	}
 }

@@ -16,7 +16,7 @@ namespace villa
 		{
 			for(int j = 0; j < 50; ++j)
 			{
-				tiles[i][j].reset(new tile(tiletype::water, false, false));
+				this->tiles[i][j].reset(new tile(tiletype::water, false, false));
 			}
 		}
 
@@ -31,35 +31,35 @@ namespace villa
 
 				if(n < 0.4)
 				{
-					tiles[i][j].reset(new tile(tiletype::water, false, false));
+					this->tiles[i][j].reset(new tile(tiletype::water, false, false));
 				}
 				else if(n < 0.475)
 				{
-					tiles[i][j].reset(new tile(tiletype::sand, true, false));
+					this->tiles[i][j].reset(new tile(tiletype::sand, true, false));
 				}
 				else if(n < 0.6)
 				{
-					tiles[i][j].reset(new tile(tiletype::grass, true, false));
+					this->tiles[i][j].reset(new tile(tiletype::grass, true, false));
 				}
 				else
 				{
-					tiles[i][j].reset(new tile(tiletype::dirt, true, false));
+					this->tiles[i][j].reset(new tile(tiletype::dirt, true, false));
 				}
 			}
 		}
 
 		// Scale down random number while preserving uniform distribution
 		std::uniform_int_distribution<int> distribution_resource(40, 200);
-		std::uniform_int_distribution<int> distribution_tiles(17, 784);
+		std::uniform_int_distribution<int> distribution_tiles(17, 783);
 		int quantity = 0;
 
 		while(quantity < distribution_resource(rng))
 		{
 			int x = distribution_tiles(rng);
 			int y = distribution_tiles(rng);
-			double n = pn.noise((double)x / (double)784, (double)y / (double)784, 0);
+			double n = pn.noise((double)x / (double)783, (double)y / (double)783, 0);
 
-			if(tiles[x / 16][y / 16]->get_pathable() == true)
+			if(this->tiles[x / 16][y / 16]->get_pathable() == true)
 			{
 				if(n < 0.4)
 				{
@@ -89,24 +89,24 @@ namespace villa
 		{
 			for(int j = 0; j < 50; ++j)
 			{
-				if(tiles[i][j]->get_type() == tiletype::water)
+				if(this->tiles[i][j]->get_type() == tiletype::water)
 				{
-					if(i - 1 >= 0 && tiles[i - 1][j]->get_type() != tiletype::water)
+					if(i - 1 >= 0 && this->tiles[i - 1][j]->get_type() != tiletype::water)
 					{
 						add_resource(new resource(((i - 1) * 16) + 8, (j * 16) + 8, resourcetype::water));
 					}
 
-					if(i + 1 < 50 && tiles[i + 1][j]->get_type() != tiletype::water)
+					if(i + 1 < 50 && this->tiles[i + 1][j]->get_type() != tiletype::water)
 					{
 						add_resource(new resource(((i + 1) * 16) + 8, (j * 16) + 8, resourcetype::water));
 					}
 
-					if(j - 1 >= 0 && tiles[i][j - 1]->get_type() != tiletype::water)
+					if(j - 1 >= 0 && this->tiles[i][j - 1]->get_type() != tiletype::water)
 					{
 						add_resource(new resource((i * 16) + 8, ((j - 1) * 16) + 8, resourcetype::water));
 					}
 
-					if(j + 1 < 50 && tiles[i][j + 1]->get_type() != tiletype::water)
+					if(j + 1 < 50 && this->tiles[i][j + 1]->get_type() != tiletype::water)
 					{
 						add_resource(new resource((i * 16) + 8, ((j + 1) * 16) + 8, resourcetype::water));
 					}
@@ -115,7 +115,7 @@ namespace villa
 		}
 
 		// Scale down random number while preserving uniform distribution
-		std::uniform_int_distribution<int> distribution(17, 784);
+		std::uniform_int_distribution<int> distribution(17, 783);
 		int i = distribution(rng), j = distribution(rng);
 
 		// Place the town hall in a valid spot
@@ -145,22 +145,27 @@ namespace villa
 	 */
 	bool map::add_building(building* value)
 	{
-		bool result = get_available_space(value->get_x(), value->get_y(), value->get_type());
+		bool result = false;
 
-		if(result == true)
+		if(value != nullptr)
 		{
-			for(int i = value->get_x(); i < (value->get_x() + (value->get_width() * 16)); i += 16)
+			result = get_available_space(value->get_x(), value->get_y(), value->get_type());
+
+			if(result == true)
 			{
-				for(int j = (value->get_y() - (value->get_height() * 16)); j < value->get_y(); j += 16)
+				for(int i = value->get_x(); i <= (value->get_x() + (value->get_width() * 16)); i += 16)
 				{
-					get_tile_at(i / 16, j / 16)->set_pathable(false);
+					for(int j = (value->get_y() - (value->get_height() * 16)); j <= value->get_y(); j += 16)
+					{
+						get_tile_at(i / 16, j / 16)->set_pathable(false);
+					}
 				}
+				this->buildings.push_back(std::unique_ptr<building>(value));
 			}
-			buildings.push_back(std::unique_ptr<building>(value));
-		}
-		else
-		{
-			delete value;
+			else
+			{
+				delete value;
+			}
 		}
 
 		return result;
@@ -174,11 +179,11 @@ namespace villa
 	{
 		// Loop through each building in the vector
 		// If we've found the target building, remove it from the vector and stop the loop
-		for(std::vector<std::unique_ptr<building>>::iterator iterator = buildings.begin(); iterator != buildings.end(); ++iterator)
+		for(std::vector<std::unique_ptr<building>>::iterator iterator = this->buildings.begin(); iterator != this->buildings.end(); ++iterator)
 		{
 			if(iterator->get() == value)
 			{
-				buildings.erase(iterator);
+				this->buildings.erase(iterator);
 				break;
 			}
 		}
@@ -190,7 +195,10 @@ namespace villa
 	 */
 	void map::add_resource(resource* value)
 	{
-		resources.push_back(std::unique_ptr<resource>(value));
+		if(value != nullptr)
+		{
+			this->resources.push_back(std::unique_ptr<resource>(value));
+		}
 	}
 
 	/**
@@ -201,11 +209,11 @@ namespace villa
 	{
 		// Loop through each resource in the vector
 		// If we've found the target resource, remove it from the vector and stop the loop
-		for(std::vector<std::unique_ptr<resource>>::iterator iterator = resources.begin(); iterator != resources.end(); ++iterator)
+		for(std::vector<std::unique_ptr<resource>>::iterator iterator = this->resources.begin(); iterator != this->resources.end(); ++iterator)
 		{
 			if(iterator->get() == value)
 			{
-				resources.erase(iterator);
+				this->resources.erase(iterator);
 				break;
 			}
 		}
@@ -217,15 +225,20 @@ namespace villa
 	 */
 	bool map::add_villager(villager* value)
 	{
-		bool result = get_tile_at(value->get_x() / 16, value->get_y() / 16)->get_pathable();
+		bool result = false;
 
-		if(result == true)
+		if(value != nullptr && value->get_x() > 0 && value->get_x() <= 800 && value->get_y() > 0 && value->get_y() <= 800)
 		{
-			villagers.push_back(std::unique_ptr<villager>(value));
-		}
-		else
-		{
-			delete value;
+			result = get_tile_at(value->get_x() / 16, value->get_y() / 16)->get_pathable();
+
+			if(result == true)
+			{
+				this->villagers.push_back(std::unique_ptr<villager>(value));
+			}
+			else
+			{
+				delete value;
+			}
 		}
 
 		return result;
@@ -239,11 +252,11 @@ namespace villa
 	{
 		// Loop through each villager in the vector
 		// If we've found the target villager, remove it from the vector and stop the loop
-		for(std::vector<std::unique_ptr<villager>>::iterator iterator = villagers.begin(); iterator != villagers.end(); ++iterator)
+		for(std::vector<std::unique_ptr<villager>>::iterator iterator = this->villagers.begin(); iterator != this->villagers.end(); ++iterator)
 		{
 			if(iterator->get() == value)
 			{
-				villagers.erase(iterator);
+				this->villagers.erase(iterator);
 				break;
 			}
 		}
@@ -259,7 +272,7 @@ namespace villa
 
 		// Loop through each building in the vector, and pushes to a new vector
 		// Returns the new list of pointers
-		for(std::vector<std::unique_ptr<building>>::const_iterator iterator = buildings.begin(); iterator != buildings.end(); ++iterator)
+		for(std::vector<std::unique_ptr<building>>::const_iterator iterator = this->buildings.begin(); iterator != this->buildings.end(); ++iterator)
 		{
 			target.push_back(iterator->get());
 		}
@@ -277,7 +290,7 @@ namespace villa
 
 		// Loop through each item in the vector, and pushes to a new vector
 		// Returns the new list of pointers
-		for(std::vector<std::unique_ptr<resource>>::const_iterator iterator = resources.begin(); iterator != resources.end(); ++iterator)
+		for(std::vector<std::unique_ptr<resource>>::const_iterator iterator = this->resources.begin(); iterator != this->resources.end(); ++iterator)
 		{
 			target.push_back(iterator->get());
 		}
@@ -295,7 +308,7 @@ namespace villa
 
 		// Loop through each item in the vector, and pushes to a new vector
 		// Returns the new list of pointers
-		for(std::vector<std::unique_ptr<villager>>::const_iterator iterator = villagers.begin(); iterator != villagers.end(); ++iterator)
+		for(std::vector<std::unique_ptr<villager>>::const_iterator iterator = this->villagers.begin(); iterator != this->villagers.end(); ++iterator)
 		{
 			target.push_back(iterator->get());
 		}
@@ -311,7 +324,12 @@ namespace villa
 	 */
 	tile* map::get_tile_at(int x, int y)
 	{
-		return tiles[x][y].get();
+		if(x >= 0 && x < 50 && y >= 0 && y < 50)
+		{
+			return this->tiles[x][y].get();
+		}
+
+		return nullptr;
 	}
 
 	/**
@@ -326,7 +344,7 @@ namespace villa
 		{
 			for(int y = 0; y < 50; ++y)
 			{
-				if(tiles[x][y].get() == value)
+				if(this->tiles[x][y].get() == value)
 				{
 					return std::make_pair(x, y);
 				}
@@ -345,44 +363,44 @@ namespace villa
 	{
 		std::vector<tile*> neighbors;
 
-		if(y - 1 > 0 && tiles[x][y - 1]->get_pathable() == true) // North
+		if(y - 1 > 0 && this->tiles[x][y - 1]->get_pathable() == true) // North
 		{
-			neighbors.push_back(tiles[x][y - 1].get());
+			neighbors.push_back(this->tiles[x][y - 1].get());
 		}
 
-		if(x - 1 > 0 && tiles[x - 1][y]->get_pathable() == true) // West
+		if(x - 1 > 0 && this->tiles[x - 1][y]->get_pathable() == true) // West
 		{
-			neighbors.push_back(tiles[x - 1][y].get());
+			neighbors.push_back(this->tiles[x - 1][y].get());
 		}
 
-		if(x + 1 < 50 && tiles[x + 1][y]->get_pathable() == true) // East
+		if(x + 1 < 50 && this->tiles[x + 1][y]->get_pathable() == true) // East
 		{
-			neighbors.push_back(tiles[x + 1][y].get());
+			neighbors.push_back(this->tiles[x + 1][y].get());
 		}
 
-		if(y + 1 < 50 && tiles[x][y + 1]->get_pathable() == true) // South
+		if(y + 1 < 50 && this->tiles[x][y + 1]->get_pathable() == true) // South
 		{
-			neighbors.push_back(tiles[x][y + 1].get());
+			neighbors.push_back(this->tiles[x][y + 1].get());
 		}
 
-		if(x - 1 > 0 && y - 1 > 0 && tiles[x - 1][y - 1]->get_pathable() == true) // North-West
+		if(x - 1 > 0 && y - 1 > 0 && this->tiles[x - 1][y - 1]->get_pathable() == true) // North-West
 		{
-			neighbors.push_back(tiles[x - 1][y - 1].get());
+			neighbors.push_back(this->tiles[x - 1][y - 1].get());
 		}
 
-		if(x + 1 < 50 && y - 1 > 0 && tiles[x + 1][y - 1]->get_pathable() == true) // North-East
+		if(x + 1 < 50 && y - 1 > 0 && this->tiles[x + 1][y - 1]->get_pathable() == true) // North-East
 		{
-			neighbors.push_back(tiles[x + 1][y - 1].get());
+			neighbors.push_back(this->tiles[x + 1][y - 1].get());
 		}
 
-		if(x - 1 < 0 && y + 1 < 50 && tiles[x - 1][y + 1]->get_pathable() == true) // South-West
+		if(x - 1 < 0 && y + 1 < 50 && this->tiles[x - 1][y + 1]->get_pathable() == true) // South-West
 		{
-			neighbors.push_back(tiles[x - 1][y + 1].get());
+			neighbors.push_back(this->tiles[x - 1][y + 1].get());
 		}
 
-		if(x + 1 < 50 && y + 1 < 50 && tiles[x + 1][y + 1]->get_pathable() == true) // South-East
+		if(x + 1 < 50 && y + 1 < 50 && this->tiles[x + 1][y + 1]->get_pathable() == true) // South-East
 		{
-			neighbors.push_back(tiles[x + 1][y + 1].get());
+			neighbors.push_back(this->tiles[x + 1][y + 1].get());
 		}
 
 		return neighbors;
@@ -390,14 +408,14 @@ namespace villa
 
 	/**
 	 * Gets whether there is available space for the building type at a specific location
-	 * @param value
-	 * @return
+	 * @param value - The type of building.
+	 * @return Boolean representing whether there is available space for the building type.
 	 */
-	bool map::get_available_space(int x, int y, buildingtype type)
+	bool map::get_available_space(int x, int y, buildingtype value)
 	{
 		int width = 0, height = 0;
 
-		switch(type)
+		switch(value)
 		{
 			case buildingtype::town_hall :
 				width = 2;
@@ -429,17 +447,20 @@ namespace villa
 				height = 1;
 				break;
 
+			case buildingtype::null :
+				return false;
+
 			default :
 				break;
 		}
 
 		bool result = true;
 
-		for(int i = x; i < (x + (width * 16)) && result == true; i += 16)
+		for(int i = x; i <= (x + (width * 16)) && result == true; i += 16)
 		{
-			for(int j = (y - (height * 16)); j < y && result == true; j += 16)
+			for(int j = (y - (height * 16)); j <= y && result == true; j += 16)
 			{
-				if(get_tile_at(i / 16, j / 16)->get_pathable() == false)
+				if(i < 0 || i > 800 || j < 0 || j > 800 || get_tile_at(i / 16, j / 16)->get_pathable() == false)
 				{
 					result = false;
 				}

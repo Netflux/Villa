@@ -4,6 +4,7 @@
 #include <memory>
 #include <stack>
 #include "entity.hpp"
+#include "resource.hpp"
 #include "task.hpp"
 
 namespace villa
@@ -18,11 +19,12 @@ namespace villa
 			villager(int x, int y);
 			virtual ~villager();
 			void move(int x, int y);
-			virtual void rest();
-			virtual void harvest();
+			void rest(unsigned int value);
+			void harvest(unsigned int value);
 			void add_task(task* value);
 			void remove_task();
 			task* get_task();
+			int get_task_count();
 			int get_speed();
 			void set_speed(int value);
 			int get_health();

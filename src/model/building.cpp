@@ -15,39 +15,41 @@ namespace villa
 	 */
 	building::building(int x, int y, buildingtype type) : entity(x, y, new inventory()), type(type)
 	{
-		switch(type)
+		switch(this->type)
 		{
 			case buildingtype::town_hall :
-				width = 2;
-				height = 3;
+				this->width = 2;
+				this->height = 3;
 				break;
 
 			case buildingtype::house :
-				width = 2;
-				height = 2;
+				this->width = 2;
+				this->height = 2;
 				break;
 
 			case buildingtype::house_small :
-				width = 1;
-				height = 1;
+				this->width = 1;
+				this->height = 1;
 				break;
 
 			case buildingtype::farmhouse :
-				width = 2;
-				height = 2;
+				this->width = 2;
+				this->height = 2;
 				break;
 
 			case buildingtype::blacksmith :
-				width = 2;
-				height = 2;
+				this->width = 2;
+				this->height = 2;
 				break;
 
 			case buildingtype::stall :
-				width = 2;
-				height = 1;
+				this->width = 2;
+				this->height = 1;
 				break;
 
 			default :
+				this->width = 0;
+				this->height = 0;
 				break;
 		}
 	}
@@ -58,7 +60,7 @@ namespace villa
 	 */
 	buildingtype building::get_type()
 	{
-		return type;
+		return this->type;
 	}
 
 	/**
@@ -67,7 +69,7 @@ namespace villa
 	 */
 	void building::set_type(buildingtype value)
 	{
-		type = value;
+		this->type = value;
 	}
 
 	/**
@@ -76,7 +78,7 @@ namespace villa
 	 */
 	int building::get_width()
 	{
-		return width;
+		return this->width;
 	}
 
 	/**
@@ -85,6 +87,6 @@ namespace villa
 	 */
 	int building::get_height()
 	{
-		return height;
+		return this->height;
 	}
 }

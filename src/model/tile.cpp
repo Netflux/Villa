@@ -21,7 +21,7 @@ namespace villa
 	 */
 	tiletype tile::get_type()
 	{
-		return type;
+		return this->type;
 	}
 
 	/**
@@ -39,7 +39,7 @@ namespace villa
 	 */
 	bool tile::get_pathable()
 	{
-		return pathable;
+		return this->pathable;
 	}
 
 	/**
@@ -48,7 +48,7 @@ namespace villa
 	 */
 	void tile::set_pathable(bool value)
 	{
-		pathable = value;
+		this->pathable = value;
 	}
 
 	/**
@@ -57,7 +57,7 @@ namespace villa
 	 */
 	bool tile::get_has_road()
 	{
-		return has_road;
+		return this->has_road;
 	}
 
 	/**
@@ -66,6 +66,6 @@ namespace villa
 	 */
 	void tile::set_has_road(bool value)
 	{
-		has_road = value;
+		this->has_road = value;
 	}
 }
