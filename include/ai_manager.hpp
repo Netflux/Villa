@@ -52,7 +52,7 @@ namespace villa
 			void handle_task_take_item(villager* value);
 			void handle_task_store_item(villager* value);
 			void handle_task_rest(villager* value);
-			void handle_villager_needs(villager* value);
+			bool handle_villager_needs(villager* value);
 			std::pair<building*, item*> get_item_in_building(int x, int y, itemtype type);
 			resource* get_closest_resource(int x, int y, resourcetype type);
 			std::vector<std::pair<int, int>> get_path(int x, int y, int target_x, int target_y);

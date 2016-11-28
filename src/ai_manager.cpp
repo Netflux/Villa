@@ -115,102 +115,65 @@ namespace villa
 	 */
 	void ai_manager::handle_task_idle(villager* value)
 	{
-		// Manage fatigue, hunger and thirst
-		handle_villager_needs(value);
-
-		// Scale down random number while preserving uniform distribution
-		std::uniform_int_distribution<int> distribution(1, 100);
-		int target_action = distribution(rng);
-		//std::cout << "Target Action: " << target_action << std::endl;
-		if(target_action <= 30) // Rest for a short duration (30% chance)
+		// Manage fatigue, hunger and thirst. If already handled, proceed with idle task.
+		if(!handle_villager_needs(value))
 		{
-			value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 2500)));
-			value->set_fatigue(value->get_fatigue() - 4);
-		}
-		else if(target_action <= 80) // Harvest the closest resource (50% chance)
-		{
-			std::vector<resource*> resources = simulation_map->get_resources();
-			std::pair<int, resource*> target(9999, nullptr);
-
 			// Scale down random number while preserving uniform distribution
-			std::uniform_int_distribution<int> distribution(1, 4);
-
-			if(distribution(rng) == 1) // 25% chance to search for water resource
-			{
-				// Loop through each resource in the vector
-				for(std::vector<resource*>::const_iterator it = resources.begin(); it != resources.end(); ++it)
-				{
-					if((*it)->get_harvestable() == true && (*it)->get_type() == resourcetype::water)
-					{
-						int distance = abs(value->get_x() - (*it)->get_x()) + abs(value->get_y() - (*it)->get_y());
-
-						if(distance < target.first)
-						{
-							target.first = distance;
-							target.second = (*it);
-						}
-					}
-				}
-			}
-			else // 75% chance to search for resource that is not water
-			{
-				// Loop through each resource in the vector
-				for(std::vector<resource*>::const_iterator it = resources.begin(); it != resources.end(); ++it)
-				{
-					if((*it)->get_harvestable() == true && (*it)->get_type() != resourcetype::water)
-					{
-						int distance = abs(value->get_x() - (*it)->get_x()) + abs(value->get_y() - (*it)->get_y());
-
-						if(distance < target.first)
-						{
-							target.first = distance;
-							target.second = (*it);
-						}
-					}
-				}
-			}
-
-			// If a target resource is found, harvest it
-			if(target.second != nullptr)
-			{
-				value->add_task(new task(tasktype::harvest, taskdata(std::make_pair(target.second->get_x(), target.second->get_y()), target.second)));
-			}
-			else
+			std::uniform_int_distribution<int> distribution(1, 100);
+			int target_action = distribution(rng);
+			//std::cout << "Target Action: " << target_action << std::endl;
+			if(target_action <= 30) // Rest for a short duration (30% chance)
 			{
 				value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 2500)));
 				value->set_fatigue(value->get_fatigue() - 4);
 			}
-		}
-		else if(target_action <= 95) // Store some items (15% chance)
-		{
-			if(value->get_inventory()->get_item_count() > 25)
+			else if(target_action <= 80) // Harvest the closest resource (50% chance)
 			{
-				std::vector<building*> buildings = simulation_map->get_buildings();
-				std::pair<int, building*> target(9999, nullptr);
+				std::vector<resource*> resources = simulation_map->get_resources();
+				std::pair<int, resource*> target(9999, nullptr);
 
-				// Loop through each building in the vector
-				for(std::vector<building*>::const_iterator it = buildings.begin(); it != buildings.end(); ++it)
+				// Scale down random number while preserving uniform distribution
+				std::uniform_int_distribution<int> distribution(1, 4);
+
+				if(distribution(rng) == 1) // 25% chance to search for water resource
 				{
-					int distance = abs(value->get_x() - (*it)->get_x()) + abs(value->get_y() - (*it)->get_y());
-
-					if(distance < target.first)
+					// Loop through each resource in the vector
+					for(std::vector<resource*>::const_iterator it = resources.begin(); it != resources.end(); ++it)
 					{
-						target.first = distance;
-						target.second = (*it);
+						if((*it)->get_harvestable() == true && (*it)->get_type() == resourcetype::water)
+						{
+							int distance = abs(value->get_x() - (*it)->get_x()) + abs(value->get_y() - (*it)->get_y());
+
+							if(distance < target.first)
+							{
+								target.first = distance;
+								target.second = (*it);
+							}
+						}
+					}
+				}
+				else // 75% chance to search for resource that is not water
+				{
+					// Loop through each resource in the vector
+					for(std::vector<resource*>::const_iterator it = resources.begin(); it != resources.end(); ++it)
+					{
+						if((*it)->get_harvestable() == true && (*it)->get_type() != resourcetype::water)
+						{
+							int distance = abs(value->get_x() - (*it)->get_x()) + abs(value->get_y() - (*it)->get_y());
+
+							if(distance < target.first)
+							{
+								target.first = distance;
+								target.second = (*it);
+							}
+						}
 					}
 				}
 
-				// If a target building is found, store some items in it
+				// If a target resource is found, harvest it
 				if(target.second != nullptr)
 				{
-					// Scale down random number while preserving uniform distribution
-					std::uniform_int_distribution<int> distribution(1, value->get_inventory()->get_item_count());
-					int quantity = distribution(rng);
-
-					for(int i = 0; i < quantity; ++i)
-					{
-						value->add_task(new task(tasktype::store_item, taskdata(std::make_pair(target.second->get_x(), target.second->get_y()), std::make_pair(target.second, value->get_inventory()->get_items()[i]))));
-					}
+					value->add_task(new task(tasktype::harvest, taskdata(std::make_pair(target.second->get_x(), target.second->get_y()), target.second)));
 				}
 				else
 				{
@@ -218,62 +181,100 @@ namespace villa
 					value->set_fatigue(value->get_fatigue() - 4);
 				}
 			}
-		}
-		else if(target_action <= 100) // Build a building (5% chance)
-		{
-			// Scale down random number while preserving uniform distribution
-			std::uniform_int_distribution<int> distribution_type(1, 6);
-			std::uniform_int_distribution<int> distribution(17, 783);
-			int i = distribution(rng), j = distribution(rng), count = 0;
-
-			buildingtype type = buildingtype::town_hall;
-			bool result = false;
-
-			switch(distribution_type(rng))
+			else if(target_action <= 95) // Store some items (15% chance)
 			{
-				case 1 :
-					type = buildingtype::town_hall;
-					break;
+				if(value->get_inventory()->get_item_count() > 25)
+				{
+					std::vector<building*> buildings = simulation_map->get_buildings();
+					std::pair<int, building*> target(9999, nullptr);
 
-				case 2 :
-					type = buildingtype::house;
-					break;
+					// Loop through each building in the vector
+					for(std::vector<building*>::const_iterator it = buildings.begin(); it != buildings.end(); ++it)
+					{
+						int distance = abs(value->get_x() - (*it)->get_x()) + abs(value->get_y() - (*it)->get_y());
 
-				case 3 :
-					type = buildingtype::house_small;
-					break;
+						if(distance < target.first)
+						{
+							target.first = distance;
+							target.second = (*it);
+						}
+					}
 
-				case 4 :
-					type = buildingtype::farmhouse;
-					break;
+					// If a target building is found, store some items in it
+					if(target.second != nullptr)
+					{
+						// Scale down random number while preserving uniform distribution
+						std::uniform_int_distribution<int> distribution(1, value->get_inventory()->get_item_count());
+						int quantity = distribution(rng);
 
-				case 5 :
-					type = buildingtype::blacksmith;
-					break;
-
-				case 6 :
-					type = buildingtype::stall;
-					break;
+						for(int i = 0; i < quantity; ++i)
+						{
+							value->add_task(new task(tasktype::store_item, taskdata(std::make_pair(target.second->get_x(), target.second->get_y()), std::make_pair(target.second, value->get_inventory()->get_items()[i]))));
+						}
+					}
+					else
+					{
+						value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 2500)));
+						value->set_fatigue(value->get_fatigue() - 4);
+					}
+				}
 			}
-
-			// Try to place the building 5 times, then rest (longer duration if success)
-			while(!result && count < 5)
+			else if(target_action <= 100) // Build a building (5% chance)
 			{
-				i = distribution(rng);
-				j = distribution(rng);
+				// Scale down random number while preserving uniform distribution
+				std::uniform_int_distribution<int> distribution_type(1, 6);
+				std::uniform_int_distribution<int> distribution(17, 783);
+				int i = distribution(rng), j = distribution(rng), count = 0;
 
-				result = simulation_map->get_available_space(i, j, type);
-				count += 1;
-			}
+				buildingtype type = buildingtype::town_hall;
+				bool result = false;
 
-			if(result == true)
-			{
-				value->add_task(new task(tasktype::build, taskdata(std::make_pair(value->get_x(), value->get_y()), new building(i, j, type))));
-			}
-			else
-			{
-				value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 5000)));
-				value->set_fatigue(value->get_fatigue() - 8);
+				switch(distribution_type(rng))
+				{
+					case 1 :
+						type = buildingtype::town_hall;
+						break;
+
+					case 2 :
+						type = buildingtype::house;
+						break;
+
+					case 3 :
+						type = buildingtype::house_small;
+						break;
+
+					case 4 :
+						type = buildingtype::farmhouse;
+						break;
+
+					case 5 :
+						type = buildingtype::blacksmith;
+						break;
+
+					case 6 :
+						type = buildingtype::stall;
+						break;
+				}
+
+				// Try to place the building 5 times, then rest (longer duration if success)
+				while(!result && count < 5)
+				{
+					i = distribution(rng);
+					j = distribution(rng);
+
+					result = simulation_map->get_available_space(i, j, type);
+					count += 1;
+				}
+
+				if(result == true)
+				{
+					value->add_task(new task(tasktype::build, taskdata(std::make_pair(value->get_x(), value->get_y()), new building(i, j, type))));
+				}
+				else
+				{
+					value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 5000)));
+					value->set_fatigue(value->get_fatigue() - 8);
+				}
 			}
 		}
 	}
@@ -300,76 +301,77 @@ namespace villa
 	 */
 	void ai_manager::handle_task_build(villager* value)
 	{
-		// Manage fatigue, hunger and thirst
-		handle_villager_needs(value);
-
-		taskdata data = value->get_task()->get_data();
-
-		// Scale down random number while preserving uniform distribution
-		std::uniform_int_distribution<int> distribution(1, 2);
-
-		if(value->get_inventory()->get_item_count(itemtype::lumber) >= 20 && value->get_inventory()->get_item_count(itemtype::stone) >= 20)
+		// Manage fatigue, hunger and thirst. If already handled, proceed with idle task.
+		if(!handle_villager_needs(value))
 		{
-			simulation_map->add_building(data.target_building);
-			value->remove_task();
-			value->add_task(new task(tasktype::rest, taskdata(std::make_pair(data.target_building->get_x(), data.target_building->get_x()), SDL_GetTicks() + 10000)));
-			value->set_hunger(value->get_hunger() + 5);
-			value->set_thirst(value->get_thirst() + 5);
-			value->set_fatigue(value->get_fatigue() + 5);
+			taskdata data = value->get_task()->get_data();
 
-			// Add a random number of villagers at the new building
-			for(int count = 0; count < distribution(rng); ++count)
+			// Scale down random number while preserving uniform distribution
+			std::uniform_int_distribution<int> distribution(1, 2);
+
+			if(value->get_inventory()->get_item_count(itemtype::lumber) >= 20 && value->get_inventory()->get_item_count(itemtype::stone) >= 20)
 			{
-				simulation_map->add_villager(new villager(data.target_building->get_x() + 8, data.target_building->get_y() + 8));
-			}
-		}
-		else
-		{
-			if(distribution(rng) == 1 && value->get_inventory()->get_item_count(itemtype::lumber) < 20)
-			{
-				// Look for a building that contains lumber
-				std::pair<building*, item*> target_building = get_item_in_building(value->get_x(), value->get_y(), itemtype::lumber);
+				simulation_map->add_building(data.target_building);
+				value->remove_task();
+				value->add_task(new task(tasktype::rest, taskdata(std::make_pair(data.target_building->get_x(), data.target_building->get_x()), SDL_GetTicks() + 10000)));
+				value->set_hunger(value->get_hunger() + 5);
+				value->set_thirst(value->get_thirst() + 5);
+				value->set_fatigue(value->get_fatigue() + 5);
 
-				if(target_building.first != nullptr && target_building.second != nullptr)
+				// Add a random number of villagers at the new building
+				for(int count = 0; count < distribution(rng); ++count)
 				{
-					value->add_task(new task(tasktype::take_item, taskdata(std::make_pair(target_building.first->get_x(), target_building.first->get_y()), std::make_pair(target_building.first, target_building.second))));
-				}
-				else // If no buildings contain lumber, look for a lumber resource
-				{
-					resource* target_resource = get_closest_resource(value->get_x(), value->get_y(), resourcetype::tree);
-
-					if(target_resource != nullptr)
-					{
-						value->add_task(new task(tasktype::harvest, taskdata(std::make_pair(target_resource->get_x(), target_resource->get_y()), target_resource)));
-					}
-					else
-					{
-						value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 2500)));
-						value->set_fatigue(value->get_fatigue() - 4);
-					}
+					simulation_map->add_villager(new villager(data.target_building->get_x() + 8, data.target_building->get_y() + 8));
 				}
 			}
 			else
 			{
-				// Look for a building that contains stone
-				std::pair<building*, item*> target_building = get_item_in_building(value->get_x(), value->get_y(), itemtype::stone);
-
-				if(target_building.first != nullptr && target_building.second != nullptr)
+				if(distribution(rng) == 1 && value->get_inventory()->get_item_count(itemtype::lumber) < 20)
 				{
-					value->add_task(new task(tasktype::take_item, taskdata(std::make_pair(target_building.first->get_x(), target_building.first->get_y()), std::make_pair(target_building.first, target_building.second))));
-				}
-				else // If no buildings contain stone, look for a stone resource
-				{
-					resource* target_resource = get_closest_resource(value->get_x(), value->get_y(), resourcetype::stone);
+					// Look for a building that contains lumber
+					std::pair<building*, item*> target_building = get_item_in_building(value->get_x(), value->get_y(), itemtype::lumber);
 
-					if(target_resource != nullptr)
+					if(target_building.first != nullptr && target_building.second != nullptr)
 					{
-						value->add_task(new task(tasktype::harvest, taskdata(std::make_pair(target_resource->get_x(), target_resource->get_y()), target_resource)));
+						value->add_task(new task(tasktype::take_item, taskdata(std::make_pair(target_building.first->get_x(), target_building.first->get_y()), std::make_pair(target_building.first, target_building.second))));
 					}
-					else
+					else // If no buildings contain lumber, look for a lumber resource
 					{
-						value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 2500)));
-						value->set_fatigue(value->get_fatigue() - 4);
+						resource* target_resource = get_closest_resource(value->get_x(), value->get_y(), resourcetype::tree);
+
+						if(target_resource != nullptr)
+						{
+							value->add_task(new task(tasktype::harvest, taskdata(std::make_pair(target_resource->get_x(), target_resource->get_y()), target_resource)));
+						}
+						else
+						{
+							value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 2500)));
+							value->set_fatigue(value->get_fatigue() - 4);
+						}
+					}
+				}
+				else
+				{
+					// Look for a building that contains stone
+					std::pair<building*, item*> target_building = get_item_in_building(value->get_x(), value->get_y(), itemtype::stone);
+
+					if(target_building.first != nullptr && target_building.second != nullptr)
+					{
+						value->add_task(new task(tasktype::take_item, taskdata(std::make_pair(target_building.first->get_x(), target_building.first->get_y()), std::make_pair(target_building.first, target_building.second))));
+					}
+					else // If no buildings contain stone, look for a stone resource
+					{
+						resource* target_resource = get_closest_resource(value->get_x(), value->get_y(), resourcetype::stone);
+
+						if(target_resource != nullptr)
+						{
+							value->add_task(new task(tasktype::harvest, taskdata(std::make_pair(target_resource->get_x(), target_resource->get_y()), target_resource)));
+						}
+						else
+						{
+							value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 2500)));
+							value->set_fatigue(value->get_fatigue() - 4);
+						}
 					}
 				}
 			}
@@ -470,15 +472,17 @@ namespace villa
 	 * Handles the villagers needs (fatigue, hunger, thirst).
 	 * @param value - The villager.
 	 */
-	void ai_manager::handle_villager_needs(villager* value)
+	bool ai_manager::handle_villager_needs(villager* value)
 	{
-		if(value->get_fatigue() >= 75)
+		if(value->get_fatigue() >= 60)
 		{
 			// Rest to reduce fatigue
 			value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 10000)));
 			value->set_fatigue(value->get_fatigue() - 16);
+
+			return true;
 		}
-		else if(value->get_hunger() >= 75)
+		else if(value->get_hunger() >= 60)
 		{
 			// Look for some food to consume
 			item* food = value->get_inventory()->get_item(itemtype::food);
@@ -511,8 +515,10 @@ namespace villa
 					}
 				}
 			}
+
+			return true;
 		}
-		else if(value->get_thirst() >= 75)
+		else if(value->get_thirst() >= 60)
 		{
 			// Look for some water to consume in the villagers inventory
 			item* water = value->get_inventory()->get_item(itemtype::water);
@@ -545,7 +551,11 @@ namespace villa
 					}
 				}
 			}
+
+			return true;
 		}
+
+		return false;
 	}
 
 	/**
