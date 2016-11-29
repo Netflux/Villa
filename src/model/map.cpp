@@ -16,7 +16,7 @@ namespace villa
 		{
 			for(int j = 0; j < 50; ++j)
 			{
-				this->tiles[i][j].reset(new tile(tiletype::water, false, false));
+				this->tiles[i][j].reset(new tile(tiletype::water, false));
 			}
 		}
 
@@ -31,19 +31,19 @@ namespace villa
 
 				if(n < 0.4)
 				{
-					this->tiles[i][j].reset(new tile(tiletype::water, false, false));
+					this->tiles[i][j].reset(new tile(tiletype::water, false));
 				}
 				else if(n < 0.475)
 				{
-					this->tiles[i][j].reset(new tile(tiletype::sand, true, false));
+					this->tiles[i][j].reset(new tile(tiletype::sand, true));
 				}
 				else if(n < 0.6)
 				{
-					this->tiles[i][j].reset(new tile(tiletype::grass, true, false));
+					this->tiles[i][j].reset(new tile(tiletype::grass, true));
 				}
 				else
 				{
-					this->tiles[i][j].reset(new tile(tiletype::dirt, true, false));
+					this->tiles[i][j].reset(new tile(tiletype::dirt, true));
 				}
 			}
 		}
