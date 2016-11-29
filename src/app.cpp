@@ -647,7 +647,7 @@ namespace villa
 					}
 
 					// If all items have been harvested from the resource, set its harvestable state to false
-					else if((*iterator)->get_inventory()->get_item_count() == 0 && (*iterator)->get_harvestable() == true)
+					if((*iterator)->get_inventory()->get_item_count() == 0 && (*iterator)->get_harvestable() == true)
 					{
 						// Graves are removed as soon as all items are harvested
 						if((*iterator)->get_type() == resourcetype::grave)

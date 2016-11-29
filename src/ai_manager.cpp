@@ -204,7 +204,7 @@ namespace villa
 					if(target.second != nullptr)
 					{
 						// Scale down random number while preserving uniform distribution
-						std::uniform_int_distribution<int> distribution(1, value->get_inventory()->get_item_count() - 1);
+						std::uniform_int_distribution<int> distribution(1, value->get_inventory()->get_item_count());
 						int quantity = distribution(rng);
 
 						for(int i = 0; i < quantity; ++i)
@@ -718,7 +718,7 @@ namespace villa
 				// The additional movement cost is lower if there's a road (1 vs 5)
 				// Additional movement cost is added for diagonal movement (1 vs 1.414)
 				// We use 1.414 (square root of two) as it represent the actual diagonal distance covered
-				double new_cost = (cost_so_far[current] + ((*it)->get_has_road() ? 1 : 5)) + (it - neighbours.begin() < 4 ? 1 : 1.414);
+				double new_cost = (cost_so_far[current] + (it - neighbours.begin() < 4 ? 1 : 1.414));
 				if(!cost_so_far.count(*it) || new_cost < cost_so_far[*it])
 				{
 					cost_so_far[*it] = new_cost;

@@ -27,13 +27,10 @@ namespace villa
 			void set_type(tiletype type);
 			bool get_pathable();
 			void set_pathable(bool value);
-			bool get_has_road();
-			void set_has_road(bool value);
 
 		private:
 			tiletype type;
 			bool pathable;
-			bool has_road;
 	};
 }
 

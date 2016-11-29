@@ -130,35 +130,37 @@ namespace villa
 		// Add 5 villagers to the map at the start
 		for(int count = 0; count < 5; ++count)
 		{
-			villager* target = new villager(distribution(rng), distribution(rng));
-			tool* target_tool = nullptr;
+			bool result = false;
 
-			switch(distribution_item(rng))
-			{
-				case 1 :
-					target_tool = new tool(itemtype::axe, distribution_efficiency(rng));
-					break;
-
-				case 2 :
-					target_tool = new tool(itemtype::bucket, distribution_efficiency(rng));
-					break;
-
-				case 3 :
-					target_tool = new tool(itemtype::pickaxe, distribution_efficiency(rng));
-					break;
-
-				default :
-					break;
-			}
-
-			while(!add_villager(target))
+			while(result == false)
 			{
 				villager* target = new villager(distribution(rng), distribution(rng));
+				tool* target_tool = nullptr;
+
+				switch(distribution_item(rng))
+				{
+					case 1 :
+						target_tool = new tool(itemtype::axe, distribution_efficiency(rng));
+						break;
+
+					case 2 :
+						target_tool = new tool(itemtype::bucket, distribution_efficiency(rng));
+						break;
+
+					case 3 :
+						target_tool = new tool(itemtype::pickaxe, distribution_efficiency(rng));
+						break;
+
+					default :
+						break;
+				}
 
 				if(target_tool != nullptr)
 				{
 					target->get_inventory()->add_item(target_tool);
 				}
+
+				result = add_villager(target);
 			}
 		}
 	}

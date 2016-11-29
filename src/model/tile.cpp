@@ -11,9 +11,8 @@ namespace villa
 	 * Constructor for the Tile class.
 	 * @param type - The tile type.
 	 * @param pathable - Boolean representing whether the tile is pathable.
-	 * @param has_road - Boolean representing whether the tile has a road.
 	 */
-	tile::tile(tiletype type, bool pathable, bool has_road) : type(type), pathable(pathable), has_road(has_road) { }
+	tile::tile(tiletype type, bool pathable, bool has_road) : type(type), pathable(pathable) { }
 
 	/**
 	 * Gets the type of the tile.
@@ -49,23 +48,5 @@ namespace villa
 	void tile::set_pathable(bool value)
 	{
 		this->pathable = value;
-	}
-
-	/**
-	 * Gets whether the tile has a road.
-	 * @return Boolean representing whether the tile has a road.
-	 */
-	bool tile::get_has_road()
-	{
-		return this->has_road;
-	}
-
-	/**
-	 * Sets whether the tile has a road.
-	 * @param value - Boolean representing whether the tile has a road.
-	 */
-	void tile::set_has_road(bool value)
-	{
-		this->has_road = value;
 	}
 }
