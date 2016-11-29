@@ -8,7 +8,7 @@ using namespace villa;
  */
 TEST(VillagerTest, GetX)
 {
-	std::unique_ptr<villager> target(new villager());
+	std::unique_ptr<villager> target(new villager(0, 0));
 
 	// The villager should start at the 0 x-coord
 	EXPECT_EQ(0, target->get_x());
@@ -19,7 +19,7 @@ TEST(VillagerTest, GetX)
  */
 TEST(VillagerTest, SetX)
 {
-	std::unique_ptr<villager> target(new villager());
+	std::unique_ptr<villager> target(new villager(0, 0));
 
 	// The villager should start at the 0 x-coord
 	EXPECT_EQ(0, target->get_x());
@@ -35,7 +35,7 @@ TEST(VillagerTest, SetX)
  */
 TEST(VillagerTest, GetY)
 {
-	std::unique_ptr<villager> target(new villager());
+	std::unique_ptr<villager> target(new villager(0, 0));
 
 	// The villager should start at the 0 y-coord
 	EXPECT_EQ(0, target->get_y());
@@ -46,7 +46,7 @@ TEST(VillagerTest, GetY)
  */
 TEST(VillagerTest, SetY)
 {
-	std::unique_ptr<villager> target(new villager());
+	std::unique_ptr<villager> target(new villager(0, 0));
 
 	// The villager should start at the 0 y-coord
 	EXPECT_EQ(0, target->get_y());
@@ -62,7 +62,7 @@ TEST(VillagerTest, SetY)
  */
 TEST(VillagerTest, GetInventory)
 {
-	std::unique_ptr<villager> target(new villager());
+	std::unique_ptr<villager> target(new villager(0, 0));
 	inventory* inv = target->get_inventory();
 
 	// The villager should have an inventory
@@ -74,7 +74,7 @@ TEST(VillagerTest, GetInventory)
  */
 TEST(VillagerTest, GetInventoryDefaultEmpty)
 {
-	std::unique_ptr<villager> target(new villager());
+	std::unique_ptr<villager> target(new villager(0, 0));
 	inventory* inv = target->get_inventory();
 
 	// The villager should start with a fresh inventory (0 items)
@@ -86,7 +86,7 @@ TEST(VillagerTest, GetInventoryDefaultEmpty)
  */
 TEST(VillagerTest, GetSpeed)
 {
-	std::unique_ptr<villager> target(new villager());
+	std::unique_ptr<villager> target(new villager(0, 0));
 
 	// The villager should start with a speed of 100
 	EXPECT_EQ(100, target->get_speed());
@@ -97,7 +97,7 @@ TEST(VillagerTest, GetSpeed)
  */
 TEST(VillagerTest, SetSpeed)
 {
-	std::unique_ptr<villager> target(new villager());
+	std::unique_ptr<villager> target(new villager(0, 0));
 
 	// The villager should start with a speed of 100
 	EXPECT_EQ(100, target->get_speed());
@@ -113,7 +113,7 @@ TEST(VillagerTest, SetSpeed)
  */
 TEST(VillagerTest, Move)
 {
-	std::unique_ptr<villager> target(new villager());
+	std::unique_ptr<villager> target(new villager(0, 0));
 
 	// The villager should start at the coords (0, 0)
 	EXPECT_EQ(0, target->get_x());
@@ -137,7 +137,7 @@ TEST(VillagerTest, Move)
  */
 TEST(VillagerTest, IsAt)
 {
-	std::unique_ptr<villager> target(new villager());
+	std::unique_ptr<villager> target(new villager(0, 0));
 
 	// The villager should start at the coords (0, 0)
 	EXPECT_EQ(true, target->is_at(0, 0));
@@ -153,7 +153,7 @@ TEST(VillagerTest, IsAt)
  */
 TEST(VillagerTest, IsNotAt)
 {
-	std::unique_ptr<villager> target(new villager());
+	std::unique_ptr<villager> target(new villager(0, 0));
 
 	// The villager should start at the coords (0, 0)
 	EXPECT_EQ(true, target->is_at(0, 0));
@@ -170,7 +170,7 @@ TEST(VillagerTest, IsNotAt)
  */
 TEST(VillagerTest, AddTask)
 {
-	std::unique_ptr<villager> target(new villager());
+	std::unique_ptr<villager> target(new villager(0, 0));
 	task* target_task = new task(tasktype::rest, taskdata(std::make_pair(0, 0)));
 	task* target_task2 = new task(tasktype::rest, taskdata(std::make_pair(50, 50), 50));
 
@@ -190,7 +190,7 @@ TEST(VillagerTest, AddTask)
  */
 TEST(VillagerTest, RemoveTask)
 {
-	std::unique_ptr<villager> target(new villager());
+	std::unique_ptr<villager> target(new villager(0, 0));
 	task* target_task = new task(tasktype::rest, taskdata(std::make_pair(0, 0)));
 	task* initial_task = target->get_task();
 
@@ -210,7 +210,7 @@ TEST(VillagerTest, RemoveTask)
  */
 TEST(VillagerTest, GetTask)
 {
-	std::unique_ptr<villager> target(new villager());
+	std::unique_ptr<villager> target(new villager(0, 0));
 	task* target_task = new task(tasktype::rest, taskdata(std::make_pair(0, 0)));
 
 	target->add_task(target_task);
