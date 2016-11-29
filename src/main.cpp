@@ -1,6 +1,4 @@
 #include "app.hpp"
-#include "inventory.hpp"
-#include <iostream>
 
 using namespace villa;
 

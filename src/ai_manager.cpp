@@ -1,5 +1,4 @@
 #include "ai_manager.hpp"
-#include <iostream>
 
 namespace villa
 {
@@ -34,7 +33,6 @@ namespace villa
 				}
 				else
 				{
-					//std::cout << "Target X: " << data.target_coords.first << ". Target Y: " << data.target_coords.second << ". Current X: " << (*iterator)->get_x() << ". Current Y: " << (*iterator)->get_y() << std::endl;
 					std::vector<std::pair<int, int>> path = get_path((*iterator)->get_x(), (*iterator)->get_y(), data.target_coords.first, data.target_coords.second);
 
 					// Check if there is a valid path to the target
@@ -58,12 +56,10 @@ namespace villa
 			switch(current_task->get_type())
 			{
 				case tasktype::idle : // Check current status and perform a new task
-					//std::cout << "Task: Idle." << std::endl;
 					handle_task_idle(*iterator);
 					break;
 
 				case tasktype::move : // Move towards the target coordinates
-					//std::cout << "Task: Move." << std::endl;
 					handle_task_move(*iterator);
 					break;
 
@@ -77,7 +73,6 @@ namespace villa
 				case tasktype::harvest : // Take all the items from the target resource, resting between each harvest cycle
 					if((*iterator)->is_at(data.target_coords.first, data.target_coords.second))
 					{
-						//std::cout << "Task: Harvest." << std::endl;
 						handle_task_harvest(*iterator);
 						break;
 					}
@@ -85,7 +80,6 @@ namespace villa
 				case tasktype::take_item : // Take the item from the target entity
 					if((*iterator)->is_at(data.target_coords.first, data.target_coords.second))
 					{
-						//std::cout << "Task: Take Item." << std::endl;
 						handle_task_take_item(*iterator);
 						break;
 					}
@@ -93,13 +87,11 @@ namespace villa
 				case tasktype::store_item : // Store the item into the target entity
 					if((*iterator)->is_at(data.target_coords.first, data.target_coords.second))
 					{
-						//std::cout << "Task: Store Item." << std::endl;
 						handle_task_store_item(*iterator);
 						break;
 					}
 
 				case tasktype::rest : // Wait until the set duration has passed
-					//std::cout << "Task: Rest." << std::endl;
 					handle_task_rest(*iterator);
 					break;
 
@@ -121,7 +113,7 @@ namespace villa
 			// Scale down random number while preserving uniform distribution
 			std::uniform_int_distribution<int> distribution(1, 100);
 			int target_action = distribution(rng);
-			//std::cout << "Target Action: " << target_action << std::endl;
+
 			if(target_action <= 30) // Rest for a short duration (30% chance)
 			{
 				value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 2500)));
@@ -433,12 +425,10 @@ namespace villa
 
 		if(data.target_entity->get_inventory()->get_item_count() > 0)
 		{
-			//std::cout << "Harvesting." << std::endl;
 			value->harvest(SDL_GetTicks());
 		}
 		else
 		{
-			//std::cout << "Stop harvesting." << std::endl;
 			value->remove_task();
 		}
 	}
