@@ -494,12 +494,12 @@ namespace villa
 	void ai_manager::handle_task_rest(villager* value)
 	{
 		// Scale down random number while preserving uniform distribution
-		std::uniform_int_distribution<int> distribution_chance(1, 500);
+		std::uniform_int_distribution<int> distribution_chance(1, 600);
 
 		// Roll for a chance to move positions
 		if(distribution_chance(rng) == 1)
 		{
-			std::uniform_int_distribution<int> distribution_position(0, 48);
+			std::uniform_int_distribution<int> distribution_position(0, 32);
 			int i = distribution_position(rng) - 16, j = distribution_position(rng) - 16;
 
 			// Check that the new position is valid
@@ -538,7 +538,7 @@ namespace villa
 			if(food != nullptr)
 			{
 				value->get_inventory()->remove_item(food);
-				value->set_hunger(value->get_hunger() - 4);
+				value->set_hunger(value->get_hunger() - 5);
 			}
 			else // If the villager does not have food, look for food in a building
 			{
@@ -574,7 +574,7 @@ namespace villa
 			if(water != nullptr)
 			{
 				value->get_inventory()->remove_item(water);
-				value->set_thirst(value->get_thirst() - 4);
+				value->set_thirst(value->get_thirst() - 8);
 			}
 			else // If the villager does not have water, look for water in a building
 			{

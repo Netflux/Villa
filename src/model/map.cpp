@@ -253,7 +253,7 @@ namespace villa
 	{
 		bool result = false;
 
-		if(value != nullptr && value->get_x() > 0 && value->get_x() <= 800 && value->get_y() > 0 && value->get_y() <= 800)
+		if(value != nullptr && value->get_x() >= 0 && value->get_x() <= 800 && value->get_y() >= 0 && value->get_y() <= 800)
 		{
 			result = get_tile_at(value->get_x() / 16, value->get_y() / 16)->get_pathable();
 
