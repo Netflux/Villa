@@ -9,16 +9,17 @@ OBJS = $(subst ./src, ./obj, $(SRC:.cpp=.o))
 
 #OBJ_NAME specifies the name of our executable
 OBJ_NAME = ./bin/Villa
-	
-#COMPILER_FLAGS specifies the additional compilation options we're using
-# -w suppresses all warnings
-# -Wl,-subsystem,windows gets rid of the console window
-# -Wall enables all major warnings
-# -pedantic enables all warnings demanded by strict ISO C.
-# -std=c++11 enables support for C++ 11 features
-COMPILER_FLAGS = -Wall -Wl,-subsystem,windows -pedantic -std=c++11
 
 ifeq ($(OS),Windows_NT)
+	#COMPILER_FLAGS specifies the additional compilation options we're using
+	# -w suppresses all warnings
+	# -Wl,-subsystem,windows gets rid of the console window
+	# -Wall enables all major warnings
+	# -pedantic enables all warnings demanded by strict ISO C.
+	# -O3 enables all optimization flags during compilation
+	# -std=c++11 enables support for C++ 11 features
+	COMPILER_FLAGS = -Wall -Wl,-subsystem,windows -pedantic -O3 -std=c++11
+
 	#INCLUDE_PATHS specifies the additional include paths we'll need
 	INCLUDE_PATHS = -I./include -I./include/model -I./include/SDL2
 	
@@ -34,6 +35,15 @@ ifeq ($(OS),Windows_NT)
 	#RM_TESTS specifies the tool for cleaning files
 	RM_TESTS = rm -f .\testrunner\gtest_main.a .\testrunner\obj\gtest_main.o .\testrunner\obj\gtest-all.o .\testrunner\testrunner .\testrunner\testrunner.exe
 else
+	#COMPILER_FLAGS specifies the additional compilation options we're using
+	# -w suppresses all warnings
+	# -Wl,-subsystem,windows gets rid of the console window
+	# -Wall enables all major warnings
+	# -pedantic enables all warnings demanded by strict ISO C.
+	# -O3 enables all optimization flags during compilation
+	# -std=c++11 enables support for C++ 11 features
+	COMPILER_FLAGS = -Wall -pedantic -O3 -std=c++11
+	
 	#INCLUDE_PATHS specifies the additional include paths we'll need
 	INCLUDE_PATHS = -I./include -I./include/model
 	

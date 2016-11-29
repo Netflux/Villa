@@ -21,6 +21,7 @@ namespace villa
 			void add_item(std::unique_ptr<item> value);
 			std::unique_ptr<item> take_item(item* value);
 			void remove_item(item* value);
+			void remove_item(itemtype type);
 			item* get_item(itemtype type);
 			std::vector<item*> get_items();
 			tool* get_tool_highest_efficiency(itemtype type);

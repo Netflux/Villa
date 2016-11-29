@@ -116,6 +116,8 @@ namespace villa
 
 		// Scale down random number while preserving uniform distribution
 		std::uniform_int_distribution<int> distribution(17, 783);
+		std::uniform_int_distribution<int> distribution_item(1, 4);
+		std::uniform_int_distribution<int> distribution_efficiency(1, 100);
 		int i = distribution(rng), j = distribution(rng);
 
 		// Place the town hall in a valid spot
@@ -128,13 +130,35 @@ namespace villa
 		// Add 5 villagers to the map at the start
 		for(int count = 0; count < 5; ++count)
 		{
-			i = distribution(rng);
-			j = distribution(rng);
+			villager* target = new villager(distribution(rng), distribution(rng));
+			tool* target_tool = nullptr;
 
-			while(!add_villager(new villager(i, j)))
+			switch(distribution_item(rng))
 			{
-				i = distribution(rng);
-				j = distribution(rng);
+				case 1 :
+					target_tool = new tool(itemtype::axe, distribution_efficiency(rng));
+					break;
+
+				case 2 :
+					target_tool = new tool(itemtype::bucket, distribution_efficiency(rng));
+					break;
+
+				case 3 :
+					target_tool = new tool(itemtype::pickaxe, distribution_efficiency(rng));
+					break;
+
+				default :
+					break;
+			}
+
+			while(!add_villager(target))
+			{
+				villager* target = new villager(distribution(rng), distribution(rng));
+
+				if(target_tool != nullptr)
+				{
+					target->get_inventory()->add_item(target_tool);
+				}
 			}
 		}
 	}
@@ -393,7 +417,7 @@ namespace villa
 			neighbors.push_back(this->tiles[x + 1][y - 1].get());
 		}
 
-		if(x - 1 < 0 && y + 1 < 50 && this->tiles[x - 1][y + 1]->get_pathable() == true) // South-West
+		if(x - 1 > 0 && y + 1 < 50 && this->tiles[x - 1][y + 1]->get_pathable() == true) // South-West
 		{
 			neighbors.push_back(this->tiles[x - 1][y + 1].get());
 		}

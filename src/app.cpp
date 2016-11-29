@@ -287,11 +287,15 @@ namespace villa
 		resources->load_texture("tree_bottom_alt", "assets/images/resources/tree_bottom_alt.png");
 		resources->load_texture("tree_bottom_harvested", "assets/images/resources/tree_bottom_harvested.png");
 
+		resources->load_texture("grave_1", "assets/images/resources/grave_1.png");
+		resources->load_texture("grave_2", "assets/images/resources/grave_2.png");
+		resources->load_texture("grave_3", "assets/images/resources/grave_3.png");
+
 		// Load entity images
 		resources->load_texture("villager", "assets/images/entities/villager.png");
 		resources->load_texture("villager_alt", "assets/images/entities/villager_alt.png");
-		resources->load_texture("villager_blacksmith", "assets/images/entities/villager_blacksmith.png");
-		resources->load_texture("villager_miner", "assets/images/entities/villager_miner.png");
+		resources->load_texture("villager_alt2", "assets/images/entities/villager_alt2.png");
+		resources->load_texture("villager_alt3", "assets/images/entities/villager_alt3.png");
 
 		// Load UI images
 		resources->load_texture("buttonLong_brown", "assets/images/ui/buttonLong_brown.png");
@@ -449,7 +453,10 @@ namespace villa
 						}
 						else if(event.button.button == SDL_BUTTON_RIGHT)
 						{
-							simulation_map->get_villagers()[0]->add_task(new task(tasktype::rest, taskdata(std::make_pair(x, y), SDL_GetTicks())));
+							if(simulation_map->get_villagers().size() > 0)
+							{
+								simulation_map->get_villagers()[0]->add_task(new task(tasktype::rest, taskdata(std::make_pair(x, y), SDL_GetTicks())));
+							}
 						}
 						break;
 
@@ -498,7 +505,7 @@ namespace villa
 				update_villager_health_regen = true;
 			}
 
-			if(SDL_GetTicks() > timers.villager_needs + 120000)
+			if(SDL_GetTicks() > timers.villager_needs + 15000)
 			{
 				timers.villager_needs = SDL_GetTicks();
 				update_villager_needs = true;
@@ -507,9 +514,24 @@ namespace villa
 			// Loop through each villager in the vector
 			for(std::vector<villager*>::iterator iterator = villagers.begin(); iterator != villagers.end(); ++iterator)
 			{
+				// If the villager loses all health, create a grave resource containing all of its items
 				if((*iterator)->get_health() <= 0)
 				{
+					resource* target = new resource((*iterator)->get_x(), (*iterator)->get_y(), resourcetype::grave);
+					inventory* villager_inv = (*iterator)->get_inventory();
+
+					while(villager_inv->get_item_count() > 0)
+					{
+						std::unique_ptr<item> target_item = villager_inv->take_item(villager_inv->get_items()[0]);
+
+						if(target_item.get() != nullptr)
+						{
+							target->get_inventory()->add_item(std::move(target_item));
+						}
+					}
+
 					simulation_map->remove_villager(*iterator);
+					simulation_map->add_resource(target);
 				}
 				else
 				{
@@ -548,7 +570,7 @@ namespace villa
 						(*iterator)->set_health((*iterator)->get_health() + 1);
 					}
 
-					// Increase villager fatigue, hunger and thirst by 1 every 2 minutes
+					// Increase villager fatigue, hunger and thirst by 1 every 15 seconds
 					if(update_villager_needs == true)
 					{
 						(*iterator)->set_fatigue((*iterator)->get_fatigue() + 1);
@@ -561,7 +583,7 @@ namespace villa
 			std::vector<resource*> resources = simulation_map->get_resources();
 
 			// Loop through each resource in the vector
-			for(std::vector<resource*>::const_iterator iterator = resources.begin(); iterator != resources.end(); ++iterator)
+			for(std::vector<resource*>::iterator iterator = resources.begin(); iterator != resources.end(); ++iterator)
 			{
 				// If the resource is on unpathable terrain, remove it
 				if(simulation_map->get_tile_at((*iterator)->get_x() / 16, (*iterator)->get_y() / 16)->get_pathable() == false)
@@ -617,14 +639,26 @@ namespace villa
 									(*iterator)->get_inventory()->add_item(new item(itemtype::ore));
 								}
 								break;
+
+							default :
+								break;
 						}
 					}
 
 					// If all items have been harvested from the resource, set its harvestable state to false
-					if((*iterator)->get_inventory()->get_item_count() == 0 && (*iterator)->get_harvestable() == true)
+					else if((*iterator)->get_inventory()->get_item_count() == 0 && (*iterator)->get_harvestable() == true)
 					{
-						(*iterator)->set_harvestable(false);
-						(*iterator)->set_harvestable_time(SDL_GetTicks() + 120000);
+						// Graves are removed as soon as all items are harvested
+						if((*iterator)->get_type() == resourcetype::grave)
+						{
+							simulation_map->remove_resource(*iterator);
+						}
+						// Other resources regenerate after 2 minutes
+						else
+						{
+							(*iterator)->set_harvestable(false);
+							(*iterator)->set_harvestable_time(SDL_GetTicks() + 120000);
+						}
 					}
 				}
 			}
@@ -863,6 +897,25 @@ namespace villa
 					}
 					break;
 
+				case resourcetype::grave :
+					{
+						int texture_variant = std::hash<resource*>{}(*iterator) % 3;
+
+						if(texture_variant == 0)
+						{
+							resources->render_texture(x - 8, y - 16, "grave_1");
+						}
+						else if(texture_variant == 1)
+						{
+							resources->render_texture(x - 8, y - 16, "grave_2");
+						}
+						else if(texture_variant == 2)
+						{
+							resources->render_texture(x - 8, y - 16, "grave_3");
+						}
+					}
+					break;
+
 				default :
 					break;
 			}
@@ -976,15 +1029,23 @@ namespace villa
 		for(std::vector<villager*>::const_iterator iterator = villagers.begin(); iterator != villagers.end(); ++iterator)
 		{
 			int x = (*iterator)->get_x(), y = (*iterator)->get_y();
-			int texture_variant = std::hash<villager*>{}(*iterator) % 10;
+			int texture_variant = std::hash<villager*>{}(*iterator) % 40;
 
-			if(texture_variant < 5)
+			if(texture_variant <= 10)
 			{
 				resources->render_texture(x - 12, y - 24, "villager");
 			}
-			else if(texture_variant < 10)
+			else if(texture_variant <= 20)
 			{
 				resources->render_texture(x - 12, y - 24, "villager_alt");
+			}
+			else if(texture_variant <= 30)
+			{
+				resources->render_texture(x - 12, y - 24, "villager_alt2");
+			}
+			else if(texture_variant < 40)
+			{
+				resources->render_texture(x - 12, y - 24, "villager_alt3");
 			}
 		}
 	}

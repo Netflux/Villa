@@ -14,7 +14,8 @@ namespace villa
 		food, //!< food
 		tree, //!< tree
 		stone,//!< stone
-		ore   //!< ore
+		ore,  //!< ore
+		grave //!< grave
 	};
 
 	/**

@@ -309,19 +309,55 @@ namespace villa
 			// Scale down random number while preserving uniform distribution
 			std::uniform_int_distribution<int> distribution(1, 2);
 
-			if(value->get_inventory()->get_item_count(itemtype::lumber) >= 20 && value->get_inventory()->get_item_count(itemtype::stone) >= 20)
+			if(value->get_inventory()->get_item_count(itemtype::lumber) + value->get_inventory()->get_item_count(itemtype::stone) >= 40)
 			{
+				for(int i = 0; i < 20; ++i)
+				{
+					value->get_inventory()->remove_item(itemtype::lumber);
+					value->get_inventory()->remove_item(itemtype::stone);
+				}
+
 				simulation_map->add_building(data.target_building);
 				value->remove_task();
-				value->add_task(new task(tasktype::rest, taskdata(std::make_pair(data.target_building->get_x(), data.target_building->get_x()), SDL_GetTicks() + 10000)));
+				value->add_task(new task(tasktype::rest, taskdata(std::make_pair(data.target_building->get_x() + 8, data.target_building->get_y() + 16), SDL_GetTicks() + 10000)));
 				value->set_hunger(value->get_hunger() + 5);
 				value->set_thirst(value->get_thirst() + 5);
 				value->set_fatigue(value->get_fatigue() + 5);
 
+				// Scale down random number while preserving uniform distribution
+				std::uniform_int_distribution<int> distribution_item(1, 4);
+				std::uniform_int_distribution<int> distribution_efficiency(1, 100);
+
 				// Add a random number of villagers at the new building
 				for(int count = 0; count < distribution(rng); ++count)
 				{
-					simulation_map->add_villager(new villager(data.target_building->get_x() + 8, data.target_building->get_y() + 8));
+					villager* target = new villager(data.target_building->get_x() + 8, data.target_building->get_y() + 16);
+					tool* target_tool = nullptr;
+
+					switch(distribution_item(rng))
+					{
+						case 1 :
+							target_tool = new tool(itemtype::axe, distribution_efficiency(rng));
+							break;
+
+						case 2 :
+							target_tool = new tool(itemtype::bucket, distribution_efficiency(rng));
+							break;
+
+						case 3 :
+							target_tool = new tool(itemtype::pickaxe, distribution_efficiency(rng));
+							break;
+
+						default :
+							break;
+					}
+
+					if(target_tool != nullptr)
+					{
+						target->get_inventory()->add_item(target_tool);
+					}
+
+					simulation_map->add_villager(target);
 				}
 			}
 			else
@@ -350,7 +386,7 @@ namespace villa
 						}
 					}
 				}
-				else
+				else if(value->get_inventory()->get_item_count(itemtype::stone) < 20)
 				{
 					// Look for a building that contains stone
 					std::pair<building*, item*> target_building = get_item_in_building(value->get_x(), value->get_y(), itemtype::stone);
@@ -369,8 +405,17 @@ namespace villa
 						}
 						else
 						{
-							value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 2500)));
-							value->set_fatigue(value->get_fatigue() - 4);
+							target_resource = get_closest_resource(value->get_x(), value->get_y(), resourcetype::ore);
+
+							if(target_resource != nullptr)
+							{
+								value->add_task(new task(tasktype::harvest, taskdata(std::make_pair(target_resource->get_x(), target_resource->get_y()), target_resource)));
+							}
+							else
+							{
+								value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 2500)));
+								value->set_fatigue(value->get_fatigue() - 4);
+							}
 						}
 					}
 				}
@@ -474,6 +519,9 @@ namespace villa
 	 */
 	bool ai_manager::handle_villager_needs(villager* value)
 	{
+		// Scale down random number while preserving uniform distribution
+		std::uniform_int_distribution<int> distribution(1, 2);
+
 		if(value->get_fatigue() >= 60)
 		{
 			// Rest to reduce fatigue
@@ -482,7 +530,7 @@ namespace villa
 
 			return true;
 		}
-		else if(value->get_hunger() >= 60)
+		else if(distribution(rng) == 1 && value->get_hunger() >= 60)
 		{
 			// Look for some food to consume
 			item* food = value->get_inventory()->get_item(itemtype::food);
@@ -490,7 +538,7 @@ namespace villa
 			if(food != nullptr)
 			{
 				value->get_inventory()->remove_item(food);
-				value->set_hunger(value->get_hunger() - 6);
+				value->set_hunger(value->get_hunger() - 4);
 			}
 			else // If the villager does not have food, look for food in a building
 			{
@@ -526,7 +574,7 @@ namespace villa
 			if(water != nullptr)
 			{
 				value->get_inventory()->remove_item(water);
-				value->set_thirst(value->get_thirst() - 6);
+				value->set_thirst(value->get_thirst() - 4);
 			}
 			else // If the villager does not have water, look for water in a building
 			{

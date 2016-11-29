@@ -99,6 +99,24 @@ namespace villa
 	}
 
 	/**
+	 * Removes the item with the specified item type from the inventory.
+	 * @param type - The item type to remove.
+	 */
+	void inventory::remove_item(itemtype type)
+	{
+		// Loop through each item in the vector
+		// If we've found the target item, remove it from the vector and stop the loop
+		for(std::vector<std::unique_ptr<item>>::iterator iterator = this->items.begin(); iterator != this->items.end(); ++iterator)
+		{
+			if((*iterator)->get_type() == type)
+			{
+				this->items.erase(iterator);
+				break;
+			}
+		}
+	}
+
+	/**
 	 * Gets the first item of the given item type.
 	 * @param type - The item type.
 	 * @return The item (nullptr if not found).
