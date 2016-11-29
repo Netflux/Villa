@@ -204,7 +204,7 @@ namespace villa
 					if(target.second != nullptr)
 					{
 						// Scale down random number while preserving uniform distribution
-						std::uniform_int_distribution<int> distribution(1, value->get_inventory()->get_item_count());
+						std::uniform_int_distribution<int> distribution(1, value->get_inventory()->get_item_count() - 1);
 						int quantity = distribution(rng);
 
 						for(int i = 0; i < quantity; ++i)

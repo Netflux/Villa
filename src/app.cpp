@@ -456,6 +456,7 @@ namespace villa
 							if(simulation_map->get_villagers().size() > 0)
 							{
 								simulation_map->get_villagers()[0]->add_task(new task(tasktype::rest, taskdata(std::make_pair(x, y), SDL_GetTicks())));
+								//simulation_map->get_villagers()[0]->set_health(0);
 							}
 						}
 						break;

@@ -16,9 +16,9 @@ ifeq ($(OS),Windows_NT)
 	# -Wl,-subsystem,windows gets rid of the console window
 	# -Wall enables all major warnings
 	# -pedantic enables all warnings demanded by strict ISO C.
-	# -O3 enables all optimization flags during compilation
+	# -O2 enables optimization during compilation
 	# -std=c++11 enables support for C++ 11 features
-	COMPILER_FLAGS = -Wall -Wl,-subsystem,windows -pedantic -O3 -std=c++11
+	COMPILER_FLAGS = -Wall -Wl,-subsystem,windows -pedantic -O2 -std=c++11
 
 	#INCLUDE_PATHS specifies the additional include paths we'll need
 	INCLUDE_PATHS = -I./include -I./include/model -I./include/SDL2
@@ -40,9 +40,9 @@ else
 	# -Wl,-subsystem,windows gets rid of the console window
 	# -Wall enables all major warnings
 	# -pedantic enables all warnings demanded by strict ISO C.
-	# -O3 enables all optimization flags during compilation
+	# -O2 enables optimization during compilation
 	# -std=c++11 enables support for C++ 11 features
-	COMPILER_FLAGS = -Wall -pedantic -O3 -std=c++11
+	COMPILER_FLAGS = -Wall -pedantic -O2 -std=c++11
 	
 	#INCLUDE_PATHS specifies the additional include paths we'll need
 	INCLUDE_PATHS = -I./include -I./include/model
