@@ -455,8 +455,8 @@ namespace villa
 						{
 							if(simulation_map->get_villagers().size() > 0)
 							{
-								simulation_map->get_villagers()[0]->add_task(new task(tasktype::rest, taskdata(std::make_pair(x, y), SDL_GetTicks())));
-								//simulation_map->get_villagers()[0]->set_health(0);
+								//simulation_map->get_villagers()[0]->add_task(new task(tasktype::rest, taskdata(std::make_pair(x, y), SDL_GetTicks())));
+								simulation_map->get_villagers()[0]->set_health(0);
 							}
 						}
 						break;
@@ -528,6 +528,7 @@ namespace villa
 						if(target_item.get() != nullptr)
 						{
 							target->get_inventory()->add_item(std::move(target_item));
+							target->set_harvestable(true);
 						}
 					}
 
@@ -594,8 +595,8 @@ namespace villa
 				else
 				{
 					// Once the time has passed the resource timeout duration, set it as harvestable
-					// Also resets the inventory with a new set of items
-					if((*iterator)->get_harvestable() == false && SDL_GetTicks() > (*iterator)->get_harvestable_time())
+					// Also resets the inventory with a new set of items (excluding graves)
+					if((*iterator)->get_harvestable() == false && SDL_GetTicks() > (*iterator)->get_harvestable_time() && (*iterator)->get_type() != resourcetype::grave)
 					{
 						(*iterator)->set_harvestable(true);
 
@@ -649,17 +650,8 @@ namespace villa
 					// If all items have been harvested from the resource, set its harvestable state to false
 					if((*iterator)->get_inventory()->get_item_count() == 0 && (*iterator)->get_harvestable() == true)
 					{
-						// Graves are removed as soon as all items are harvested
-						if((*iterator)->get_type() == resourcetype::grave)
-						{
-							simulation_map->remove_resource(*iterator);
-						}
-						// Other resources regenerate after 2 minutes
-						else
-						{
-							(*iterator)->set_harvestable(false);
-							(*iterator)->set_harvestable_time(SDL_GetTicks() + 120000);
-						}
+						(*iterator)->set_harvestable(false);
+						(*iterator)->set_harvestable_time(SDL_GetTicks() + 120000);
 					}
 				}
 			}
