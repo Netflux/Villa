@@ -587,16 +587,17 @@ namespace villa
 			// Loop through each resource in the vector
 			for(std::vector<resource*>::iterator iterator = resources.begin(); iterator != resources.end(); ++iterator)
 			{
-				// If the resource is on unpathable terrain, remove it
+				// If the resource is on unpathable terrain, set it as unharvestable
 				if(simulation_map->get_tile_at((*iterator)->get_x() / 16, (*iterator)->get_y() / 16)->get_pathable() == false)
 				{
-					simulation_map->remove_resource(*iterator);
+					(*iterator)->set_harvestable(false);
+					(*iterator)->set_harvestable_time(0);
 				}
 				else
 				{
 					// Once the time has passed the resource timeout duration, set it as harvestable
 					// Also resets the inventory with a new set of items (excluding graves)
-					if((*iterator)->get_harvestable() == false && SDL_GetTicks() > (*iterator)->get_harvestable_time() && (*iterator)->get_type() != resourcetype::grave)
+					if((*iterator)->get_harvestable() == false && SDL_GetTicks() > (*iterator)->get_harvestable_time() && (*iterator)->get_harvestable_time() != 0)
 					{
 						(*iterator)->set_harvestable(true);
 
@@ -651,7 +652,15 @@ namespace villa
 					if((*iterator)->get_inventory()->get_item_count() == 0 && (*iterator)->get_harvestable() == true)
 					{
 						(*iterator)->set_harvestable(false);
-						(*iterator)->set_harvestable_time(SDL_GetTicks() + 120000);
+
+						if((*iterator)->get_type() == resourcetype::grave)
+						{
+							(*iterator)->set_harvestable_time(0);
+						}
+						else
+						{
+							(*iterator)->set_harvestable_time(SDL_GetTicks() + 120000);
+						}
 					}
 				}
 			}
