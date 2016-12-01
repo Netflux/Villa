@@ -33,7 +33,7 @@ ifeq ($(OS),Windows_NT)
 	RM = del /F $(subst /,\,$(OBJS) $(OBJ_NAME) $(OBJ_NAME).exe)
 	
 	#RM_TESTS specifies the tool for cleaning files
-	RM_TESTS = rm -f .\testrunner\gtest_main.a .\testrunner\obj\gtest_main.o .\testrunner\obj\gtest-all.o .\testrunner\testrunner .\testrunner\testrunner.exe
+	RM_TESTS = del /F .\testrunner\gtest_main.a .\testrunner\obj\gtest_main.o .\testrunner\obj\gtest-all.o .\testrunner\testrunner .\testrunner\testrunner.exe
 else
 	#COMPILER_FLAGS specifies the additional compilation options we're using
 	# -w suppresses all warnings
