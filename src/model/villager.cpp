@@ -38,23 +38,26 @@ namespace villa
 
 	/**
 	 * Rests for the target duration.
-	 * @param value - The current time.
 	 */
-	void villager::rest(unsigned int value)
+	void villager::rest()
 	{
 		taskdata data = get_task()->get_data();
+		int target_x = data.target_coords.first, target_y = data.target_coords.second;
+		int duration = data.time - (1000 / 60);
 
-		if(value > data.time)
+		remove_task();
+
+		// If the task still has time left, re-add the task with the updated duration
+		if(duration > 0)
 		{
-			remove_task();
+			add_task(new task(tasktype::rest, taskdata(std::make_pair(target_x, target_y), duration)));
 		}
 	}
 
 	/**
 	 * Harvests the target resource.
-	 * @param value - The current time.
 	 */
-	void villager::harvest(unsigned int value)
+	void villager::harvest()
 	{
 		taskdata data = get_task()->get_data();
 
@@ -88,7 +91,7 @@ namespace villa
 			pause_time -= best_tool->get_efficiency() * 10;
 		}
 
-		add_task(new task(tasktype::rest, taskdata(std::make_pair(x, y), value + pause_time)));
+		add_task(new task(tasktype::rest, taskdata(std::make_pair(x, y), pause_time)));
 		set_hunger(get_hunger() + 1);
 		set_thirst(get_thirst() + 2);
 		set_fatigue(get_fatigue() + 3);

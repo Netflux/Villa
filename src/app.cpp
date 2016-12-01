@@ -48,9 +48,7 @@ namespace villa
 
 			// Initialize time-related variables
 			const int UPDATE_TIME = 1000 / 60;
-			unsigned int accumulator = 0, simulation_time = 0;
-			timers.app = 0;
-			timers.villager_health = 0;
+			unsigned int accumulator = 0;
 
 			// Hide the default cursor
 			SDL_ShowCursor(0);
@@ -73,7 +71,7 @@ namespace villa
 					}
 
 					accumulator -= UPDATE_TIME;
-					simulation_time += UPDATE_TIME;
+					timers.simulation_time += UPDATE_TIME;
 				}
 
 				update_display();
@@ -116,7 +114,7 @@ namespace villa
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 		// Check if the 2D renderer initializes successfully
-		if(renderer == nullptr)
+		if(renderer == nullptr || SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear") == SDL_FALSE || SDL_RenderSetLogicalSize(renderer, 800, 800) != 0)
 		{
 			std::cerr << "2D Renderer failed to initialize! SDL_Error: " << SDL_GetError() << std::endl;
 			return false;
@@ -345,6 +343,18 @@ namespace villa
 							// Revert to the previous application state
 							state.pop();
 						}
+						else if(event.key.keysym.sym == SDLK_F11)
+						{
+							// Toggle fullscreen when F11 is pressed
+							if(SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN_DESKTOP)
+							{
+								SDL_SetWindowFullscreen(window, 0);
+							}
+							else
+							{
+								SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+							}
+						}
 						break;
 
 					default :
@@ -422,7 +432,7 @@ namespace villa
 											case tasktype::move :
 												std::cout << "Current Task: Move" << std::endl;break;
 											case tasktype::rest :
-												std::cout << "Current Task: Rest . Duration Left: " << (int)((*iterator)->get_task()->get_data().time - SDL_GetTicks()) << "ms" << std::endl;break;
+												std::cout << "Current Task: Rest . Duration: " << (int)((*iterator)->get_task()->get_data().time) << "ms" << std::endl;break;
 											case tasktype::store_item :
 												std::cout << "Current Task: Store Item" << std::endl;break;
 											case tasktype::take_item :
@@ -1084,7 +1094,7 @@ namespace villa
 
 		if(state.top() == appstate::simulation)
 		{
-			simulation_time = SDL_GetTicks() - timers.simulation_start;
+			simulation_time = timers.simulation_time;
 		}
 		else if(state.top() == appstate::simulation_end)
 		{

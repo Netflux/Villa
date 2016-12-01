@@ -19,8 +19,8 @@ namespace villa
 			villager(int x, int y);
 			virtual ~villager();
 			void move(int x, int y);
-			void rest(unsigned int value);
-			void harvest(unsigned int value);
+			void rest();
+			void harvest();
 			void add_task(task* value);
 			void remove_task();
 			task* get_task();

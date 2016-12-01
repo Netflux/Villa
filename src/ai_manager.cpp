@@ -118,7 +118,7 @@ namespace villa
 
 			if(target_action <= 30) // Rest for a short duration (30% chance)
 			{
-				value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 2500)));
+				value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), 2500)));
 				value->set_fatigue(value->get_fatigue() - 4);
 			}
 			else if(target_action <= 80) // Harvest the closest resource (50% chance)
@@ -171,7 +171,7 @@ namespace villa
 				}
 				else
 				{
-					value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 2500)));
+					value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), 2500)));
 					value->set_fatigue(value->get_fatigue() - 4);
 				}
 			}
@@ -208,7 +208,7 @@ namespace villa
 					}
 					else
 					{
-						value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 2500)));
+						value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), 2500)));
 						value->set_fatigue(value->get_fatigue() - 4);
 					}
 				}
@@ -266,7 +266,7 @@ namespace villa
 				}
 				else
 				{
-					value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 5000)));
+					value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), 5000)));
 					value->set_fatigue(value->get_fatigue() - 8);
 				}
 			}
@@ -313,7 +313,7 @@ namespace villa
 
 				simulation_map->add_building(data.target_building);
 				value->remove_task();
-				value->add_task(new task(tasktype::rest, taskdata(std::make_pair(data.target_building->get_x() + 8, data.target_building->get_y() + 16), SDL_GetTicks() + 10000)));
+				value->add_task(new task(tasktype::rest, taskdata(std::make_pair(data.target_building->get_x() + 8, data.target_building->get_y() + 16), 10000)));
 				value->set_hunger(value->get_hunger() + 5);
 				value->set_thirst(value->get_thirst() + 5);
 				value->set_fatigue(value->get_fatigue() + 5);
@@ -375,7 +375,7 @@ namespace villa
 						}
 						else
 						{
-							value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 2500)));
+							value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), 2500)));
 							value->set_fatigue(value->get_fatigue() - 4);
 						}
 					}
@@ -407,7 +407,7 @@ namespace villa
 							}
 							else
 							{
-								value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 2500)));
+								value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), 2500)));
 								value->set_fatigue(value->get_fatigue() - 4);
 							}
 						}
@@ -427,7 +427,7 @@ namespace villa
 
 		if(data.target_entity->get_inventory()->get_item_count() > 0)
 		{
-			value->harvest(SDL_GetTicks());
+			value->harvest();
 		}
 		else
 		{
@@ -454,7 +454,7 @@ namespace villa
 		}
 
 		value->remove_task();
-		value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 500)));
+		value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), 500)));
 	}
 
 	/**
@@ -476,7 +476,7 @@ namespace villa
 		}
 
 		value->remove_task();
-		value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 500)));
+		value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), 500)));
 	}
 
 	/**
@@ -497,12 +497,13 @@ namespace villa
 			// Check that the new position is valid
 			if(value->get_x() + i >= 0 && value->get_x() + i <= 800 && value->get_y() + j >= 0 && value->get_y() + j <= 800 && simulation_map->get_tile_at((value->get_x() + i) / 16, (value->get_y() + j) / 16) != nullptr && simulation_map->get_tile_at((value->get_x() + i) / 16, (value->get_y() + j) / 16)->get_pathable() == true)
 			{
+				int duration = value->get_task()->get_data().time;
 				value->remove_task();
-				value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x() + i, value->get_y() + j), SDL_GetTicks() + 1000)));
+				value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x() + i, value->get_y() + j), duration + 500)));
 			}
 		}
 
-		value->rest(SDL_GetTicks());
+		value->rest();
 	}
 
 	/**
@@ -517,7 +518,7 @@ namespace villa
 		if(value->get_fatigue() >= 60)
 		{
 			// Rest to reduce fatigue
-			value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 10000)));
+			value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), 10000)));
 			value->set_fatigue(value->get_fatigue() - 16);
 
 			return true;
@@ -550,7 +551,7 @@ namespace villa
 					}
 					else
 					{
-						value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 2500)));
+						value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), 2500)));
 						value->set_fatigue(value->get_fatigue() - 4);
 					}
 				}
@@ -586,7 +587,7 @@ namespace villa
 					}
 					else
 					{
-						value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), SDL_GetTicks() + 2500)));
+						value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x(), value->get_y()), 2500)));
 						value->set_fatigue(value->get_fatigue() - 4);
 					}
 				}

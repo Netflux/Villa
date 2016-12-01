@@ -5,7 +5,6 @@
 #include <queue>
 #include <random>
 #include "map.hpp"
-#include <SDL.h>
 
 namespace villa
 {

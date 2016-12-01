@@ -34,6 +34,7 @@ namespace villa
 	struct timer_struct
 	{
 		unsigned int app;
+		unsigned int simulation_time;
 		unsigned int simulation_start;
 		unsigned int simulation_end;
 		unsigned int villager_health;
