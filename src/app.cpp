@@ -520,7 +520,7 @@ namespace villa
 				update_villager_health = true;
 			}
 
-			if(SDL_GetTicks() > timers.villager_health_regen + 60000)
+			if(SDL_GetTicks() > timers.villager_health_regen + 30000)
 			{
 				timers.villager_health_regen = SDL_GetTicks();
 				update_villager_health_regen = true;
@@ -586,7 +586,7 @@ namespace villa
 						}
 					}
 
-					// Increase villager health by 1 every minute
+					// Increase villager health by 1 every 30 seconds
 					if(update_villager_health_regen == true)
 					{
 						(*iterator)->set_health((*iterator)->get_health() + 1);

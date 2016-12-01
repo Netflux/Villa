@@ -51,52 +51,54 @@ namespace villa
 					}
 				}
 			}
-
-			// Perform the appropriate action according to task type
-			switch(current_task->get_type())
+			else
 			{
-				case tasktype::idle : // Check current status and perform a new task
-					handle_task_idle(*iterator);
-					break;
-
-				case tasktype::move : // Move towards the target coordinates
-					handle_task_move(*iterator);
-					break;
-
-				case tasktype::build : // Build a building
-					if((*iterator)->is_at(data.target_coords.first, data.target_coords.second))
-					{
-						handle_task_build(*iterator);
+				// Perform the appropriate action according to task type
+				switch(current_task->get_type())
+				{
+					case tasktype::idle : // Check current status and perform a new task
+						handle_task_idle(*iterator);
 						break;
-					}
 
-				case tasktype::harvest : // Take all the items from the target resource, resting between each harvest cycle
-					if((*iterator)->is_at(data.target_coords.first, data.target_coords.second))
-					{
-						handle_task_harvest(*iterator);
+					case tasktype::move : // Move towards the target coordinates
+						handle_task_move(*iterator);
 						break;
-					}
 
-				case tasktype::take_item : // Take the item from the target entity
-					if((*iterator)->is_at(data.target_coords.first, data.target_coords.second))
-					{
-						handle_task_take_item(*iterator);
+					case tasktype::build : // Build a building
+						if((*iterator)->is_at(data.target_coords.first, data.target_coords.second))
+						{
+							handle_task_build(*iterator);
+							break;
+						}
+
+					case tasktype::harvest : // Take all the items from the target resource, resting between each harvest cycle
+						if((*iterator)->is_at(data.target_coords.first, data.target_coords.second))
+						{
+							handle_task_harvest(*iterator);
+							break;
+						}
+
+					case tasktype::take_item : // Take the item from the target entity
+						if((*iterator)->is_at(data.target_coords.first, data.target_coords.second))
+						{
+							handle_task_take_item(*iterator);
+							break;
+						}
+
+					case tasktype::store_item : // Store the item into the target entity
+						if((*iterator)->is_at(data.target_coords.first, data.target_coords.second))
+						{
+							handle_task_store_item(*iterator);
+							break;
+						}
+
+					case tasktype::rest : // Wait until the set duration has passed
+						handle_task_rest(*iterator);
 						break;
-					}
 
-				case tasktype::store_item : // Store the item into the target entity
-					if((*iterator)->is_at(data.target_coords.first, data.target_coords.second))
-					{
-						handle_task_store_item(*iterator);
+					default:
 						break;
-					}
-
-				case tasktype::rest : // Wait until the set duration has passed
-					handle_task_rest(*iterator);
-					break;
-
-				default:
-					break;
+				}
 			}
 		}
 	}
