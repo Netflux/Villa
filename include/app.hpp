@@ -1,9 +1,11 @@
 #ifndef INCLUDE_APP_H_
 #define INCLUDE_APP_H_
 
+#include <iomanip>
 #include <iostream>
 #include <memory>
 #include <random>
+#include <sstream>
 #include <stack>
 #include <time.h>
 #include "ai_manager.hpp"
@@ -32,6 +34,8 @@ namespace villa
 	struct timer_struct
 	{
 		unsigned int app;
+		unsigned int simulation_start;
+		unsigned int simulation_end;
 		unsigned int villager_health;
 		unsigned int villager_health_regen;
 		unsigned int villager_needs;

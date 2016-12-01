@@ -52,6 +52,9 @@ namespace villa
 			timers.app = 0;
 			timers.villager_health = 0;
 
+			// Hide the default cursor
+			SDL_ShowCursor(0);
+
 			// Loop until the user exits the application
 			while(state.top() != appstate::exit)
 			{
@@ -298,6 +301,9 @@ namespace villa
 		resources->load_texture("villager_alt3", "assets/images/entities/villager_alt3.png");
 
 		// Load UI images
+		resources->load_texture("cursor", "assets/images/ui/cursorHand_grey.png");
+		resources->load_texture("iconCross_brown", "assets/images/ui/iconCross_brown.png");
+		resources->load_texture("buttonRound_brown", "assets/images/ui/buttonRound_brown.png");
 		resources->load_texture("buttonLong_brown", "assets/images/ui/buttonLong_brown.png");
 		resources->load_texture("buttonLong_brown_pressed", "assets/images/ui/buttonLong_brown_pressed.png");
 
@@ -311,6 +317,9 @@ namespace villa
 		// Load UI elements for main menu
 		user_interface->add_element("Start Button", new ui_element(305, 625, 190, 49));
 		user_interface->add_element("Quit Button", new ui_element(305, 700, 190, 49));
+
+		// Load UI elements for simulation
+		user_interface->add_element("Back Button", new ui_element(4, 4, 35, 35));
 	}
 
 	/**
@@ -370,10 +379,10 @@ namespace villa
 							if(target == "Start Button")
 							{
 								state.push(appstate::simulation);
-
 								simulation_map.reset(new map(rng));
-
 								simulation_ai.reset(new ai_manager(simulation_map.get(), rng));
+
+								timers.simulation_start = SDL_GetTicks();
 							}
 							else if(target == "Quit Button")
 							{
@@ -387,66 +396,75 @@ namespace villa
 					case appstate::simulation_end :
 						if(event.button.button == SDL_BUTTON_LEFT)
 						{
-							bool found = false;
+							std::string target = user_interface->click_at(x, y);
 
-							std::vector<villager*> villagers = simulation_map->get_villagers();
-
-							// Loop through each villager in the vector
-							for(std::vector<villager*>::const_iterator iterator = villagers.begin(); iterator != villagers.end(); ++iterator)
+							if(target == "Back Button")
 							{
-								if((*iterator)->is_at(x, y))
-								{
-									switch((*iterator)->get_task()->get_type())
-									{
-										case tasktype::harvest :
-											std::cout << "Current Task: Harvest" << std::endl;break;
-										case tasktype::idle :
-											std::cout << "Current Task: Idle" << std::endl;break;
-										case tasktype::move :
-											std::cout << "Current Task: Move" << std::endl;break;
-										case tasktype::rest :
-											std::cout << "Current Task: Rest . Duration Left: " << (int)((*iterator)->get_task()->get_data().time - SDL_GetTicks()) << "ms" << std::endl;break;
-										case tasktype::store_item :
-											std::cout << "Current Task: Store Item" << std::endl;break;
-										case tasktype::take_item :
-											std::cout << "Current Task: Take Item" << std::endl;break;
-										case tasktype::build :
-											std::cout << "Current Task: Build" << std::endl;break;
-									}
-									std::cout << "Villager X: " << (*iterator)->get_x() << " . Villager Y: " << (*iterator)->get_y() << " . Target X: " << (*iterator)->get_task()->get_data().target_coords.first << " . Target Y: " << (*iterator)->get_task()->get_data().target_coords.second << std::endl;
-									std::cout << "Task Count: " << (*iterator)->get_task_count() << " . Health: " << (*iterator)->get_health() << " . Fatigue: " << (*iterator)->get_fatigue() << " . Hunger: " << (*iterator)->get_hunger() << " . Thirst: " << (*iterator)->get_thirst() << " . Item Count: " << (*iterator)->get_inventory()->get_item_count() << "\n" << std::endl;
-									found = true;
-									break;
-								}
+								state.pop();
 							}
-
-							if(found == false)
+							else
 							{
-								std::vector<building*> buildings = simulation_map->get_buildings();
+								bool found = false;
 
-								// Loop through each building in the vector
-								for(std::vector<building*>::const_iterator iterator = buildings.begin(); iterator != buildings.end(); ++iterator)
+								std::vector<villager*> villagers = simulation_map->get_villagers();
+
+								// Loop through each villager in the vector
+								for(std::vector<villager*>::const_iterator iterator = villagers.begin(); iterator != villagers.end(); ++iterator)
 								{
 									if((*iterator)->is_at(x, y))
 									{
-										std::cout << "Building X: " << (*iterator)->get_x() << " . Building Y: " << (*iterator)->get_y() << " . Item Count: " << (*iterator)->get_inventory()->get_item_count() << "\n" << std::endl;
+										switch((*iterator)->get_task()->get_type())
+										{
+											case tasktype::harvest :
+												std::cout << "Current Task: Harvest" << std::endl;break;
+											case tasktype::idle :
+												std::cout << "Current Task: Idle" << std::endl;break;
+											case tasktype::move :
+												std::cout << "Current Task: Move" << std::endl;break;
+											case tasktype::rest :
+												std::cout << "Current Task: Rest . Duration Left: " << (int)((*iterator)->get_task()->get_data().time - SDL_GetTicks()) << "ms" << std::endl;break;
+											case tasktype::store_item :
+												std::cout << "Current Task: Store Item" << std::endl;break;
+											case tasktype::take_item :
+												std::cout << "Current Task: Take Item" << std::endl;break;
+											case tasktype::build :
+												std::cout << "Current Task: Build" << std::endl;break;
+										}
+										std::cout << "Villager X: " << (*iterator)->get_x() << " . Villager Y: " << (*iterator)->get_y() << " . Target X: " << (*iterator)->get_task()->get_data().target_coords.first << " . Target Y: " << (*iterator)->get_task()->get_data().target_coords.second << std::endl;
+										std::cout << "Task Count: " << (*iterator)->get_task_count() << " . Health: " << (*iterator)->get_health() << " . Fatigue: " << (*iterator)->get_fatigue() << " . Hunger: " << (*iterator)->get_hunger() << " . Thirst: " << (*iterator)->get_thirst() << " . Item Count: " << (*iterator)->get_inventory()->get_item_count() << "\n" << std::endl;
 										found = true;
 										break;
 									}
 								}
-							}
 
-							if(found == false)
-							{
-								std::vector<resource*> resources = simulation_map->get_resources();
-
-								// Loop through each building in the vector
-								for(std::vector<resource*>::const_iterator iterator = resources.begin(); iterator != resources.end(); ++iterator)
+								if(found == false)
 								{
-									if((*iterator)->is_at(x, y))
+									std::vector<building*> buildings = simulation_map->get_buildings();
+
+									// Loop through each building in the vector
+									for(std::vector<building*>::const_iterator iterator = buildings.begin(); iterator != buildings.end(); ++iterator)
 									{
-										std::cout << "Resource X: " << (*iterator)->get_x() << " . Resource Y: " << (*iterator)->get_y() << " . Item Count: " << (*iterator)->get_inventory()->get_item_count() << "\n" << std::endl;
-										break;
+										if((*iterator)->is_at(x, y))
+										{
+											std::cout << "Building X: " << (*iterator)->get_x() << " . Building Y: " << (*iterator)->get_y() << " . Item Count: " << (*iterator)->get_inventory()->get_item_count() << "\n" << std::endl;
+											found = true;
+											break;
+										}
+									}
+								}
+
+								if(found == false)
+								{
+									std::vector<resource*> resources = simulation_map->get_resources();
+
+									// Loop through each building in the vector
+									for(std::vector<resource*>::const_iterator iterator = resources.begin(); iterator != resources.end(); ++iterator)
+									{
+										if((*iterator)->is_at(x, y))
+										{
+											std::cout << "Resource X: " << (*iterator)->get_x() << " . Resource Y: " << (*iterator)->get_y() << " . Item Count: " << (*iterator)->get_inventory()->get_item_count() << "\n" << std::endl;
+											break;
+										}
 									}
 								}
 							}
@@ -487,6 +505,8 @@ namespace villa
 		// If no villagers remain, set the simulation to the end state
 		if(villagers.empty())
 		{
+			timers.simulation_end = SDL_GetTicks();
+
 			state.pop();
 			state.push(appstate::simulation_end);
 		}
@@ -690,6 +710,13 @@ namespace villa
 			default :
 				break;
 		}
+
+		// Get coords of mouse
+		int x, y;
+		SDL_GetMouseState(&x, &y);
+
+		// Render the custom cursor at the mouse position
+		resources->render_texture(x - 4, y - 4, "cursor");
 
 		SDL_RenderPresent(renderer);
 	}
@@ -1050,6 +1077,27 @@ namespace villa
 				resources->render_texture(x - 12, y - 24, "villager_alt3");
 			}
 		}
+
+		// Render the UI
+		std::stringstream ss;
+		unsigned int simulation_time = 0;
+
+		if(state.top() == appstate::simulation)
+		{
+			simulation_time = SDL_GetTicks() - timers.simulation_start;
+		}
+		else if(state.top() == appstate::simulation_end)
+		{
+			simulation_time = timers.simulation_end - timers.simulation_start;
+		}
+
+		ss << std::setfill('0') << std::setw(2) << (int)(simulation_time / (1000 * 60 * 60)) % 60 << ":" << std::setfill('0') << std::setw(2) << (int)(simulation_time / (1000 * 60)) % 60 << ":" << std::setfill('0') << std::setw(2) << (int)(simulation_time / 1000) % 60;
+
+		resources->render_texture(305, -10, "buttonLong_brown_pressed");
+		resources->render_text(341, -4, ss.str(), "KenPixel Square", 24, {224, 224, 224});
+
+		resources->render_texture(4, 4, "buttonRound_brown");
+		resources->render_texture(14, 14, "iconCross_brown");
 	}
 
 	/**
