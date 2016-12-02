@@ -308,13 +308,20 @@ namespace villa
 		resources->load_texture("cursor", "assets/images/ui/cursorHand_grey.png");
 		resources->load_texture("iconMenu_brown", "assets/images/ui/iconMenu_brown.png");
 		resources->load_texture("iconCross_brown", "assets/images/ui/iconCross_brown.png");
+		resources->load_texture("arrowBeige_left", "assets/images/ui/arrowBeige_left.png");
+		resources->load_texture("arrowBeige_right", "assets/images/ui/arrowBeige_right.png");
 		resources->load_texture("buttonRound_brown", "assets/images/ui/buttonRound_brown.png");
 		resources->load_texture("buttonLong_brown", "assets/images/ui/buttonLong_brown.png");
 		resources->load_texture("buttonLong_brown_pressed", "assets/images/ui/buttonLong_brown_pressed.png");
+		resources->load_texture("menuBar_brown", "assets/images/ui/menuBar_brown.png");
+
+		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 
 		// Load fonts
 		resources->load_font("KenPixel Blocks", "assets/fonts/kenpixel_blocks.ttf", 160);
 		resources->load_font("KenPixel Square", "assets/fonts/kenpixel_square.ttf", 24);
+		resources->load_font("KenPixel Square Medium", "assets/fonts/kenpixel_square.ttf", 20);
+		resources->load_font("KenPixel Square Small", "assets/fonts/kenpixel_square.ttf", 16);
 	}
 
 	void app::load_ui()
@@ -324,8 +331,9 @@ namespace villa
 		user_interface->add_element("Quit Button", new ui_element(305, 700, 190, 49));
 
 		// Load UI elements for simulation
-		user_interface->add_element("Menu Button", new ui_element(4, 4, 35, 35));
-		user_interface->add_element("Back Button", new ui_element(760, 4, 35, 35));
+		user_interface->add_element("Back Button", new ui_element(4, 4, 35, 35));
+		user_interface->add_element("Left Button", new ui_element(733, 774, 22, 21));
+		user_interface->add_element("Right Button", new ui_element(765, 774, 22, 21));
 	}
 
 	/**
@@ -343,9 +351,48 @@ namespace villa
 				// Check the current application state
 				switch(state.top())
 				{
-					case appstate::menu_main :
 					case appstate::simulation :
 					case appstate::simulation_end :
+						if(event.key.keysym.sym == SDLK_PLUS || event.key.keysym.sym == SDLK_EQUALS)
+						{
+							if(timers.timescale == 0.25)
+							{
+								timers.timescale = 0.5;
+							}
+							else if(timers.timescale == 0.5)
+							{
+								timers.timescale = 1.0;
+							}
+							else if(timers.timescale == 1.0)
+							{
+								timers.timescale = 2.0;
+							}
+							else if(timers.timescale == 2.0)
+							{
+								timers.timescale = 4.0;
+							}
+						}
+						else if(event.key.keysym.sym == SDLK_MINUS)
+						{
+							if(timers.timescale == 0.5)
+							{
+								timers.timescale = 0.25;
+							}
+							else if(timers.timescale == 1.0)
+							{
+								timers.timescale = 0.5;
+							}
+							else if(timers.timescale == 2.0)
+							{
+								timers.timescale = 1.0;
+							}
+							else if(timers.timescale == 4.0)
+							{
+								timers.timescale = 2.0;
+							}
+						}
+						// No break as the simulation should inherit ESC and F11 key-presses
+					case appstate::menu_main :
 						if(event.key.keysym.sym == SDLK_ESCAPE)
 						{
 							// Revert to the previous application state
@@ -419,6 +466,44 @@ namespace villa
 							if(target == "Back Button")
 							{
 								state.pop();
+							}
+							else if(target == "Left Button")
+							{
+								if(timers.timescale == 0.5)
+								{
+									timers.timescale = 0.25;
+								}
+								else if(timers.timescale == 1.0)
+								{
+									timers.timescale = 0.5;
+								}
+								else if(timers.timescale == 2.0)
+								{
+									timers.timescale = 1.0;
+								}
+								else if(timers.timescale == 4.0)
+								{
+									timers.timescale = 2.0;
+								}
+							}
+							else if(target == "Right Button")
+							{
+								if(timers.timescale == 0.25)
+								{
+									timers.timescale = 0.5;
+								}
+								else if(timers.timescale == 0.5)
+								{
+									timers.timescale = 1.0;
+								}
+								else if(timers.timescale == 1.0)
+								{
+									timers.timescale = 2.0;
+								}
+								else if(timers.timescale == 2.0)
+								{
+									timers.timescale = 4.0;
+								}
 							}
 							else
 							{
@@ -1114,12 +1199,33 @@ namespace villa
 		resources->render_texture(305, -10, "buttonLong_brown_pressed");
 		resources->render_text(341, -4, ss.str(), "KenPixel Square", 24, {224, 224, 224});
 
-
 		resources->render_texture(4, 4, "buttonRound_brown");
-		resources->render_texture(13, 12, "iconMenu_brown");
+		resources->render_texture(14, 14, "iconCross_brown");
 
-		resources->render_texture(760, 4, "buttonRound_brown");
-		resources->render_texture(770, 14, "iconCross_brown");
+		resources->render_texture(4, 765, "menuBar_brown");
+
+		resources->render_texture(8, 769, "villager");
+		resources->render_text(32, 769, ">" + std::to_string(simulation_map->get_villagers().size()), "KenPixel Square Medium", 20, {224, 224, 224});
+
+		resources->render_texture(83, 782, "wall_small_base");
+		resources->render_texture(83, 766, "roof_small_back");
+		resources->render_texture(83, 774, "roof_small_front");
+		resources->render_text(107, 769, ">" + std::to_string(simulation_map->get_buildings().size()), "KenPixel Square Medium", 20, {224, 224, 224});
+
+		resources->render_texture(158, 775, "food_1");
+		resources->render_text(182, 769, ">" + std::to_string(simulation_map->get_resource_count(resourcetype::food)), "KenPixel Square Medium", 20, {224, 224, 224});
+
+		resources->render_texture(233, 777, "tree_small");
+		resources->render_text(258, 769, ">" + std::to_string(simulation_map->get_resource_count(resourcetype::tree)), "KenPixel Square Medium", 20, {224, 224, 224});
+
+		resources->render_texture(308, 774, "stone_1");
+		resources->render_text(332, 769, ">" + std::to_string(simulation_map->get_resource_count(resourcetype::stone)), "KenPixel Square Medium", 20, {224, 224, 224});
+
+		resources->render_texture(383, 774, "ore_1");
+		resources->render_text(407, 769, ">" + std::to_string(simulation_map->get_resource_count(resourcetype::ore)), "KenPixel Square Medium", 20, {224, 224, 224});
+
+		resources->render_texture(733, 774, "arrowBeige_left");
+		resources->render_texture(765, 774, "arrowBeige_right");
 	}
 
 	/**

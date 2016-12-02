@@ -19,7 +19,7 @@ namespace villa
 	 * Moves the villager toward the target coordinates.
 	 * @param x - The x-coords of the target.
 	 * @param y - The y-coords of the target.
-	 * @param value - The time scale multiplier
+	 * @param value - The time scale multiplier.
 	 */
 	void villager::move(int x, int y, double value)
 	{

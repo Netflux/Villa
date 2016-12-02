@@ -343,6 +343,26 @@ namespace villa
 	}
 
 	/**
+	 * Gets the number of resources with the specified type.
+	 * @param value - The resource type.
+	 * @return The number of resources.
+	 */
+	int map::get_resource_count(resourcetype value)
+	{
+		int quantity = 0;
+
+		for(std::vector<std::unique_ptr<resource>>::const_iterator iterator = this->resources.begin(); iterator != this->resources.end(); ++iterator)
+		{
+			if((*iterator)->get_type() == value && (*iterator)->get_harvestable() == true)
+			{
+				quantity += 1;
+			}
+		}
+
+		return quantity;
+	}
+
+	/**
 	 * Gets the tile at the given coordinates.
 	 * @param x - The x-coord of the tile.
 	 * @param y - The y-coord of the tile.

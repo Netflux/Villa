@@ -28,6 +28,7 @@ namespace villa
 			std::vector<building*> get_buildings();
 			std::vector<resource*> get_resources();
 			std::vector<villager*> get_villagers();
+			int get_resource_count(resourcetype value);
 			tile* get_tile_at(int x, int y);
 			std::pair<int, int> get_tile_coords(tile* value);
 			std::vector<tile*> get_neighbour_tiles(int x, int y);
