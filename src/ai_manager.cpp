@@ -6,7 +6,7 @@ namespace villa
 	 * Constructor for the Villager AI class.
 	 * @param simulation_map - The map of the simulation.
 	 */
-	ai_manager::ai_manager(map* simulation_map, std::mt19937& rng) : simulation_map(simulation_map), rng(rng) { }
+	ai_manager::ai_manager(map* simulation_map, std::mt19937& rng) : simulation_map(simulation_map), rng(rng), timescale(1.0) { }
 
 	/**
 	 * Executes the current task of each villager.
@@ -217,7 +217,7 @@ namespace villa
 			{
 				// Scale down random number while preserving uniform distribution
 				std::uniform_int_distribution<int> distribution_type(1, 6);
-				std::uniform_int_distribution<int> distribution(17, 783);
+				std::uniform_int_distribution<int> distribution(33, 767);
 				int i = distribution(rng), j = distribution(rng), count = 0;
 
 				buildingtype type = buildingtype::town_hall;

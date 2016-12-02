@@ -13,7 +13,7 @@ namespace villa
 	class entity
 	{
 		public:
-			bool is_at(double x, double y);
+			virtual bool is_at(double x, double y);
 			double get_x();
 			void set_x(double value);
 			double get_y();
@@ -23,6 +23,7 @@ namespace villa
 		protected:
 			entity();
 			entity(double x, double y, inventory* storage);
+			virtual ~entity();
 			double x;
 			double y;
 			std::unique_ptr<inventory> storage;

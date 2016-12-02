@@ -23,9 +23,9 @@ namespace villa
 		// Generate a new map based on the Perlin Noise values
 		for(int i = 2; i < 48; ++i)
 		{
-			for(int j = 2; j < 48; ++j)
+			for(int j = 3; j < 47; ++j)
 			{
-				double x = (double)j/((double)48) / 8;
+				double x = (double)j/((double)47) / 8;
 				double y = (double)i/((double)48) / 8;
 				double n = pn.noise(10 * x, 10 * y, 0);
 
@@ -50,14 +50,14 @@ namespace villa
 
 		// Scale down random number while preserving uniform distribution
 		std::uniform_int_distribution<int> distribution_resource(40, 200);
-		std::uniform_int_distribution<int> distribution_tiles(17, 783);
+		std::uniform_int_distribution<int> distribution_tiles(33, 767);
 		int quantity = 0;
 
 		while(quantity < distribution_resource(rng))
 		{
 			int x = distribution_tiles(rng);
 			int y = distribution_tiles(rng);
-			double n = pn.noise((double)x / (double)783, (double)y / (double)783, 0);
+			double n = pn.noise((double)x / (double)767, (double)y / (double)767, 0);
 
 			if(this->tiles[x / 16][y / 16]->get_pathable() == true)
 			{
@@ -115,7 +115,7 @@ namespace villa
 		}
 
 		// Scale down random number while preserving uniform distribution
-		std::uniform_int_distribution<int> distribution(17, 783);
+		std::uniform_int_distribution<int> distribution(33, 767);
 		std::uniform_int_distribution<int> distribution_item(1, 4);
 		std::uniform_int_distribution<int> distribution_efficiency(1, 100);
 		int i = distribution(rng), j = distribution(rng);

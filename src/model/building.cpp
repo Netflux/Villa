@@ -55,6 +55,18 @@ namespace villa
 	}
 
 	/**
+	 * Checks whether the building is within range of the specified location.
+	 * @param x - The x-coord of the target.
+	 * @param y - The y-coord of the target.
+	 * @return Boolean representing whether the building is within range of the specified location.
+	 */
+	bool building::is_at(double x, double y)
+	{
+		// If entity is within 8 pixels (1/2 tile) of the building, return true
+		return x >= this->x - 8 && x <= (this->x + (this->width * 16) + 8) && y >= (this->y - (this->height * 16) - 8) && y <= this->y + 8;
+	}
+
+	/**
 	 * Gets the type of the building.
 	 * @return The building type.
 	 */

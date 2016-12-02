@@ -321,7 +321,7 @@ namespace villa
 		resources->load_font("KenPixel Blocks", "assets/fonts/kenpixel_blocks.ttf", 160);
 		resources->load_font("KenPixel Square", "assets/fonts/kenpixel_square.ttf", 24);
 		resources->load_font("KenPixel Square Medium", "assets/fonts/kenpixel_square.ttf", 20);
-		resources->load_font("KenPixel Square Small", "assets/fonts/kenpixel_square.ttf", 16);
+		resources->load_font("KenPixel Square Small", "assets/fonts/kenpixel_square.ttf", 14);
 	}
 
 	void app::load_ui()
@@ -332,7 +332,7 @@ namespace villa
 
 		// Load UI elements for simulation
 		user_interface->add_element("Back Button", new ui_element(4, 4, 35, 35));
-		user_interface->add_element("Left Button", new ui_element(733, 774, 22, 21));
+		user_interface->add_element("Left Button", new ui_element(668, 774, 22, 21));
 		user_interface->add_element("Right Button", new ui_element(765, 774, 22, 21));
 	}
 
@@ -525,7 +525,7 @@ namespace villa
 											case tasktype::move :
 												std::cout << "Current Task: Move" << std::endl;break;
 											case tasktype::rest :
-												std::cout << "Current Task: Rest . Duration: " << (int)((*iterator)->get_task()->get_data().time) << "ms" << std::endl;break;
+												std::cout << "Current Task: Rest" << std::endl;break;
 											case tasktype::store_item :
 												std::cout << "Current Task: Store Item" << std::endl;break;
 											case tasktype::take_item :
@@ -608,7 +608,7 @@ namespace villa
 		// If no villagers remain, set the simulation to the end state
 		if(villagers.empty())
 		{
-			timers.simulation_end = SDL_GetTicks();
+			timers.simulation_end = timers.simulation_time;
 
 			state.pop();
 			state.push(appstate::simulation_end);
@@ -1224,7 +1224,33 @@ namespace villa
 		resources->render_texture(383, 774, "ore_1");
 		resources->render_text(407, 769, ">" + std::to_string(simulation_map->get_resource_count(resourcetype::ore)), "KenPixel Square Medium", 20, {224, 224, 224});
 
-		resources->render_texture(733, 774, "arrowBeige_left");
+		if(timers.timescale == 0.25)
+		{
+			resources->render_text(698, 769, "0.25", "KenPixel Square Medium", 20, {224, 224, 224});
+			resources->render_text(748, 776, "x", "KenPixel Square Small", 14, {224, 224, 224});
+		}
+		else if(timers.timescale == 0.5)
+		{
+			resources->render_text(706, 769, "0.5", "KenPixel Square Medium", 20, {224, 224, 224});
+			resources->render_text(741, 776, "x", "KenPixel Square Small", 14, {224, 224, 224});
+		}
+		else if(timers.timescale == 1.0)
+		{
+			resources->render_text(708, 769, "1.0", "KenPixel Square Medium", 20, {224, 224, 224});
+			resources->render_text(739, 776, "x", "KenPixel Square Small", 14, {224, 224, 224});
+		}
+		else if(timers.timescale == 2.0)
+		{
+			resources->render_text(706, 769, "2.0", "KenPixel Square Medium", 20, {224, 224, 224});
+			resources->render_text(741, 776, "x", "KenPixel Square Small", 14, {224, 224, 224});
+		}
+		else if(timers.timescale == 4.0)
+		{
+			resources->render_text(706, 769, "4.0", "KenPixel Square Medium", 20, {224, 224, 224});
+			resources->render_text(741, 776, "x", "KenPixel Square Small", 14, {224, 224, 224});
+		}
+
+		resources->render_texture(668, 774, "arrowBeige_left");
 		resources->render_texture(765, 774, "arrowBeige_right");
 	}
 

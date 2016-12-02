@@ -15,6 +15,11 @@ namespace villa
 	entity::entity(double x, double y, inventory* storage) : x(x), y(y), storage(storage) { }
 
 	/**
+	 * Destructor for the Entity class.
+	 */
+	entity::~entity() { }
+
+	/**
 	 * Checks whether the entity is within range of the specified location.
 	 * @param x - The x-coord of the target.
 	 * @param y - The y-coord of the target.
