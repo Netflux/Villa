@@ -18,7 +18,7 @@ namespace villa
 		taskdata(std::pair<int, int> target_coords, entity* target_entity);
 		taskdata(std::pair<int, int> target_coords, building* target_building);
 		taskdata(std::pair<int, int> target_coords, std::pair<entity*, item*> target_item);
-		taskdata(std::pair<int, int> target_coords, unsigned int time);
+		taskdata(std::pair<int, int> target_coords, int time);
 
 		std::pair<int, int> target_coords;
 		union
@@ -26,7 +26,7 @@ namespace villa
 			entity* target_entity;
 			building* target_building;
 			std::pair<entity*, item*> target_item;
-			unsigned int time;
+			int time;
 		};
 	};
 

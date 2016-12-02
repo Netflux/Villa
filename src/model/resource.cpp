@@ -8,7 +8,7 @@ namespace villa
 	 * @param y - The y-coords of the resource.
 	 * @param type - The resource type.
 	 */
-	resource::resource(int x, int y, resourcetype type) : entity(x, y, new inventory()), type(type), harvestable(false), harvestable_time(1) { }
+	resource::resource(double x, double y, resourcetype type) : entity(x, y, new inventory()), type(type), harvestable(false), harvestable_time(1) { }
 
 	/**
 	 * Gets the type of the resource.

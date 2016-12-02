@@ -18,8 +18,8 @@ namespace villa
 		public:
 			villager(int x, int y);
 			virtual ~villager();
-			void move(int x, int y);
-			void rest();
+			void move(int x, int y, double value);
+			void rest(double value);
 			void harvest();
 			void add_task(task* value);
 			void remove_task();

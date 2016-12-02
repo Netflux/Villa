@@ -12,7 +12,7 @@ namespace villa
 	 * @param x - The x-coord of the entity.
 	 * @param y - The y-coord of the entity.
 	 */
-	entity::entity(int x, int y, inventory* storage) : x(x), y(y), storage(storage) { }
+	entity::entity(double x, double y, inventory* storage) : x(x), y(y), storage(storage) { }
 
 	/**
 	 * Checks whether the entity is within range of the specified location.
@@ -20,7 +20,7 @@ namespace villa
 	 * @param y - The y-coord of the target.
 	 * @return Boolean representing whether the entity is within range of the specified location.
 	 */
-	bool entity::is_at(int x, int y)
+	bool entity::is_at(double x, double y)
 	{
 		// If entity is within 8 pixels (1/2 tile) of the target, return true
 		return abs(this->x - x) <= 8 && abs(this->y - y) <= 8;
@@ -30,7 +30,7 @@ namespace villa
 	 * Gets the x-coord of the entity.
 	 * @return The x-coord of the entity.
 	 */
-	int entity::get_x()
+	double entity::get_x()
 	{
 		return this->x;
 	}
@@ -39,7 +39,7 @@ namespace villa
 	 * Sets the x-coord of the entity.
 	 * @param value - The x-coord of the entity.
 	 */
-	void entity::set_x(int value)
+	void entity::set_x(double value)
 	{
 		this->x = value;
 	}
@@ -48,7 +48,7 @@ namespace villa
 	 * Gets the y-coord of the entity.
 	 * @return The y-coord of the entity.
 	 */
-	int entity::get_y()
+	double entity::get_y()
 	{
 		return this->y;
 	}
@@ -57,7 +57,7 @@ namespace villa
 	 * Sets the y-coord of the entity.
 	 * @param value - The y-coord of the entity.
 	 */
-	void entity::set_y(int value)
+	void entity::set_y(double value)
 	{
 		this->y = value;
 	}

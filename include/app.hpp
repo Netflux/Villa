@@ -40,6 +40,7 @@ namespace villa
 		unsigned int villager_health;
 		unsigned int villager_health_regen;
 		unsigned int villager_needs;
+		double timescale;
 	};
 
 	/**

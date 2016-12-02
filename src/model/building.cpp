@@ -13,7 +13,7 @@ namespace villa
 	 * @param y - The y-coord (grid) of the building.
 	 * @param type - The building type.
 	 */
-	building::building(int x, int y, buildingtype type) : entity(x, y, new inventory()), type(type)
+	building::building(double x, double y, buildingtype type) : entity(x, y, new inventory()), type(type)
 	{
 		switch(this->type)
 		{

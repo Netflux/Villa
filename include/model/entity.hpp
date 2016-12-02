@@ -13,16 +13,16 @@ namespace villa
 	class entity
 	{
 		public:
-			bool is_at(int x, int y);
-			int get_x();
-			void set_x(int value);
-			int get_y();
-			void set_y(int value);
+			bool is_at(double x, double y);
+			double get_x();
+			void set_x(double value);
+			double get_y();
+			void set_y(double value);
 			inventory* get_inventory();
 
 		protected:
 			entity();
-			entity(int x, int y, inventory* storage);
+			entity(double x, double y, inventory* storage);
 			double x;
 			double y;
 			std::unique_ptr<inventory> storage;

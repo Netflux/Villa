@@ -40,10 +40,13 @@ namespace villa
 		public:
 			ai_manager(map* simulation_map, std::mt19937& rng);
 			void think();
+			double get_timescale();
+			void set_timescale(double value);
 
 		private:
 			map* simulation_map;
 			std::mt19937& rng;
+			double timescale;
 			void handle_task_idle(villager* value);
 			void handle_task_move(villager* value);
 			void handle_task_build(villager* value);

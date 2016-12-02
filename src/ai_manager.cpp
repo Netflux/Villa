@@ -281,7 +281,7 @@ namespace villa
 	{
 		taskdata data = value->get_task()->get_data();
 
-		value->move(data.target_coords.first, data.target_coords.second);
+		value->move(data.target_coords.first, data.target_coords.second, timescale);
 
 		if(value->is_at(data.target_coords.first, data.target_coords.second))
 		{
@@ -497,13 +497,12 @@ namespace villa
 			// Check that the new position is valid
 			if(value->get_x() + i >= 0 && value->get_x() + i <= 800 && value->get_y() + j >= 0 && value->get_y() + j <= 800 && simulation_map->get_tile_at((value->get_x() + i) / 16, (value->get_y() + j) / 16) != nullptr && simulation_map->get_tile_at((value->get_x() + i) / 16, (value->get_y() + j) / 16)->get_pathable() == true)
 			{
-				int duration = value->get_task()->get_data().time;
 				value->remove_task();
-				value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x() + i, value->get_y() + j), duration + 500)));
+				value->add_task(new task(tasktype::rest, taskdata(std::make_pair(value->get_x() + i, value->get_y() + j), 500)));
 			}
 		}
 
-		value->rest();
+		value->rest(timescale);
 	}
 
 	/**
@@ -738,5 +737,23 @@ namespace villa
 
 		// If a valid path was found within 200 checks, return it. Otherwise, return an empty vector
 		return count < 200 ? path : std::vector<std::pair<int, int>>();
+	}
+
+	/**
+	 * Gets the time scale of the simulation.
+	 * @return The time scale multiplier.
+	 */
+	double ai_manager::get_timescale()
+	{
+		return this->timescale;
+	}
+
+	/**
+	 * Sets the time scale of the simulation.
+	 * @param value - The time scale multiplier.
+	 */
+	void ai_manager::set_timescale(double value)
+	{
+		this->timescale = value;
 	}
 }

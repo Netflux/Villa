@@ -49,6 +49,7 @@ namespace villa
 			// Initialize time-related variables
 			const int UPDATE_TIME = 1000 / 60;
 			unsigned int accumulator = 0;
+			timers.timescale = 1.0;
 
 			// Hide the default cursor
 			SDL_ShowCursor(0);
@@ -67,11 +68,12 @@ namespace villa
 					if(state.top() == appstate::simulation)
 					{
 						update_simulation();
+						simulation_ai->set_timescale(timers.timescale);
 						simulation_ai->think();
 					}
 
 					accumulator -= UPDATE_TIME;
-					timers.simulation_time += UPDATE_TIME;
+					timers.simulation_time += UPDATE_TIME * timers.timescale;
 				}
 
 				update_display();
@@ -114,7 +116,7 @@ namespace villa
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 		// Check if the 2D renderer initializes successfully
-		if(renderer == nullptr || SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear") == SDL_FALSE || SDL_RenderSetLogicalSize(renderer, 800, 800) != 0)
+		if(renderer == nullptr || SDL_RenderSetLogicalSize(renderer, 800, 800) != 0)
 		{
 			std::cerr << "2D Renderer failed to initialize! SDL_Error: " << SDL_GetError() << std::endl;
 			return false;
@@ -298,8 +300,13 @@ namespace villa
 		resources->load_texture("villager_alt2", "assets/images/entities/villager_alt2.png");
 		resources->load_texture("villager_alt3", "assets/images/entities/villager_alt3.png");
 
+		// Enable linear texture filtering when loading UI elements
+		// Not used for tile-based textures due to rendering artifacts (black lines, random gaps)
+		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+
 		// Load UI images
 		resources->load_texture("cursor", "assets/images/ui/cursorHand_grey.png");
+		resources->load_texture("iconMenu_brown", "assets/images/ui/iconMenu_brown.png");
 		resources->load_texture("iconCross_brown", "assets/images/ui/iconCross_brown.png");
 		resources->load_texture("buttonRound_brown", "assets/images/ui/buttonRound_brown.png");
 		resources->load_texture("buttonLong_brown", "assets/images/ui/buttonLong_brown.png");
@@ -317,7 +324,8 @@ namespace villa
 		user_interface->add_element("Quit Button", new ui_element(305, 700, 190, 49));
 
 		// Load UI elements for simulation
-		user_interface->add_element("Back Button", new ui_element(4, 4, 35, 35));
+		user_interface->add_element("Menu Button", new ui_element(4, 4, 35, 35));
+		user_interface->add_element("Back Button", new ui_element(760, 4, 35, 35));
 	}
 
 	/**
@@ -483,7 +491,7 @@ namespace villa
 						{
 							if(simulation_map->get_villagers().size() > 0)
 							{
-								simulation_map->get_villagers()[0]->add_task(new task(tasktype::rest, taskdata(std::make_pair(x, y), SDL_GetTicks())));
+								simulation_map->get_villagers()[0]->add_task(new task(tasktype::rest, taskdata(std::make_pair(x, y), 500)));
 								//simulation_map->get_villagers()[0]->set_health(0);
 							}
 						}
@@ -524,21 +532,21 @@ namespace villa
 		{
 			bool update_villager_health = false, update_villager_health_regen = false, update_villager_needs = false;
 
-			if(SDL_GetTicks() > timers.villager_health + 1000)
+			if(timers.simulation_time > timers.villager_health + 1000)
 			{
-				timers.villager_health = SDL_GetTicks();
+				timers.villager_health = timers.simulation_time;
 				update_villager_health = true;
 			}
 
-			if(SDL_GetTicks() > timers.villager_health_regen + 30000)
+			if(timers.simulation_time > timers.villager_health_regen + 30000)
 			{
-				timers.villager_health_regen = SDL_GetTicks();
+				timers.villager_health_regen = timers.simulation_time;
 				update_villager_health_regen = true;
 			}
 
-			if(SDL_GetTicks() > timers.villager_needs + 15000)
+			if(timers.simulation_time > timers.villager_needs + 15000)
 			{
-				timers.villager_needs = SDL_GetTicks();
+				timers.villager_needs = timers.simulation_time;
 				update_villager_needs = true;
 			}
 
@@ -627,7 +635,7 @@ namespace villa
 				{
 					// Once the time has passed the resource timeout duration, set it as harvestable
 					// Also resets the inventory with a new set of items (excluding graves)
-					if((*iterator)->get_harvestable() == false && SDL_GetTicks() > (*iterator)->get_harvestable_time() && (*iterator)->get_harvestable_time() != 0)
+					if((*iterator)->get_harvestable() == false && timers.simulation_time > (*iterator)->get_harvestable_time() && (*iterator)->get_harvestable_time() != 0)
 					{
 						(*iterator)->set_harvestable(true);
 
@@ -689,7 +697,7 @@ namespace villa
 						}
 						else
 						{
-							(*iterator)->set_harvestable_time(SDL_GetTicks() + 120000);
+							(*iterator)->set_harvestable_time(timers.simulation_time + 120000);
 						}
 					}
 				}
@@ -1106,8 +1114,12 @@ namespace villa
 		resources->render_texture(305, -10, "buttonLong_brown_pressed");
 		resources->render_text(341, -4, ss.str(), "KenPixel Square", 24, {224, 224, 224});
 
+
 		resources->render_texture(4, 4, "buttonRound_brown");
-		resources->render_texture(14, 14, "iconCross_brown");
+		resources->render_texture(13, 12, "iconMenu_brown");
+
+		resources->render_texture(760, 4, "buttonRound_brown");
+		resources->render_texture(770, 14, "iconCross_brown");
 	}
 
 	/**

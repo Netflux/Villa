@@ -34,7 +34,7 @@ namespace villa
 	 * @param target_coords - The x and y coords to conduct the task.
 	 * @param time - The amount of time to wait.
 	 */
-	taskdata::taskdata(std::pair<int, int> target_coords, unsigned int time) : target_coords(target_coords), time(time) { }
+	taskdata::taskdata(std::pair<int, int> target_coords, int time) : target_coords(target_coords), time(time) { }
 
 	/**
 	 * Constructor for the Task class.

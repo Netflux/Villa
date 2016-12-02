@@ -15,42 +15,51 @@ namespace villa
 	 */
 	villager::~villager() { }
 
-	void villager::move(int x, int y)
+	/**
+	 * Moves the villager toward the target coordinates.
+	 * @param x - The x-coords of the target.
+	 * @param y - The y-coords of the target.
+	 * @param value - The time scale multiplier
+	 */
+	void villager::move(int x, int y, double value)
 	{
+		double distance = (speed / 60) * value;
+
 		if(this->x > x)
 		{
-			this->x -= speed / 60;
+			this->x -= distance;
 		}
 		else if(this->x < x)
 		{
-			this->x += speed / 60;
+			this->x += distance;
 		}
 
 		if(this->y > y)
 		{
-			this->y -= speed / 60;
+			this->y -= distance;
 		}
 		else if(this->y < y)
 		{
-			this->y += speed / 60;
+			this->y += distance;
 		}
 	}
 
 	/**
 	 * Rests for the target duration.
+	 * @param value - The time scale multiplier.
 	 */
-	void villager::rest()
+	void villager::rest(double value)
 	{
 		taskdata data = get_task()->get_data();
 		int target_x = data.target_coords.first, target_y = data.target_coords.second;
-		int duration = data.time - (1000 / 60);
+		double duration = data.time - ((1000 / 60) * value);
 
 		remove_task();
 
 		// If the task still has time left, re-add the task with the updated duration
 		if(duration > 0)
 		{
-			add_task(new task(tasktype::rest, taskdata(std::make_pair(target_x, target_y), duration)));
+			add_task(new task(tasktype::rest, taskdata(std::make_pair(target_x, target_y), (int)duration)));
 		}
 	}
 
