@@ -448,6 +448,8 @@ namespace villa
 								simulation_ai.reset(new ai_manager(simulation_map.get(), rng));
 
 								timers.simulation_start = SDL_GetTicks();
+								timers.simulation_time = timers.simulation_end = timers.villager_health = timers.villager_health_regen = timers.villager_needs = 0;
+								timers.timescale = 1.0;
 							}
 							else if(target == "Quit Button")
 							{
