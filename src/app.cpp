@@ -315,6 +315,14 @@ namespace villa
 		resources->load_texture("buttonLong_brown_pressed", "assets/images/ui/buttonLong_brown_pressed.png");
 		resources->load_texture("menuBar_brown", "assets/images/ui/menuBar_brown.png");
 
+		resources->load_texture("label_building", "assets/images/ui/label_building.png");
+		resources->load_texture("label_food", "assets/images/ui/label_food.png");
+		resources->load_texture("label_grave", "assets/images/ui/label_grave.png");
+		resources->load_texture("label_ore", "assets/images/ui/label_ore.png");
+		resources->load_texture("label_stone", "assets/images/ui/label_stone.png");
+		resources->load_texture("label_tree", "assets/images/ui/label_tree.png");
+		resources->load_texture("label_villager", "assets/images/ui/label_villager.png");
+
 		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 
 		// Load fonts
@@ -1226,6 +1234,9 @@ namespace villa
 		resources->render_texture(383, 774, "ore_1");
 		resources->render_text(407, 769, ">" + std::to_string(simulation_map->get_resource_count(resourcetype::ore)), "KenPixel Square Medium", 20, {224, 224, 224});
 
+		resources->render_texture(458, 774, "grave_1");
+		resources->render_text(482, 769, ">" + std::to_string(simulation_map->get_resource_count(resourcetype::grave)), "KenPixel Square Medium", 20, {224, 224, 224});
+
 		if(timers.timescale == 0.25)
 		{
 			resources->render_text(698, 769, "0.25", "KenPixel Square Medium", 20, {224, 224, 224});
@@ -1254,6 +1265,118 @@ namespace villa
 
 		resources->render_texture(668, 774, "arrowBeige_left");
 		resources->render_texture(765, 774, "arrowBeige_right");
+
+		// Get coords of mouse
+		int x, y;
+		SDL_GetMouseState(&x, &y);
+
+		bool found = false;
+
+		// Loop through each villager in the vector
+		for(std::vector<villager*>::const_iterator iterator = villagers.begin(); iterator != villagers.end(); ++iterator)
+		{
+			if((*iterator)->is_at(x, y))
+			{
+				if(x > 668)
+				{
+					x -= 131;
+				}
+
+				resources->render_texture(x, y - 37, "label_villager");
+				resources->render_text(x + 11, y - 35, "Villager", "KenPixel Square Medium", 20, {224, 224, 224});
+
+				found = true;
+				break;
+			}
+		}
+
+		if(found == false)
+		{
+			// Loop through each building in the vector
+			for(std::vector<building*>::const_iterator iterator = buildings.begin(); iterator != buildings.end(); ++iterator)
+			{
+				if((*iterator)->is_at(x, y))
+				{
+					if(x > 671)
+					{
+						x -= 128;
+					}
+
+					resources->render_texture(x, y - 37, "label_building");
+					resources->render_text(x + 10, y - 35, "Building", "KenPixel Square Medium", 20, {224, 224, 224});
+
+					found = true;
+					break;
+				}
+			}
+		}
+
+		if(found == false)
+		{
+			// Loop through each building in the vector
+			for(std::vector<resource*>::const_iterator iterator = map_resources.begin(); iterator != map_resources.end(); ++iterator)
+			{
+				if((*iterator)->is_at(x, y))
+				{
+					switch((*iterator)->get_type())
+					{
+						case resourcetype::food :
+							if(x > 721)
+							{
+								x -= 78;
+							}
+
+							resources->render_texture(x, y - 37, "label_food");
+							resources->render_text(x + 10, y - 35, "Food", "KenPixel Square Medium", 20, {224, 224, 224});
+							break;
+
+						case resourcetype::grave :
+							if(x > 705)
+							{
+								x -= 94;
+							}
+
+							resources->render_texture(x, y - 37, "label_grave");
+							resources->render_text(x + 10, y - 35, "Grave", "KenPixel Square Medium", 20, {224, 224, 224});
+							break;
+
+						case resourcetype::ore :
+							if(x > 736)
+							{
+								x -= 63;
+							}
+
+							resources->render_texture(x, y - 37, "label_ore");
+							resources->render_text(x + 9, y - 35, "Ore", "KenPixel Square Medium", 20, {224, 224, 224});
+							break;
+
+						case resourcetype::stone :
+							if(x > 705)
+							{
+								x -= 94;
+							}
+
+							resources->render_texture(x, y - 37, "label_stone");
+							resources->render_text(x + 10, y - 35, "Stone", "KenPixel Square Medium", 20, {224, 224, 224});
+							break;
+
+						case resourcetype::tree :
+							if(x > 721)
+							{
+								x -= 78;
+							}
+
+							resources->render_texture(x, y - 37, "label_tree");
+							resources->render_text(x + 9, y - 35, "Tree", "KenPixel Square Medium", 20, {224, 224, 224});
+							break;
+
+						default :
+							break;
+					}
+					break;
+				}
+			}
+		}
 	}
 
 	/**
