@@ -1270,30 +1270,72 @@ namespace villa
 		int x, y;
 		SDL_GetMouseState(&x, &y);
 
-		bool found = false;
-
-		// Loop through each villager in the vector
-		for(std::vector<villager*>::const_iterator iterator = villagers.begin(); iterator != villagers.end(); ++iterator)
+		// Villager Icon on Menu Bar
+		if(x >= 8 && x < 83 && y >= 769 && y <= 800)
 		{
-			if((*iterator)->is_at(x, y))
-			{
-				if(x > 668)
-				{
-					x -= 131;
-				}
-
-				resources->render_texture(x, y - 37, "label_villager");
-				resources->render_text(x + 11, y - 35, "Villager", "KenPixel Square Medium", 20, {224, 224, 224});
-
-				found = true;
-				break;
-			}
+			resources->render_texture(x, y - 37, "label_villager");
+			resources->render_text(x + 11, y - 35, "Villager", "KenPixel Square Medium", 20, {224, 224, 224});
 		}
-
-		if(found == false)
+		// Building Icon on Menu Bar
+		else if(x >= 83 && x < 158 && y >= 769 && y <= 800)
 		{
+			resources->render_texture(x, y - 37, "label_building");
+			resources->render_text(x + 10, y - 35, "Building", "KenPixel Square Medium", 20, {224, 224, 224});
+		}
+		// Food Icon on Menu Bar
+		else if(x >= 158 && x < 233 && y >= 769 && y <= 800)
+		{
+			resources->render_texture(x, y - 37, "label_food");
+			resources->render_text(x + 10, y - 35, "Food", "KenPixel Square Medium", 20, {224, 224, 224});
+		}
+		// Tree Icon on Menu Bar
+		else if(x >= 233 && x < 308 && y >= 769 && y <= 800)
+		{
+			resources->render_texture(x, y - 37, "label_tree");
+			resources->render_text(x + 9, y - 35, "Tree", "KenPixel Square Medium", 20, {224, 224, 224});
+		}
+		// Stone Icon on Menu Bar
+		else if(x >= 308 && x < 383 && y >= 769 && y <= 800)
+		{
+			resources->render_texture(x, y - 37, "label_stone");
+			resources->render_text(x + 10, y - 35, "Stone", "KenPixel Square Medium", 20, {224, 224, 224});
+		}
+		// Ore Icon on Menu Bar
+		else if(x >= 383 && x < 458 && y >= 769 && y <= 800)
+		{
+			resources->render_texture(x, y - 37, "label_ore");
+			resources->render_text(x + 9, y - 35, "Ore", "KenPixel Square Medium", 20, {224, 224, 224});
+		}
+		// Grave Icon on Menu Bar
+		else if(x >= 458 && x < 533 && y >= 769 && y <= 800)
+		{
+			resources->render_texture(x, y - 37, "label_grave");
+			resources->render_text(x + 10, y - 35, "Grave", "KenPixel Square Medium", 20, {224, 224, 224});
+		}
+		else
+		{
+			bool found = false;
+
+			// Loop through each villager in the vector
+			for(std::vector<villager*>::const_iterator iterator = villagers.begin(); iterator != villagers.end() && found == false; ++iterator)
+			{
+				if((*iterator)->is_at(x, y))
+				{
+					if(x > 668)
+					{
+						x -= 131;
+					}
+
+					resources->render_texture(x, y - 37, "label_villager");
+					resources->render_text(x + 11, y - 35, "Villager", "KenPixel Square Medium", 20, {224, 224, 224});
+
+					found = true;
+					break;
+				}
+			}
+
 			// Loop through each building in the vector
-			for(std::vector<building*>::const_iterator iterator = buildings.begin(); iterator != buildings.end(); ++iterator)
+			for(std::vector<building*>::const_iterator iterator = buildings.begin(); iterator != buildings.end() && found == false; ++iterator)
 			{
 				if((*iterator)->is_at(x, y))
 				{
@@ -1309,12 +1351,9 @@ namespace villa
 					break;
 				}
 			}
-		}
 
-		if(found == false)
-		{
 			// Loop through each building in the vector
-			for(std::vector<resource*>::const_iterator iterator = map_resources.begin(); iterator != map_resources.end(); ++iterator)
+			for(std::vector<resource*>::const_iterator iterator = map_resources.begin(); iterator != map_resources.end() && found == false; ++iterator)
 			{
 				if((*iterator)->is_at(x, y))
 				{

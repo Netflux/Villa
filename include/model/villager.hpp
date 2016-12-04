@@ -16,9 +16,8 @@ namespace villa
 	class villager : public entity
 	{
 		public:
-			villager(int x, int y);
-			virtual ~villager();
-			void move(int x, int y, double value);
+			villager(double x, double y);
+			void move(double x, double y, double value);
 			void rest(double value);
 			void harvest();
 			void add_task(task* value);

@@ -50,7 +50,6 @@ namespace villa
 	class app
 	{
 		public:
-			std::mt19937 rng;
 			app();
 			~app();
 			void start();
@@ -65,6 +64,7 @@ namespace villa
 			void display_menu_main();
 			void display_simulation();
 			void display_simulation_tile(int x, int y, tiletype type, std::string name);
+			std::mt19937 rng;
 			timer_struct timers;
 			std::stack<appstate> state;
 			std::unique_ptr<resource_manager> resources;

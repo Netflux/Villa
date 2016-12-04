@@ -5,15 +5,10 @@ namespace villa
 	/**
 	 * Constructor for the Villager class.
 	 */
-	villager::villager(int x, int y) : entity(x, y, new inventory()), speed(100), health(100), hunger(0), thirst(0), fatigue(0)
+	villager::villager(double x, double y) : entity(x, y, new inventory()), speed(100), health(100), hunger(0), thirst(0), fatigue(0)
 	{
 		add_task(new task(tasktype::idle, taskdata(std::make_pair(x, y))));
 	}
-
-	/**
-	 * Destructor for the Villager class.
-	 */
-	villager::~villager() { }
 
 	/**
 	 * Moves the villager toward the target coordinates.
@@ -21,7 +16,7 @@ namespace villa
 	 * @param y - The y-coords of the target.
 	 * @param value - The time scale multiplier.
 	 */
-	void villager::move(int x, int y, double value)
+	void villager::move(double x, double y, double value)
 	{
 		double distance = (speed / 60) * value;
 

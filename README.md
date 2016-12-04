@@ -4,6 +4,7 @@ Villa is a simulation designed to emulate the daily life of a village. Each simu
 ### Table of Contents
 
 * [Build Guide](#build-guide)
+* [Credits](#credits)
 * [License](#license)
 
 ## Build Guide
@@ -20,6 +21,11 @@ If you're working on Microsoft Windows:
 2. Clone the repository using `git clone https://github.com/Netflux/Villa.git`.
 3. Using the command prompt, `cd` into the folder and use `mingw32-make`.
 4. The binary file `Villa` will be available in the `bin` folder.
+
+## Credits
+* Artwork (kenney.nl)
+* Perlin Noise Generator (https://github.com/sol-prog/Perlin_Noise)
+* A* Search Algorithm (http://www.redblobgames.com/pathfinding/a-star/implementation.html)
 
 ## License
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.
