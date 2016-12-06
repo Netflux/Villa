@@ -119,13 +119,13 @@ TEST(VillagerTest, Move)
 	EXPECT_EQ(0, target->get_x());
 	EXPECT_EQ(0, target->get_y());
 
-	target->move(100, 100);
+	target->move(100, 100, 1.0);
 
 	// The villager should move by (speed / 60)
 	EXPECT_EQ(target->get_speed() / 60, target->get_x());
 	EXPECT_EQ(target->get_speed() / 60, target->get_y());
 
-	target->move(200, -100);
+	target->move(200, -100, 1.0);
 
 	// The villager should move by (speed / 60)
 	EXPECT_EQ((target->get_speed() / 60) * 2, target->get_x());
@@ -142,7 +142,7 @@ TEST(VillagerTest, IsAt)
 	// The villager should start at the coords (0, 0)
 	EXPECT_EQ(true, target->is_at(0, 0));
 
-	target->move(100, 100);
+	target->move(100, 100, 1.0);
 
 	// The villager should move by (speed / 60)
 	EXPECT_EQ(true, target->is_at(target->get_speed() / 60, target->get_speed() / 60));
